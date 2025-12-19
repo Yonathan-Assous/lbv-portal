@@ -55,16 +55,17 @@ body {
     z-index: 1;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 1rem 1.5rem;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 /* Header */
 .header {
     text-align: center;
-    padding: 2rem 0;
+    padding: 0.5rem 0;
 }
 
 .logo {
@@ -94,20 +95,20 @@ body {
 /* Hero */
 .hero {
     text-align: center;
-    padding: 3rem 0 4rem;
+    padding: 1.5rem 0 2rem;
 }
 
 .hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 3.5rem;
+    font-size: 2.75rem;
     font-weight: 400;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     letter-spacing: 0.02em;
 }
 
 .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: var(--text-secondary);
     font-weight: 300;
 }
@@ -115,17 +116,16 @@ body {
 /* Services */
 .services {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 2rem 0;
-    flex: 1;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
 }
 
 .service-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 1rem;
-    padding: 2.5rem 2rem;
+    padding: 1.5rem 1.5rem;
     text-align: center;
     text-decoration: none;
     color: inherit;
@@ -180,9 +180,9 @@ body {
 }
 
 .service-icon {
-    width: 4rem;
-    height: 4rem;
-    margin: 0 auto 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,18 +196,18 @@ body {
 
 .service-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     letter-spacing: 0.02em;
 }
 
 .service-description {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
+    margin-bottom: 1rem;
+    line-height: 1.6;
 }
 
 .service-cta {
@@ -242,7 +242,7 @@ body {
 /* Footer */
 .footer {
     text-align: center;
-    padding: 3rem 0 1rem;
+    padding: 1.5rem 0 0.5rem;
     margin-top: auto;
 }
 
