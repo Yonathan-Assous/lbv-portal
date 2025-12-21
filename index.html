@@ -26,7 +26,7 @@
         </section>
 
         <section class="services">
-            <a id="gala-link" href="https://gala.lbv-event.com" class="service-card active">
+            <div class="service-card active">
                 <div class="service-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
@@ -34,8 +34,13 @@
                 </div>
                 <h2 class="service-title">Gala</h2>
                 <p class="service-description">Organisation et gestion de vos événements de gala</p>
-                <span class="service-cta">Accéder <span class="arrow">→</span></span>
-            </a>
+                <div class="service-actions">
+                    <a id="gala-link" href="https://gala.lbv-event.com" class="service-cta">Accéder <span class="arrow">→</span></a>
+                    <a id="demo-link" href="https://gala.lbv-event.com/admin/galas/demo/dashboard" class="demo-link">
+                        <span class="demo-icon">🎭</span> Essayer la démo
+                    </a>
+                </div>
+            </div>
 
             <div class="service-card coming-soon">
                 <div class="coming-soon-badge">Bientôt</div>
@@ -73,12 +78,16 @@
         (function() {
             const hostname = window.location.hostname;
             const isDev = hostname.startsWith('dev.') || hostname.includes('localhost');
+            const baseUrl = isDev ? 'https://dev.gala.lbv-event.com' : 'https://gala.lbv-event.com';
 
             const galaLink = document.getElementById('gala-link');
             if (galaLink) {
-                galaLink.href = isDev
-                    ? 'https://dev.gala.lbv-event.com'
-                    : 'https://gala.lbv-event.com';
+                galaLink.href = baseUrl;
+            }
+
+            const demoLink = document.getElementById('demo-link');
+            if (demoLink) {
+                demoLink.href = baseUrl + '/admin/galas/demo/dashboard';
             }
         })();
     </script>
