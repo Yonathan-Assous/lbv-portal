@@ -251,24 +251,25 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #7c3aed, #4f46e5, #2563eb);
-    color: white;
+    padding: 0.5rem 1.25rem;
+    background: transparent;
+    color: var(--gold);
     font-size: 0.8125rem;
-    font-weight: 500;
+    font-weight: 400;
     text-decoration: none;
+    border: 1px solid var(--border);
     border-radius: 2rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    letter-spacing: 0.02em;
 }
 
 .demo-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+    border-color: var(--gold);
+    background: rgba(201, 169, 98, 0.08);
 }
 
 .demo-icon {
-    font-size: 1rem;
+    font-size: 0.875rem;
 }
 
 /* Footer */
