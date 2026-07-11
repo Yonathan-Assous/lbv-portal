@@ -363,3 +363,122 @@ body {
 .service-card:nth-child(4) {
     animation: fadeInUp 0.6s ease-out 0.5s both;
 }
+
+/* ===== Souccot promo popup ===== */
+/* Lock background scroll only while the popup is open (restored on close). */
+body.promo-open {
+    overflow: hidden;
+}
+
+.promo-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4vh 4vw;
+    background: rgba(5, 5, 6, 0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: promoFade 0.25s ease-out both;
+}
+
+.promo-overlay[hidden] {
+    display: none;
+}
+
+@keyframes promoFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.promo-link {
+    display: block;
+    line-height: 0;
+    max-width: 92vw;
+    max-height: 88vh;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    transition: transform 0.2s ease;
+    /* Entrance: a calm, premium fade-in with a very light zoom. `backwards` shows the 0%
+       frame immediately (no full-size flash); no forwards fill, so the hover lift keeps
+       working once it ends. Runs once, only when the popup opens. */
+    transform-origin: center center;
+    animation: promoPosterIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    will-change: transform, opacity;
+}
+
+@keyframes promoPosterIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.promo-link:hover {
+    transform: translateY(-2px);
+}
+
+/* Keep the poster's native proportions; never distort. */
+.promo-image {
+    display: block;
+    max-width: 92vw;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.promo-close {
+    position: absolute;
+    top: max(1rem, 3vh);
+    right: max(1rem, 4vw);
+    width: 2.75rem;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--text-primary);
+    background: rgba(20, 20, 22, 0.85);
+    border: 1px solid var(--border-hover);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.promo-close:hover {
+    background: var(--gold);
+    color: #0a0a0b;
+    transform: scale(1.05);
+}
+
+.promo-close:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+    .promo-close {
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.7rem;
+    }
+}
+
+/* Respect reduced-motion: no entrance animation, no backdrop fade — poster just appears. */
+@media (prefers-reduced-motion: reduce) {
+    .promo-overlay,
+    .promo-link {
+        animation: none;
+    }
+}
