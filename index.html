@@ -90,7 +90,8 @@
     </main>
 
     <!-- Souccot 2026 promo popup: centered clickable poster over a dimmed/blurred backdrop.
-         Dismissed for the session via sessionStorage. Hidden entirely if the image fails. -->
+         Shows on every page load until the campaign ends; closing hides it for the current
+         page view only (no storage), so a refresh re-opens it. Hidden entirely if the image fails. -->
     <div id="promo-overlay" class="promo-overlay" role="dialog" aria-modal="true" aria-label="Offre Souccot 2026" hidden>
         <button type="button" id="promo-close" class="promo-close" aria-label="Fermer">&times;</button>
         <a id="promo-link" class="promo-link" href="https://booking.lbv-event.com" rel="noopener">
@@ -106,7 +107,6 @@
             // Campaign runs through this date INCLUSIVE, in Israel time (Asia/Jerusalem).
             // The poster shows up to and including 2026-10-04 and disappears from 2026-10-05.
             var PROMO_END_ISRAEL = '2026-10-04';
-            var PROMO_SESSION_KEY = 'souccotPosterDismissed';
 
             if (!PROMO_ENABLED) return;
 
@@ -117,7 +117,9 @@
             }
             if (israelDate() > PROMO_END_ISRAEL) return; // campaign ended → never show
 
-            try { if (sessionStorage.getItem(PROMO_SESSION_KEY)) return; } catch (e) { /* storage blocked — still show once */ }
+            // No persistence: the poster appears on EVERY page load until the campaign ends.
+            // Closing (button / backdrop / Esc) hides it for the current page view only; a
+            // refresh shows it again. No sessionStorage / localStorage is used.
 
             var overlay = document.getElementById('promo-overlay');
             var img = document.getElementById('promo-image');
@@ -125,7 +127,7 @@
             if (!overlay || !img) return;
 
             // Never block the site if the poster can't load.
-            img.addEventListener('error', function() { hide(true); });
+            img.addEventListener('error', function() { hide(); });
 
             function open() {
                 if (img.complete && img.naturalWidth === 0) { return; } // already failed
@@ -134,11 +136,11 @@
                 closeBtn.focus();
                 document.addEventListener('keydown', onKey);
             }
-            function hide(skipStore) {
+            // Close for the current page view only — nothing is persisted, so a reload re-opens it.
+            function hide() {
                 overlay.hidden = true;
                 document.body.classList.remove('promo-open');
                 document.removeEventListener('keydown', onKey);
-                if (!skipStore) { try { sessionStorage.setItem(PROMO_SESSION_KEY, '1'); } catch (e) {} }
             }
             function onKey(e) { if (e.key === 'Escape') hide(); }
 
