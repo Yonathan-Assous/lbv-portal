@@ -93,9 +93,9 @@
          Dismissed for the session via sessionStorage. Hidden entirely if the image fails. -->
     <div id="promo-overlay" class="promo-overlay" role="dialog" aria-modal="true" aria-label="Offre Souccot 2026" hidden>
         <button type="button" id="promo-close" class="promo-close" aria-label="Fermer">&times;</button>
-        <a id="promo-link" class="promo-link" href="https://booking.lbv-event.com/fr" rel="noopener">
-            <img id="promo-image" class="promo-image" src="campaigns/souccot-2026-poster.jpg"
-                 alt="Souccot 2026 à l'hôtel Nof Kineret — offre spéciale famille La Belle Vie. Réservez votre séjour." />
+        <a id="promo-link" class="promo-link" href="https://booking.lbv-event.com" rel="noopener">
+            <img id="promo-image" class="promo-image" src="campaigns/souccot-2026-promo.jpg"
+                 alt="Souccot 2026 — Hôtel Nof Kineret, Tibériade. Offre spéciale famille La Belle Vie. Réservez votre séjour." />
         </a>
     </div>
 
@@ -103,9 +103,20 @@
         // Souccot promo popup — hardcoded config (no settings system on this static portal).
         (function() {
             var PROMO_ENABLED = true;
+            // Campaign runs through this date INCLUSIVE, in Israel time (Asia/Jerusalem).
+            // The poster shows up to and including 2026-10-04 and disappears from 2026-10-05.
+            var PROMO_END_ISRAEL = '2026-10-04';
             var PROMO_SESSION_KEY = 'souccotPosterDismissed';
 
             if (!PROMO_ENABLED) return;
+
+            // Today's date (YYYY-MM-DD) in Israel, DST-safe via Intl; fall back to UTC if unavailable.
+            function israelDate() {
+                try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(new Date()); }
+                catch (e) { return new Date().toISOString().slice(0, 10); }
+            }
+            if (israelDate() > PROMO_END_ISRAEL) return; // campaign ended → never show
+
             try { if (sessionStorage.getItem(PROMO_SESSION_KEY)) return; } catch (e) { /* storage blocked — still show once */ }
 
             var overlay = document.getElementById('promo-overlay');
