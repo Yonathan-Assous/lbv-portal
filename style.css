@@ -92,6 +92,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .bar__cta { min-height: 42px; padding: .5em 1.2em; }
 .bar__lang { margin-inline-start: auto; display: grid; place-items: center; min-width: 42px; height: 42px; padding: 0 10px; border-radius: 99px; text-decoration: none; font-weight: 700; font-size: .9rem; letter-spacing: .04em; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.45); }
 .bar__lang--2 { margin-inline-start: 0; }
+/* The two other languages sit together in one pill: [ FR | EN ]. */
+.langs-switch { display: inline-flex; align-items: center; margin-inline-start: auto; padding: 3px; border-radius: 99px; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.45); }
+.langs-switch .bar__lang { margin: 0; height: 36px; min-width: 40px; box-shadow: none; }
+.langs-switch .bar__lang + .bar__lang { position: relative; }
+.langs-switch .bar__lang + .bar__lang::before { content: ""; position: absolute; inset-inline-start: 0; top: 9px; bottom: 9px; width: 1px; background: rgba(255,255,255,.35); }
+.langs-switch .bar__lang:hover { box-shadow: none; background: rgba(227,182,92,.18); }
 .bar__lang:hover { box-shadow: inset 0 0 0 1.5px var(--sun); color: var(--sun); }
 
 /* Left-to-right (French) adjustments for the few direction-dependent visuals. */
@@ -547,7 +553,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .bar__nav.is-open { display: flex; }
   .bar__nav a { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 1.1rem; }
   .bar__cta { margin-inline-start: auto; }
-  .bar__lang { margin-inline-start: 0; }
+  .bar__lang, .langs-switch { margin-inline-start: 0; }
   .bar__menu { display: grid; gap: 6px; place-content: center; width: 44px; height: 44px; border: 0; background: rgba(255,255,255,.1); border-radius: 50%; }
   .bar__menu span { width: 20px; height: 2px; background: #fff; transition: transform .25s; }
   .bar__menu[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
@@ -895,7 +901,7 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
   .dock__ig { color: #F7A8C9 !important; }
   body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
   .bar__cta { display: none; }
-  .bar__lang:not(.bar__lang--2) { margin-inline-start: auto; }
+  .langs-switch { margin-inline-start: auto; }
 
   /* Chooser: big Sukkot card, then a 2-column grid of short tiles. */
   .doors { grid-template-columns: 1fr 1fr; gap: 10px; }
