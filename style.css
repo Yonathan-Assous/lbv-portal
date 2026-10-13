@@ -589,6 +589,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .event-film .vthumb--big { max-width: 280px; margin-inline: auto; }
 }
 
+/* ---------- Gala window: the parts of a gala, as tiles ---------- */
+.modules { list-style: none; margin: 0 0 56px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.modules a, .modules__dream {
+  display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 14px; align-items: center;
+  height: 100%; padding: 18px 20px; border-radius: 16px; text-decoration: none; color: #fff;
+  background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); transition: box-shadow .2s, background-color .2s;
+}
+.modules a:hover { box-shadow: inset 0 0 0 1.5px var(--sun); background: rgba(255,255,255,.08); }
+.modules__ic { grid-row: span 2; font-size: 1.7rem; line-height: 1; }
+.modules b { font: 700 1.1rem/1.25 var(--display); }
+.modules small { color: #AFC0D8; font-size: .88rem; }
+.modules__dream { background: linear-gradient(135deg, rgba(227,182,92,.22), rgba(227,182,92,.06)); box-shadow: inset 0 0 0 1px rgba(227,182,92,.5); }
+.modules__dream b { color: var(--sun); }
+@media (max-width: 1020px) { .modules { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .modules { grid-template-columns: 1fr; gap: 8px; margin-bottom: 40px; } .modules a, .modules__dream { padding: 14px 16px; } }
+
 /* ---------- Real-system screenshots ---------- */
 .shot { margin: 0 0 36px; }
 .shot img { width: 100%; height: auto; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 30px 70px -30px rgba(0,0,0,.7); }

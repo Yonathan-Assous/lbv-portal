@@ -164,6 +164,12 @@
     });
   });
 
+  // Module tiles in the gala window open the matching demo tab.
+  $$('.modules [data-tab]').forEach(a => a.addEventListener('click', () => {
+    const t = document.getElementById(a.dataset.tab);
+    if (t) select(t);
+  }));
+
   /* ---------- Live donations demo ---------- */
   const gifts = [180, 360, 500, 770, 1000, 1800, 2600, 3600, 5000, 10000];
   const GOAL = 250000;

@@ -378,7 +378,16 @@
     <h2 class="h2" id="gala-title">מערכת גאלה משוכללת</h2>
     <p class="lead">המערכת שלנו רצה על המסך הגדול באולם ובטלפון של כל אורח. אפשר לקחת אותה עם הפקה מלאה, או לבד לערב שאתם מפיקים. נסו בעצמכם:</p>
 
-    <div class="stage">
+    <ul class="modules">
+      <li><a href="#events"><span class="modules__ic">🎩</span><b>הפקת הערב</b><small>אולם, אוכל, תוכנית ובמה</small></a></li>
+      <li><a href="#gala-demo" data-tab="t-raffle"><span class="modules__ic">🎰</span><b>מערכת הגאלה</b><small>מסך חי באולם והגרלות</small></a></li>
+      <li><a href="#gala-demo" data-tab="t-tickets"><span class="modules__ic">🎟️</span><b>מכירת כרטיסים</b><small>מהטלפון, בכל דרכי התשלום</small></a></li>
+      <li><a href="#gala-demo" data-tab="t-donate"><span class="modules__ic">💝</span><b>מערכת תרומות</b><small>התרמה חיה והתחייבויות</small></a></li>
+      <li><a href="#phoning"><span class="modules__ic">📞</span><b>מוקד טלפוני</b><small>מתנדבים מתקשרים לתורמים</small></a></li>
+      <li class="modules__dream"><span class="modules__ic">✨</span><b>וכל מה שתחלמו</b><small>ספרו לנו, ואנחנו נבנה</small></li>
+    </ul>
+
+    <div class="stage" id="gala-demo">
       <div class="stage__tabs" role="tablist" aria-label="הדגמת המערכת">
         <button role="tab" aria-selected="true" aria-controls="p-donate" id="t-donate">התרמה חיה</button>
         <button role="tab" aria-selected="false" aria-controls="p-raffle" id="t-raffle" tabindex="-1">הגרלה</button>

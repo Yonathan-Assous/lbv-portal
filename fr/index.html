@@ -371,7 +371,16 @@
     <h2 class="h2" id="gala-title">Système de gala avancé</h2>
     <p class="lead">Notre système s’affiche sur le grand écran de la salle et sur le téléphone de chaque invité. Vous pouvez le prendre avec une organisation complète, ou seul pour une soirée que vous organisez. Essayez vous-même :</p>
 
-    <div class="stage">
+    <ul class="modules">
+      <li><a href="#events"><span class="modules__ic">🎩</span><b>L’organisation de la soirée</b><small>Salle, traiteur, programme et scène</small></a></li>
+      <li><a href="#gala-demo" data-tab="t-raffle"><span class="modules__ic">🎰</span><b>Le système de gala</b><small>Écran en direct et tombolas</small></a></li>
+      <li><a href="#gala-demo" data-tab="t-tickets"><span class="modules__ic">🎟️</span><b>La billetterie</b><small>Depuis le téléphone, tous moyens de paiement</small></a></li>
+      <li><a href="#gala-demo" data-tab="t-donate"><span class="modules__ic">💝</span><b>Le système de dons</b><small>Dons en direct et promesses</small></a></li>
+      <li><a href="#phoning"><span class="modules__ic">📞</span><b>Le centre d’appels</b><small>Des bénévoles appellent les donateurs</small></a></li>
+      <li class="modules__dream"><span class="modules__ic">✨</span><b>Et tout ce dont vous rêvez</b><small>Dites-le-nous, nous le construisons</small></li>
+    </ul>
+
+    <div class="stage" id="gala-demo">
       <div class="stage__tabs" role="tablist" aria-label="Démonstration du système">
         <button role="tab" aria-selected="true" aria-controls="p-donate" id="t-donate">Dons en direct</button>
         <button role="tab" aria-selected="false" aria-controls="p-raffle" id="t-raffle" tabindex="-1">Tombola</button>
