@@ -34,7 +34,7 @@
     <a href="#services">מה אתם מחפשים</a>
     <a href="#about">מי אנחנו</a>
     <a href="#team">הצוות שלנו</a>
-    <a href="#holidays">סוכות ופסח</a>
+    <a href="#holidays">נופשים</a>
     <a href="#events">אירועים</a>
     <a href="#gala">מערכת גאלה</a>
     <a href="#faq">שאלות</a>
@@ -97,27 +97,17 @@
       <article class="door door--hero">
         <img src="media/holiday-card.jpg" alt="" loading="lazy">
         <div class="door__body">
-          <span class="badge">ההרשמה פתוחה</span>
-          <h3><a class="door__link" href="#holidays">סוכות במלון נוף כנרת</a></h3>
-          <p>חג שלם בפנסיון מלא, בכשרות למהדרין, עם רבנים, ספא, תוכנית לילדים וערבי מופעים מול הכנרת.</p>
-          <div class="door__actions">
-            <a class="btn btn--sun" href="https://booking.lbv-event.com/he/reservation" target="_blank" rel="noopener">להזמנת מקום</a>
-            <span class="door__more" aria-hidden="true">למה איתנו</span>
-          </div>
+          <h3><a class="door__link" href="#holidays">נופשים</a></h3>
+          <p>נופש מאורגן בחגים בבית מלון: פנסיון מלא בכשרות למהדרין, רבנים, ספא, תוכנית לילדים וערבי מופעים.</p>
+          <ul class="door__subs">
+            <li><b>סוכות</b> במלון נוף כנרת <span class="badge">ההרשמה פתוחה</span></li>
+            <li><b>פסח</b> <span class="badge badge--soft">בקרוב</span></li>
+          </ul>
+          <span class="door__more">לכל הנופשים</span>
         </div>
       </article>
 
-      <article class="door">
-        <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 40h28M14 40V24h20v16M18 24v-6a6 6 0 0 1 12 0v6M24 6v4M20 8h8"/><circle cx="24" cy="31" r="3"/></svg>
-        <div class="door__body">
-          <span class="badge badge--soft">בקרוב</span>
-          <h3><a class="door__link" href="#pesach">פסח</a></h3>
-          <p>נופש פסח מאורגן, באותה רמה ובאותה אווירה. השאירו פרטים ותהיו הראשונים לשמוע.</p>
-          <span class="door__more">לעדכון ראשון</span>
-        </div>
-      </article>
-
-      <article class="door">
+      <article class="door door--gala">
         <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h16l-2 14a6 6 0 0 1-12 0zM24 26v12M16 42h16"/><path d="M36 10l4-3M38 16h5M12 10 8 7M10 16H5"/></svg>
         <div class="door__body">
           <h3><a class="door__link" href="#gala">מערכת גאלה משוכללת</a></h3>
@@ -211,10 +201,33 @@
 </section>
 
 <!-- ============ HOLIDAYS ============ -->
-<section class="holidays sheet" id="holidays" data-title="סוכות ופסח" aria-labelledby="holidays-title">
-  <div class="wrap split">
+<section class="holidays sheet" id="holidays" data-title="נופשים" aria-labelledby="holidays-title">
+  <div class="wrap trips-head">
+    <h2 class="h2" id="holidays-title">נופשים</h2>
+    <p class="lead">חגים בבית מלון, בקבוצה מאורגנת. בחרו נופש:</p>
+    <ul class="trips">
+      <li>
+        <a href="#sukkot" class="trips__card">
+          <img src="media/hero.jpg" alt="" loading="lazy">
+          <span class="badge">ההרשמה פתוחה</span>
+          <b>סוכות</b>
+          <small>מלון נוף כנרת, טבריה</small>
+        </a>
+      </li>
+      <li>
+        <a href="#pesach" class="trips__card trips__card--soon">
+          <svg viewBox="0 0 220 140" aria-hidden="true"><ellipse cx="110" cy="112" rx="96" ry="18"/><path d="M40 100c0-14 32-22 70-22s70 8 70 22"/><circle cx="110" cy="92" r="20"/><circle cx="110" cy="92" r="12"/><path d="M58 76v-26h10v26M150 74V42h14v32M150 52h14"/></svg>
+          <span class="badge badge--soft">בקרוב</span>
+          <b>פסח</b>
+          <small>השאירו פרטים ותשמעו ראשונים</small>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="wrap split" id="sukkot">
     <div class="split__text">
-      <h2 class="h2" id="holidays-title">סוכות במלון נוף כנרת</h2>
+      <h3 class="h2">סוכות במלון נוף כנרת</h3>
       <p class="lead">מגיעים עם המזוודות, ומשם אנחנו לוקחים. חג סוכות במלון נוף כנרת בטבריה, מול נופי הכנרת.</p>
       <ul class="ticks">
         <li><b>פנסיון מלא בכשרות למהדרין</b> כשרות הבד״צים המהודרים, בשר חלק בית יוסף למהדרין.</li>

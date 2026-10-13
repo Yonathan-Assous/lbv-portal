@@ -589,6 +589,30 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .event-film .vthumb--big { max-width: 280px; margin-inline: auto; }
 }
 
+/* ---------- Holidays: one category on the main page, separate trips inside ---------- */
+.door__subs { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; }
+.door__subs li { color: #D6E1EF; font-size: .98rem; }
+.door__subs b { color: #fff; font-size: 1.05rem; }
+.door__subs .badge { margin: 0 6px; vertical-align: 1px; font-size: .75rem; padding: 2px 10px; }
+.door--gala { grid-column: span 2; }
+
+.trips-head { margin-bottom: 70px; }
+.trips { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.trips__card {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; min-height: 240px; padding: 22px;
+  border-radius: 20px; overflow: hidden; text-decoration: none; color: #fff; background: var(--night); isolation: isolate;
+  transition: transform .25s var(--ease), box-shadow .25s;
+}
+.trips__card:hover { transform: translateY(-3px); box-shadow: 0 0 0 2px var(--sun); }
+.trips__card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.trips__card::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(11,20,48,.92) 15%, rgba(11,20,48,.1) 70%); }
+.trips__card b { font: 700 var(--step-2)/1.1 var(--display); }
+.trips__card small { color: #D6E1EF; font-size: .95rem; }
+.trips__card .badge { align-self: flex-start; }
+.trips__card--soon { background: var(--night-2); }
+.trips__card--soon svg { position: absolute; top: 24px; inset-inline-end: 24px; width: 140px; fill: none; stroke: var(--sun); stroke-width: 2; opacity: .8; }
+@media (max-width: 760px) { .trips { grid-template-columns: 1fr; } .trips__card { min-height: 190px; } .trips-head { margin-bottom: 48px; } }
+
 /* ---------- Gala window: the parts of a gala, as tiles ---------- */
 .modules { list-style: none; margin: 0 0 56px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .modules a, .modules__dream {

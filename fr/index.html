@@ -27,7 +27,7 @@
     <a href="#services">Que recherchez-vous</a>
     <a href="#about">Qui sommes-nous</a>
     <a href="#team">Notre équipe</a>
-    <a href="#holidays">Souccot et Pessah</a>
+    <a href="#holidays">Séjours</a>
     <a href="#events">Événements</a>
     <a href="#gala">Système de gala</a>
     <a href="#faq">Questions</a>
@@ -90,27 +90,17 @@
       <article class="door door--hero">
         <img src="../media/holiday-card.jpg" alt="" loading="lazy">
         <div class="door__body">
-          <span class="badge">Réservations ouvertes</span>
-          <h3><a class="door__link" href="#holidays">Souccot à l’hôtel Nof Kinneret</a></h3>
-          <p>Toute la fête en pension complète, en cacherout méhadrin, avec rabbanim, spa, programme enfants et soirées spectacles face au Kinneret.</p>
-          <div class="door__actions">
-            <a class="btn btn--sun" href="https://booking.lbv-event.com/fr/reservation" target="_blank" rel="noopener">Réserver ma place</a>
-            <span class="door__more" aria-hidden="true">Pourquoi nous</span>
-          </div>
+          <h3><a class="door__link" href="#holidays">Séjours</a></h3>
+          <p>Des séjours organisés pour les fêtes à l’hôtel : pension complète en cacherout méhadrin, rabbanim, spa, programme enfants et soirées spectacles.</p>
+          <ul class="door__subs">
+            <li><b>Souccot</b> à l’hôtel Nof Kinneret <span class="badge">Réservations ouvertes</span></li>
+            <li><b>Pessah</b> <span class="badge badge--soft">Bientôt</span></li>
+          </ul>
+          <span class="door__more">Tous les séjours</span>
         </div>
       </article>
 
-      <article class="door">
-        <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 40h28M14 40V24h20v16M18 24v-6a6 6 0 0 1 12 0v6M24 6v4M20 8h8"/><circle cx="24" cy="31" r="3"/></svg>
-        <div class="door__body">
-          <span class="badge badge--soft">Bientôt</span>
-          <h3><a class="door__link" href="#pesach">Pessah</a></h3>
-          <p>Un séjour de Pessah organisé, avec le même niveau et la même ambiance. Laissez vos coordonnées pour être les premiers informés.</p>
-          <span class="door__more">Être informé en premier</span>
-        </div>
-      </article>
-
-      <article class="door">
+      <article class="door door--gala">
         <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h16l-2 14a6 6 0 0 1-12 0zM24 26v12M16 42h16"/><path d="M36 10l4-3M38 16h5M12 10 8 7M10 16H5"/></svg>
         <div class="door__body">
           <h3><a class="door__link" href="#gala">Système de gala avancé</a></h3>
@@ -204,10 +194,33 @@
 </section>
 
 <!-- ============ HOLIDAYS ============ -->
-<section class="holidays sheet" id="holidays" data-title="Souccot et Pessah" aria-labelledby="holidays-title">
-  <div class="wrap split">
+<section class="holidays sheet" id="holidays" data-title="Séjours" aria-labelledby="holidays-title">
+  <div class="wrap trips-head">
+    <h2 class="h2" id="holidays-title">Séjours</h2>
+    <p class="lead">Les fêtes à l’hôtel, en groupe organisé. Choisissez votre séjour :</p>
+    <ul class="trips">
+      <li>
+        <a href="#sukkot" class="trips__card">
+          <img src="../media/hero.jpg" alt="" loading="lazy">
+          <span class="badge">Réservations ouvertes</span>
+          <b>Souccot</b>
+          <small>Hôtel Nof Kinneret, Tibériade</small>
+        </a>
+      </li>
+      <li>
+        <a href="#pesach" class="trips__card trips__card--soon">
+          <svg viewBox="0 0 220 140" aria-hidden="true"><ellipse cx="110" cy="112" rx="96" ry="18"/><path d="M40 100c0-14 32-22 70-22s70 8 70 22"/><circle cx="110" cy="92" r="20"/><circle cx="110" cy="92" r="12"/><path d="M58 76v-26h10v26M150 74V42h14v32M150 52h14"/></svg>
+          <span class="badge badge--soft">Bientôt</span>
+          <b>Pessah</b>
+          <small>Laissez vos coordonnées pour être informés en premier</small>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="wrap split" id="sukkot">
     <div class="split__text">
-      <h2 class="h2" id="holidays-title">Souccot à l’hôtel Nof Kinneret</h2>
+      <h3 class="h2">Souccot à l’hôtel Nof Kinneret</h3>
       <p class="lead">Vous arrivez avec vos valises, nous nous occupons de tout le reste. Souccot à l’hôtel Nof Kinneret à Tibériade, face au Kinneret.</p>
       <ul class="ticks">
         <li><b>Pension complète en cacherout méhadrin</b> Produits sous les Badatz les plus stricts, viande Halak Beit Yossef laméhadrin.</li>
