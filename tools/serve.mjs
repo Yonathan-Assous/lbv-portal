@@ -1,18 +1,58 @@
-// Tiny static server for previewing the homepage locally (supports video range requests).
+// Local preview server for the homepage + a local stand-in for the admin API.
+// Production uses the Vercel functions in /api (Blob storage); here content is saved to
+// ./content.json and uploads to ./media/uploads, so the admin can be tested end to end.
+// Set ADMIN_PASSWORD in the environment to enable the local admin login.
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const port = Number(process.env.PORT) || 5190;
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.svg': 'image/svg+xml' };
+const PASSWORD = process.env.ADMIN_PASSWORD || '';
+const sessions = new Set();
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp4': 'video/mp4', '.svg': 'image/svg+xml' };
 
-http.createServer((req, res) => {
+const json = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(obj)); };
+const authed = req => (req.headers.cookie || '').split(/;\s*/).some(c => c.startsWith('lbv_admin=') && sessions.has(c.slice(10)));
+const body = req => new Promise((ok, bad) => { const b = []; req.on('data', d => b.push(d)); req.on('end', () => ok(Buffer.concat(b))); req.on('error', bad); });
+
+async function api(req, res, p) {
+  if (p === '/api/config') return json(res, 200, { storage: 'local', configured: Boolean(PASSWORD), authed: authed(req) });
+  if (p === '/api/login') {
+    if (req.method === 'DELETE') { res.writeHead(204, { 'Set-Cookie': 'lbv_admin=; Path=/; Max-Age=0' }); return res.end(); }
+    const { password } = JSON.parse((await body(req)).toString() || '{}');
+    if (!PASSWORD || password !== PASSWORD) return json(res, 401, { error: 'wrong-password' });
+    const id = crypto.randomUUID(); sessions.add(id);
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': `lbv_admin=${id}; Path=/; HttpOnly; SameSite=Strict` });
+    return res.end(JSON.stringify({ ok: true, storage: 'local' }));
+  }
+  if (p === '/api/content') {
+    if (req.method === 'GET') return json(res, 404, { error: 'local-uses-content.json' });
+    if (!authed(req)) return json(res, 401, { error: 'login' });
+    const data = JSON.parse((await body(req)).toString());
+    fs.writeFileSync(path.join(root, 'content.json'), JSON.stringify({ ...data, savedAt: new Date().toISOString() }, null, 2) + '\n');
+    return json(res, 200, { ok: true });
+  }
+  if (p === '/api/upload-local') {
+    if (!authed(req)) return json(res, 401, { error: 'login' });
+    const name = (new URL(req.url, 'http://x').searchParams.get('name') || 'file').replace(/[^\w.\-]/g, '_');
+    const dir = path.join(root, 'media', 'uploads');
+    fs.mkdirSync(dir, { recursive: true });
+    const file = `${Date.now()}-${name}`;
+    fs.writeFileSync(path.join(dir, file), await body(req));
+    return json(res, 200, { url: `media/uploads/${file}` });
+  }
+  return json(res, 404, { error: 'unknown' });
+}
+
+http.createServer(async (req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  if (p.startsWith('/api/')) return api(req, res, p).catch(e => json(res, 500, { error: e.message }));
   if (p.endsWith('/')) p += 'index.html';
   const file = path.join(root, p);
-  if (!file.startsWith(root) || !fs.existsSync(file)) { res.writeHead(404); return res.end('Not found'); }
+  if (!file.startsWith(root) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end('Not found'); }
   const size = fs.statSync(file).size;
   const type = types[path.extname(file).toLowerCase()] || 'application/octet-stream';
   const range = req.headers.range && /bytes=(\d*)-(\d*)/.exec(req.headers.range);

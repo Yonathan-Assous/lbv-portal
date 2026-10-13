@@ -28,6 +28,7 @@
   "team": [
     { "photo": "media/team-ilan.jpg", "he": { "name": "אילן", "role": "מנכ״ל ומייסד" }, "fr": { "name": "Ilan", "role": "Directeur et fondateur" } },
     { "photo": "media/team-maayan.jpg", "he": { "name": "מעיין", "role": "מנהלת סושיאל ופרויקטים" }, "fr": { "name": "Maayan", "role": "Responsable réseaux sociaux et projets" } },
+    { "photo": "", "he": { "name": "ג׳ואנה", "role": "מנהלת הפקת האירועים ומעצבת גרפית" }, "fr": { "name": "Johanna", "role": "Responsable de la production des événements et graphiste" } },
     { "photo": "media/team-yishai.jpg", "he": { "name": "ישי", "role": "צוות" }, "fr": { "name": "Yishai", "role": "Équipe" } }
   ],
   "trips": [

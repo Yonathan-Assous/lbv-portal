@@ -67,7 +67,13 @@
     }
     const team = $('.team');
     if (team && Array.isArray(c.team)) {
-      team.innerHTML = c.team.map(m => `<li><img src="${esc(asset(m.photo))}" alt="" loading="lazy" width="480" height="600"><b>${esc(m[L]?.name)}</b><span>${esc(m[L]?.role)}</span></li>`).join('');
+      // A member without a photo yet gets a monogram tile until one is uploaded from the admin.
+      team.innerHTML = c.team.map(m => {
+        const pic = m.photo
+          ? `<img src="${esc(asset(m.photo))}" alt="" loading="lazy" width="480" height="600">`
+          : `<span class="team__mono" aria-hidden="true">${esc((m[L]?.name || '').replace(/[׳']/g, '').trim().charAt(0))}</span>`;
+        return `<li>${pic}<b>${esc(m[L]?.name)}</b><span>${esc(m[L]?.role)}</span></li>`;
+      }).join('');
     }
     const trips = (c.trips || []).filter(t => t.status !== 'hidden');
     const badge = t => t.status === 'open'
