@@ -29,7 +29,7 @@ async function api(req, res, p) {
     return res.end(JSON.stringify({ ok: true, storage: 'local' }));
   }
   if (p === '/api/content') {
-    if (req.method === 'GET') return json(res, 404, { error: 'local-uses-content.json' });
+    if (req.method === 'GET') { res.writeHead(204); return res.end(); } // local: the site reads content.json
     if (!authed(req)) return json(res, 401, { error: 'login' });
     const data = JSON.parse((await body(req)).toString());
     fs.writeFileSync(path.join(root, 'content.json'), JSON.stringify({ ...data, savedAt: new Date().toISOString() }, null, 2) + '\n');

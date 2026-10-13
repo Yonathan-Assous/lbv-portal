@@ -91,6 +91,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .bar__nav a:hover { opacity: 1; border-color: var(--sun); }
 .bar__cta { min-height: 42px; padding: .5em 1.2em; }
 .bar__lang { margin-inline-start: auto; display: grid; place-items: center; min-width: 42px; height: 42px; padding: 0 10px; border-radius: 99px; text-decoration: none; font-weight: 700; font-size: .9rem; letter-spacing: .04em; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.45); }
+.bar__lang--2 { margin-inline-start: 0; }
 .bar__lang:hover { box-shadow: inset 0 0 0 1.5px var(--sun); color: var(--sun); }
 
 /* Left-to-right (French) adjustments for the few direction-dependent visuals. */
@@ -894,6 +895,7 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
   .dock__ig { color: #F7A8C9 !important; }
   body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
   .bar__cta { display: none; }
+  .bar__lang:not(.bar__lang--2) { margin-inline-start: auto; }
 
   /* Chooser: big Sukkot card, then a 2-column grid of short tiles. */
   .doors { grid-template-columns: 1fr 1fr; gap: 10px; }

@@ -5,10 +5,11 @@ import { CONTENT_KEY, isAuthed, storageReady, validContent, readBody } from './_
 // PUT  → save new content (admin session required).
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) return res.status(404).json({ error: 'no-storage' });
+    // 204 = nothing saved yet: the site quietly uses its bundled content.json.
+    if (!process.env.BLOB_READ_WRITE_TOKEN) return res.status(204).end();
     try {
       const { blobs } = await list({ prefix: CONTENT_KEY, limit: 1 });
-      if (!blobs.length) return res.status(404).json({ error: 'empty' });
+      if (!blobs.length) return res.status(204).end();
       const r = await fetch(`${blobs[0].url}?v=${Date.parse(blobs[0].uploadedAt) || Date.now()}`, { cache: 'no-store' });
       res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=300');
       return res.status(200).json(await r.json());

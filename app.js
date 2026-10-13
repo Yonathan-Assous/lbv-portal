@@ -7,11 +7,11 @@
 
   // The same script serves the Hebrew page (/) and the French page (/fr/).
   const root = document.documentElement;
-  const LANG = root.lang === 'fr' ? 'fr' : 'he';
+  const LANG = ['fr', 'en'].includes(root.lang) ? root.lang : 'he';
   const RTL = root.dir === 'rtl';
   const MEDIA = root.dataset.media || 'media/';
   const VSUFFIX = root.dataset.vsuffix || '';
-  const ils = n => n.toLocaleString(LANG === 'fr' ? 'fr-FR' : 'he-IL');
+  const ils = n => n.toLocaleString({ fr: 'fr-FR', en: 'en-US' }[LANG] || 'he-IL');
 
   const T = {
     he: {
@@ -38,6 +38,18 @@
       missing: list => 'Il manque : ' + list.join(', ') + '. Complétez puis réessayez.',
       msg: ['Bonjour La Belle Vie, je souhaite recevoir un devis.', 'Service : ', 'Nom : ', 'Téléphone : ', 'Date : ', 'Nombre de personnes : ', 'Remarques : '],
     },
+    en: {
+      families: ['Cohen family', 'Levy family', 'Azoulay family', 'Peretz family', 'Bitton family', 'Dahan family', 'Ohayon family', 'Haddad family', 'Amar family', 'Saadia family', 'Elmaleh family', 'Benhamou family', 'Anonymous'],
+      people: ['Yosef Azoulay', 'Sarah Levy', 'David Peretz', 'Rachel Bitton', 'Moshe Dahan', 'Esther Haddad', 'Avraham Amar', 'Miriam Cohen', 'Yaakov Ohayon', 'Hannah Elmaleh', 'Shmuel Benhamou', 'Rivka Saadia'],
+      prizes: ['A weekend for two at a hotel', 'A family Pesach stay', 'Dinner for two', 'A silver Shabbat set'],
+      ticket: 'Ticket no. ',
+      nextPrize: 'Draw the next prize',
+      seat: 'Seat the guests',
+      seated: 'All guests seated. Reset',
+      fields: { service: 'service', name: 'name', phone: 'phone' },
+      missing: list => 'Missing: ' + list.join(', ') + '. Please fill in and try again.',
+      msg: ['Hello La Belle Vie, I would like a quote.', 'Service: ', 'Name: ', 'Phone: ', 'Date: ', 'Number of people: ', 'Notes: '],
+    },
   }[LANG];
 
   /* ---------- Editable content (managed from /admin) ---------- */
@@ -49,7 +61,7 @@
     for (const url of ['/api/content', SITE + 'content.json']) {
       try {
         const r = await fetch(url, { cache: 'no-store' });
-        if (r.ok) return await r.json();
+        if (r.ok && r.status !== 204) return await r.json();
       } catch (e) {}
     }
     return null;
@@ -57,7 +69,9 @@
   function renderContent(c) {
     if (!c) return;
     const L = LANG;
-    const ceo = c.ceo && c.ceo[L];
+    // English falls back to French, then Hebrew, for anything not translated yet.
+    const tr = o => (o && (o[L] || o.fr || o.he)) || {};
+    const ceo = c.ceo && tr(c.ceo);
     const letter = $('.letter__body');
     if (ceo && letter) {
       letter.innerHTML = `<h3 class="h3">${esc(ceo.title)}</h3>` +
@@ -71,31 +85,32 @@
       team.innerHTML = c.team.map(m => {
         const pic = m.photo
           ? `<img src="${esc(asset(m.photo))}" alt="" loading="lazy" width="480" height="600">`
-          : `<span class="team__mono" aria-hidden="true">${esc((m[L]?.name || '').replace(/[׳']/g, '').trim().charAt(0))}</span>`;
-        return `<li>${pic}<b>${esc(m[L]?.name)}</b><span>${esc(m[L]?.role)}</span></li>`;
+          : `<span class="team__mono" aria-hidden="true">${esc((tr(m).name || '').replace(/[׳']/g, '').trim().charAt(0))}</span>`;
+        return `<li>${pic}<b>${esc(tr(m).name)}</b><span>${esc(tr(m).role)}</span></li>`;
       }).join('');
     }
     const trips = (c.trips || []).filter(t => t.status !== 'hidden');
+    const OPEN = { he: 'ההרשמה פתוחה', fr: 'Réservations ouvertes', en: 'Booking open' }, SOON = { he: 'בקרוב', fr: 'Bientôt', en: 'Coming soon' };
     const badge = t => t.status === 'open'
-      ? `<span class="badge">${L === 'fr' ? 'Réservations ouvertes' : 'ההרשמה פתוחה'}</span>`
-      : `<span class="badge badge--soft">${L === 'fr' ? 'Bientôt' : 'בקרוב'}</span>`;
+      ? `<span class="badge">${OPEN[L]}</span>`
+      : `<span class="badge badge--soft">${SOON[L]}</span>`;
     const subs = $('.door__subs');
-    if (subs) subs.innerHTML = trips.map(t => `<li><b>${esc(t[L]?.name)}</b> ${esc(t[L]?.subline || '')} ${badge(t)}</li>`).join('');
+    if (subs) subs.innerHTML = trips.map(t => `<li><b>${esc(tr(t).name)}</b> ${esc(tr(t).subline || '')} ${badge(t)}</li>`).join('');
     const cards = $('.trips');
     if (cards) {
       const soonArt = $('.trips__card--soon svg')?.outerHTML || '';
       cards.innerHTML = trips.map(t => {
-        const book = t.bookingUrl && t.bookingUrl[L];
+        const book = t.bookingUrl && (t.bookingUrl[L] || t.bookingUrl.fr || t.bookingUrl.he);
         const href = t.link || book || '#contact';
         const ext = /^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '';
         const visual = t.image ? `<img src="${esc(asset(t.image))}" alt="" loading="lazy">` : soonArt;
-        return `<li><a href="${esc(href)}"${ext} class="trips__card${t.image ? '' : ' trips__card--soon'}">${visual}${badge(t)}<b>${esc(t[L]?.name)}</b><small>${esc(t[L]?.place)}</small></a></li>`;
+        return `<li><a href="${esc(href)}"${ext} class="trips__card${t.image ? '' : ' trips__card--soon'}">${visual}${badge(t)}<b>${esc(tr(t).name)}</b><small>${esc(tr(t).place)}</small></a></li>`;
       }).join('');
     }
     const rail = $('#rail');
     if (rail && Array.isArray(c.videos) && c.videos.length) {
       rail.innerHTML = c.videos.map(v => {
-        const x = v[L] || v.he;
+        const x = tr(v);
         return `<button class="vthumb" data-src="${esc(asset(x.file))}" data-poster="${esc(asset(x.poster))}" data-title="${esc(x.title)}"><img src="${esc(asset(x.poster))}" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(x.title)}</span></button>`;
       }).join('');
     }
@@ -130,7 +145,7 @@
 
   /* ---------- Windows: detail sections open full-screen from their #hash ---------- */
   const sheets = $$('.sheet');
-  const closeLabel = LANG === 'fr' ? 'Retour à l’accueil' : 'חזרה לדף הראשי';
+  const closeLabel = { fr: 'Retour à l’accueil', en: 'Back to home' }[LANG] || 'חזרה לדף הראשי';
   sheets.forEach(s => {
     const barEl = document.createElement('div');
     barEl.className = 'sheet__bar';

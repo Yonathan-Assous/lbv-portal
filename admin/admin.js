@@ -4,9 +4,9 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 const DEFAULTS = {
-  team: () => ({ photo: '', he: { name: '', role: '' }, fr: { name: '', role: '' } }),
-  trips: () => ({ id: 'trip-' + Date.now(), status: 'soon', image: '', link: '', bookingUrl: { he: '', fr: '' }, he: { name: 'נופש חדש', place: '', subline: '' }, fr: { name: 'Nouveau séjour', place: '', subline: '' } }),
-  videos: () => ({ he: { title: 'סרטון חדש', file: '', poster: '' }, fr: { title: 'Nouvelle vidéo', file: '', poster: '' } }),
+  team: () => ({ photo: '', he: { name: '', role: '' }, fr: { name: '', role: '' }, en: { name: '', role: '' } }),
+  trips: () => ({ id: 'trip-' + Date.now(), status: 'soon', image: '', link: '', bookingUrl: { he: '', fr: '', en: '' }, he: { name: 'נופש חדש', place: '', subline: '' }, fr: { name: 'Nouveau séjour', place: '', subline: '' }, en: { name: 'New holiday', place: '', subline: '' } }),
+  videos: () => ({ he: { title: 'סרטון חדש', file: '', poster: '' }, fr: { title: 'Nouvelle vidéo', file: '', poster: '' }, en: { title: 'New video', file: '', poster: '' } }),
 };
 const TITLE = {
   team: m => m.he.name || 'איש צוות חדש',
@@ -137,7 +137,7 @@ $$('[data-add]').forEach(b => b.addEventListener('click', () => {
 /* ---------- load / save / auth ---------- */
 async function loadContent() {
   for (const url of ['/api/content', '../content.json']) {
-    try { const r = await fetch(url, { cache: 'no-store' }); if (r.ok) return await r.json(); } catch (e) {}
+    try { const r = await fetch(url, { cache: 'no-store' }); if (r.ok && r.status !== 204) return await r.json(); } catch (e) {}
   }
   throw new Error('load');
 }

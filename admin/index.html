@@ -61,6 +61,11 @@
           <label>Texte<textarea rows="10" data-bind="ceo.fr.paragraphs" data-type="paras"></textarea></label>
           <div class="two"><label>Nom<input data-bind="ceo.fr.name"></label><label>Fonction<input data-bind="ceo.fr.role"></label></div>
         </fieldset>
+        <fieldset lang="en" dir="ltr"><legend>English</legend>
+          <label>Title<input data-bind="ceo.en.title"></label>
+          <label>Text<textarea rows="10" data-bind="ceo.en.paragraphs" data-type="paras"></textarea></label>
+          <div class="two"><label>Name<input data-bind="ceo.en.name"></label><label>Role<input data-bind="ceo.en.role"></label></div>
+        </fieldset>
       </div>
     </section>
 
@@ -77,7 +82,7 @@
 
     <section class="pane" id="videos">
       <div class="pane__head"><h2>סרטונים מהנופש</h2><button class="btn btn--line" type="button" data-add="videos">הוספת סרטון</button></div>
-      <p class="hint">לכל סרטון אפשר להעלות גרסה בעברית וגרסה בצרפתית. אם יש רק גרסה אחת, מעלים אותה לשתיהן.</p>
+      <p class="hint">לכל סרטון אפשר להעלות גרסה בעברית, בצרפתית ובאנגלית. אם אין גרסה באנגלית, באתר האנגלי תוצג הגרסה הצרפתית.</p>
       <ol class="cards" data-list="videos"></ol>
     </section>
   </main>
@@ -90,6 +95,7 @@
     <div class="langs">
       <fieldset><legend>עברית</legend><label>שם<input data-field="he.name"></label><label>תפקיד<input data-field="he.role"></label></fieldset>
       <fieldset lang="fr" dir="ltr"><legend>Français</legend><label>Nom<input data-field="fr.name"></label><label>Fonction<input data-field="fr.role"></label></fieldset>
+      <fieldset lang="en" dir="ltr"><legend>English</legend><label>Name<input data-field="en.name"></label><label>Role<input data-field="en.role"></label></fieldset>
     </div>
   </li>
 </template>
@@ -115,6 +121,12 @@
         <label>Ligne sur la carte principale<input data-field="fr.subline"></label>
         <label>Lien de réservation<input data-field="bookingUrl.fr" placeholder="https://"></label>
       </fieldset>
+      <fieldset lang="en" dir="ltr"><legend>English</legend>
+        <label>Holiday name<input data-field="en.name"></label>
+        <label>Place / small line<input data-field="en.place"></label>
+        <label>Line on the main card<input data-field="en.subline"></label>
+        <label>Booking link<input data-field="bookingUrl.en" placeholder="https://"></label>
+      </fieldset>
     </div>
   </li>
 </template>
@@ -132,6 +144,11 @@
         <label>Titre<input data-field="fr.title"></label>
         <div class="media-row"><span>Vidéo</span><div data-field="fr.file" data-kind="video"></div></div>
         <div class="photo-row" data-field="fr.poster"></div>
+      </fieldset>
+      <fieldset lang="en" dir="ltr"><legend>English</legend>
+        <label>Title<input data-field="en.title"></label>
+        <div class="media-row"><span>Video (optional, otherwise the French one)</span><div data-field="en.file" data-kind="video"></div></div>
+        <div class="photo-row" data-field="en.poster"></div>
       </fieldset>
     </div>
   </li>

@@ -23,13 +23,80 @@
       "name": "Ilan",
       "role": "Directeur de La Belle Vie"
     },
-    "photo": "media/ilan.jpg"
+    "photo": "media/ilan.jpg",
+    "en": {
+      "title": "A word from our CEO",
+      "paragraphs": [
+        "Dear guests, dear friends,",
+        "When we start preparing a holiday, we don’t think about rooms or menus. We think about the moment a family sits together in the sukkah, the children are happy, and the parents can finally rest.",
+        "After all the effort and preparation, seeing everyone leave with a smile is what warms our hearts. And if it is a success, it is thanks to each and every one of you, and to the atmosphere you bring.",
+        "We are here so you can enjoy and dream, in body and in soul. We look forward to seeing you at Pesach, at Sukkot, and at every event we create together."
+      ],
+      "name": "Ilan",
+      "role": "CEO, La Belle Vie"
+    }
   },
   "team": [
-    { "photo": "media/team-ilan.jpg", "he": { "name": "אילן", "role": "מנכ״ל ומייסד" }, "fr": { "name": "Ilan", "role": "Directeur et fondateur" } },
-    { "photo": "media/team-maayan.jpg", "he": { "name": "מעיין", "role": "מנהלת סושיאל ופרויקטים" }, "fr": { "name": "Maayan", "role": "Responsable réseaux sociaux et projets" } },
-    { "photo": "", "he": { "name": "ג׳ואנה", "role": "מנהלת הפקת האירועים ומעצבת גרפית" }, "fr": { "name": "Johanna", "role": "Responsable de la production des événements et graphiste" } },
-    { "photo": "media/team-yishai.jpg", "he": { "name": "ישי", "role": "צוות" }, "fr": { "name": "Yishai", "role": "Équipe" } }
+    {
+      "photo": "media/team-ilan.jpg",
+      "he": {
+        "name": "אילן",
+        "role": "מנכ״ל ומייסד"
+      },
+      "fr": {
+        "name": "Ilan",
+        "role": "Directeur et fondateur"
+      },
+      "en": {
+        "name": "Ilan",
+        "role": "CEO and founder"
+      }
+    },
+    {
+      "photo": "media/team-maayan.jpg",
+      "he": {
+        "name": "מעיין",
+        "role": "מנהלת סושיאל ופרויקטים"
+      },
+      "fr": {
+        "name": "Maayan",
+        "role": "Responsable réseaux sociaux et projets"
+      },
+      "en": {
+        "name": "Maayan",
+        "role": "Social media and projects manager"
+      }
+    },
+    {
+      "photo": "",
+      "he": {
+        "name": "ג׳ואנה",
+        "role": "מנהלת הפקת האירועים ומעצבת גרפית"
+      },
+      "fr": {
+        "name": "Johanna",
+        "role": "Responsable de la production des événements et graphiste"
+      },
+      "en": {
+        "name": "Johanna",
+        "role": "Event production manager and graphic designer"
+      }
+    },
+    {
+      "photo": "media/team-yishai.jpg",
+      "he": {
+        "name": "ישי",
+        "role": "צוות"
+      },
+      "fr": {
+        "name": "Yishai",
+        "role": "Équipe"
+      },
+      "en": {
+        "name": "Yishai",
+        "role": "Team"
+      }
+    }
   ],
   "trips": [
     {
@@ -37,27 +104,173 @@
       "status": "open",
       "image": "media/hero.jpg",
       "link": "#sukkot",
-      "bookingUrl": { "he": "https://booking.lbv-event.com/he/reservation", "fr": "https://booking.lbv-event.com/fr/reservation" },
-      "he": { "name": "סוכות", "place": "מלון נוף כנרת, טבריה", "subline": "במלון נוף כנרת" },
-      "fr": { "name": "Souccot", "place": "Hôtel Nof Kinneret, Tibériade", "subline": "à l’hôtel Nof Kinneret" }
+      "bookingUrl": {
+        "he": "https://booking.lbv-event.com/he/reservation",
+        "fr": "https://booking.lbv-event.com/fr/reservation",
+        "en": "https://booking.lbv-event.com/fr/reservation"
+      },
+      "he": {
+        "name": "סוכות",
+        "place": "מלון נוף כנרת, טבריה",
+        "subline": "במלון נוף כנרת"
+      },
+      "fr": {
+        "name": "Souccot",
+        "place": "Hôtel Nof Kinneret, Tibériade",
+        "subline": "à l’hôtel Nof Kinneret"
+      },
+      "en": {
+        "name": "Sukkot",
+        "place": "Nof Kinneret hotel, Tiberias",
+        "subline": "at the Nof Kinneret hotel"
+      }
     },
     {
       "id": "pesach",
       "status": "soon",
       "image": "",
       "link": "#pesach",
-      "bookingUrl": { "he": "", "fr": "" },
-      "he": { "name": "פסח", "place": "השאירו פרטים ותשמעו ראשונים", "subline": "" },
-      "fr": { "name": "Pessah", "place": "Laissez vos coordonnées pour être informés en premier", "subline": "" }
+      "bookingUrl": {
+        "he": "",
+        "fr": "",
+        "en": ""
+      },
+      "he": {
+        "name": "פסח",
+        "place": "השאירו פרטים ותשמעו ראשונים",
+        "subline": ""
+      },
+      "fr": {
+        "name": "Pessah",
+        "place": "Laissez vos coordonnées pour être informés en premier",
+        "subline": ""
+      },
+      "en": {
+        "name": "Pesach",
+        "place": "Leave your details and hear first",
+        "subline": ""
+      }
     }
   ],
   "videos": [
-    { "he": { "title": "האורחים מספרים", "file": "media/guests.mp4", "poster": "media/guests.jpg" }, "fr": { "title": "Nos invités racontent", "file": "media/guests-fr.mp4", "poster": "media/guests-fr.jpg" } },
-    { "he": { "title": "יום אחד איתנו", "file": "media/day.mp4", "poster": "media/day.jpg" }, "fr": { "title": "Une journée avec nous", "file": "media/day-fr.mp4", "poster": "media/day-fr.jpg" } },
-    { "he": { "title": "גן עדן לילדים", "file": "media/kids.mp4", "poster": "media/kids.jpg" }, "fr": { "title": "Le paradis des enfants", "file": "media/kids-fr.mp4", "poster": "media/kids-fr.jpg" } },
-    { "he": { "title": "ערבי מופעים", "file": "media/shows.mp4", "poster": "media/shows.jpg" }, "fr": { "title": "Les soirées spectacles", "file": "media/shows-fr.mp4", "poster": "media/shows-fr.jpg" } },
-    { "he": { "title": "האווירה אצלנו", "file": "media/vibe.mp4", "poster": "media/vibe.jpg" }, "fr": { "title": "L’ambiance chez nous", "file": "media/vibe-fr.mp4", "poster": "media/vibe-fr.jpg" } },
-    { "he": { "title": "מה מקבלים", "file": "media/included.mp4", "poster": "media/included.jpg" }, "fr": { "title": "Ce qui est inclus", "file": "media/included-fr.mp4", "poster": "media/included-fr.jpg" } },
-    { "he": { "title": "מהקמח ועד הפיצה", "file": "media/pizza.mp4", "poster": "media/pizza.jpg" }, "fr": { "title": "De la farine à la pizza", "file": "media/pizza-fr.mp4", "poster": "media/pizza-fr.jpg" } }
+    {
+      "he": {
+        "title": "האורחים מספרים",
+        "file": "media/guests.mp4",
+        "poster": "media/guests.jpg"
+      },
+      "fr": {
+        "title": "Nos invités racontent",
+        "file": "media/guests-fr.mp4",
+        "poster": "media/guests-fr.jpg"
+      },
+      "en": {
+        "title": "Our guests tell",
+        "file": "media/guests-fr.mp4",
+        "poster": "media/guests-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "יום אחד איתנו",
+        "file": "media/day.mp4",
+        "poster": "media/day.jpg"
+      },
+      "fr": {
+        "title": "Une journée avec nous",
+        "file": "media/day-fr.mp4",
+        "poster": "media/day-fr.jpg"
+      },
+      "en": {
+        "title": "A day with us",
+        "file": "media/day-fr.mp4",
+        "poster": "media/day-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "גן עדן לילדים",
+        "file": "media/kids.mp4",
+        "poster": "media/kids.jpg"
+      },
+      "fr": {
+        "title": "Le paradis des enfants",
+        "file": "media/kids-fr.mp4",
+        "poster": "media/kids-fr.jpg"
+      },
+      "en": {
+        "title": "Kids’ paradise",
+        "file": "media/kids-fr.mp4",
+        "poster": "media/kids-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "ערבי מופעים",
+        "file": "media/shows.mp4",
+        "poster": "media/shows.jpg"
+      },
+      "fr": {
+        "title": "Les soirées spectacles",
+        "file": "media/shows-fr.mp4",
+        "poster": "media/shows-fr.jpg"
+      },
+      "en": {
+        "title": "Show nights",
+        "file": "media/shows-fr.mp4",
+        "poster": "media/shows-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "האווירה אצלנו",
+        "file": "media/vibe.mp4",
+        "poster": "media/vibe.jpg"
+      },
+      "fr": {
+        "title": "L’ambiance chez nous",
+        "file": "media/vibe-fr.mp4",
+        "poster": "media/vibe-fr.jpg"
+      },
+      "en": {
+        "title": "The atmosphere",
+        "file": "media/vibe-fr.mp4",
+        "poster": "media/vibe-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "מה מקבלים",
+        "file": "media/included.mp4",
+        "poster": "media/included.jpg"
+      },
+      "fr": {
+        "title": "Ce qui est inclus",
+        "file": "media/included-fr.mp4",
+        "poster": "media/included-fr.jpg"
+      },
+      "en": {
+        "title": "What is included",
+        "file": "media/included-fr.mp4",
+        "poster": "media/included-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "מהקמח ועד הפיצה",
+        "file": "media/pizza.mp4",
+        "poster": "media/pizza.jpg"
+      },
+      "fr": {
+        "title": "De la farine à la pizza",
+        "file": "media/pizza-fr.mp4",
+        "poster": "media/pizza-fr.jpg"
+      },
+      "en": {
+        "title": "From flour to pizza",
+        "file": "media/pizza-fr.mp4",
+        "poster": "media/pizza-fr.jpg"
+      }
+    }
   ]
 }
