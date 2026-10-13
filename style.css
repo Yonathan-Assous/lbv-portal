@@ -3,6 +3,8 @@
    the wordmark's indigo, and warm sun gold used only for light and calls to action. */
 
 :root {
+  /* The page has its own dark design; stop phone "force dark" modes from recolouring it. */
+  color-scheme: only light;
   --night: #0B1430;
   --night-2: #121E44;
   --lake: #1270BA;
@@ -97,6 +99,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
     linear-gradient(to top, var(--night) 0%, rgba(11,20,48,.7) 20%, rgba(11,20,48,0) 50%),
     linear-gradient(to bottom, rgba(11,20,48,.55), transparent 18%),
     linear-gradient(to right, rgba(11,20,48,.6), rgba(11,20,48,.15) 55%, transparent 80%);
+}
+@media (max-width: 760px) {
+  .hero__shade, [dir="ltr"] .hero__shade {
+    background: linear-gradient(to top, var(--night) 0%, rgba(11,20,48,.88) 38%, rgba(11,20,48,.55) 72%, rgba(11,20,48,.6) 100%);
+  }
 }
 [dir="ltr"] .timeline::before { background: linear-gradient(to right, var(--sun), var(--lake), var(--indigo)); }
 [dir="ltr"] .meter span { background: linear-gradient(to right, #F3D58E, var(--sun-deep)); }
@@ -515,7 +522,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .bar { gap: 10px; }
   .hero__inner { padding-top: 100px; }
   .hero__video { object-position: 40% 50%; }
-  .hero__shade { background: linear-gradient(to top, var(--night) 0%, rgba(11,20,48,.82) 35%, rgba(11,20,48,.25) 70%, rgba(11,20,48,.5) 100%); }
   .hero__lead { font-size: 1.12rem; }
   .hero__facts { padding-bottom: 24px; padding-inline-end: 64px; justify-content: flex-start; }
   .hero__actions .btn { flex: 1 1 auto; }
