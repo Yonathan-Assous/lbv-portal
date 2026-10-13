@@ -175,6 +175,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .door--hero .door__body { position: relative; z-index: 1; padding: 32px; }
 .door--hero h3 { font-size: var(--step-2); }
 .door--hero p { color: #D6E1EF; max-width: 38ch; }
+.door--events { grid-column: span 2; flex-direction: row; align-items: center; gap: 28px; }
+.door__brand { width: 120px; height: auto; flex: none; }
 .door--wide { grid-column: 1 / -1; flex-direction: row; align-items: center; }
 .door--wide p { margin-bottom: 0; }
 .door--wide .door__body { display: grid; grid-template-columns: auto 1fr auto; gap: 8px 28px; align-items: center; flex: 1; }
@@ -707,7 +709,9 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
 
   /* Chooser: big Sukkot card, then a 2-column grid of short tiles. */
   .doors { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .door--hero, .door--wide { grid-column: 1 / -1; }
+  .door--hero, .door--wide, .door--events { grid-column: 1 / -1; }
+  .door--events { flex-direction: row !important; align-items: center; gap: 16px; }
+  .door__brand { width: 76px; }
   .door:not(.door--hero):not(.door--wide) { flex-direction: column; padding: 18px 16px; gap: 10px; }
   .door:not(.door--hero) p { display: none; }
   .door:not(.door--hero) h3 { font-size: 1.15rem; margin: 0 0 4px; }
