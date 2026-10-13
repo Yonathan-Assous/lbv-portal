@@ -201,9 +201,9 @@
 </section>
 
 <!-- ============ HOLIDAYS ============ -->
-<section class="holidays sheet" id="holidays" data-title="נופשים" aria-labelledby="holidays-title">
+<section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="נופשים" aria-labelledby="holidays-title">
   <div class="wrap trips-head">
-    <h2 class="h2" id="holidays-title">נופשים</h2>
+    <h2 class="h2" id="holidays-title" data-hero-title>נופשים</h2>
     <p class="lead">חגים בבית מלון, בקבוצה מאורגנת. בחרו נופש:</p>
     <ul class="trips">
       <li>
@@ -306,10 +306,10 @@
 </section>
 
 <!-- ============ EVENTS ============ -->
-<section class="events sheet" id="events" data-title="הפקת אירועים" aria-labelledby="events-title">
+<section class="events sheet" data-hero="banner-tables.jpg" id="events" data-title="הפקת אירועים" aria-labelledby="events-title">
   <div class="wrap">
     <img class="brand-mark" src="media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
-    <h2 class="h2" id="events-title">הפקת אירועים</h2>
+    <h2 class="h2" id="events-title" data-hero-title>הפקת אירועים</h2>
     <p class="lead">חתונה, בר מצווה או ערב גאלה: אתם מגיעים עם רעיון ותאריך, ואנחנו מחזיקים את כל הקצוות, מהספקים ועד הלו״ז של הערב.</p>
 
     <div class="event-film">
@@ -407,7 +407,12 @@
         <button role="tab" aria-selected="false" aria-controls="p-tickets" id="t-tickets" tabindex="-1">מכירת כרטיסים</button>
       </div>
 
+      <div class="venue">
       <div class="screen">
+        <div class="screen__head">
+          <img src="media/logo-events.png" alt="" width="600" height="528">
+          <span><b>ערב גאלה 2026</b>למען ילדי הקהילה</span>
+        </div>
         <!-- Donations -->
         <div class="panel" role="tabpanel" id="p-donate" aria-labelledby="t-donate">
           <div class="donate">
@@ -442,8 +447,11 @@
         <div class="panel" role="tabpanel" id="p-tickets" aria-labelledby="t-tickets" hidden>
           <div class="tickets">
             <div class="tickets__qr">
-              <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
-              <span>סורקים, בוחרים חבילה ומשלמים מהטלפון</span>
+              <div class="ticket">
+                <img src="media/gala-ticket.jpg" alt="כרטיס LBV Gala 2026" width="1200" height="571">
+                <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
+              </div>
+              <span>הכרטיס האמיתי של LBV Gala 2026. סורקים, בוחרים חבילה ומשלמים מהטלפון.</span>
             </div>
             <div class="tickets__packs">
               <button class="pack" data-n="1"><b>כרטיס אחד</b><span>100 ₪</span></button>
@@ -454,7 +462,8 @@
           </div>
         </div>
       </div>
-      <p class="stage__note">זו הדגמה עם שמות וסכומים לדוגמה. בערב אמיתי המערכת מותאמת לשם המוסד, לפרסים ולמחירים שלכם.</p>
+      </div>
+      <p class="stage__note">ככה זה נראה על המסך הגדול באולם. <b>את הרקע, הצבעים, הלוגו והעיצוב מתאימים אישית לכל מוסד ולכל ערב.</b> השמות והסכומים כאן לדוגמה.</p>
     </div>
 
     <div class="gala-more">
@@ -539,10 +548,10 @@
 </section>
 
 <!-- ============ WEDDING APP ============ -->
-<section class="wedding sheet" id="wedding" data-title="אפליקציה לחתונה" aria-labelledby="wedding-title">
+<section class="wedding sheet" data-hero="real-simha-styles.jpg" id="wedding" data-title="אפליקציה לחתונה" aria-labelledby="wedding-title">
   <div class="wrap split split--rev">
     <div class="split__text">
-      <h2 class="h2" id="wedding-title">אפליקציה לחתונה</h2>
+      <h2 class="h2" id="wedding-title" data-hero-title>אפליקציה לחתונה</h2>
       <p class="lead">במקום לרדוף אחרי אורחים בטלפון ולסדר שולחנות באקסל עד שתיים בלילה.</p>
       <ul class="ticks">
         <li><b>הזמנה דיגיטלית מעוצבת</b> שבעה סגנונות לבחירה: קלאסי, מודרני, אלגנטי, וינטג׳, שמח, טבע ויוקרה.</li>
@@ -585,9 +594,9 @@
 </section>
 
 <!-- ============ WHY / HONEST ============ -->
-<section class="why sheet" id="why" data-title="מה חשוב לדעת עלינו" aria-labelledby="why-title">
+<section class="why sheet" data-hero="holiday-card.jpg" id="why" data-title="מה חשוב לדעת עלינו" aria-labelledby="why-title">
   <div class="wrap">
-    <h2 class="h2" id="why-title">מה חשוב לדעת עלינו</h2>
+    <h2 class="h2" id="why-title" data-hero-title>מה חשוב לדעת עלינו</h2>
     <p class="lead">לפני שבוחרים מפיק, כדאי לדעת גם מה אנחנו עושים הכי טוב, וגם למי אנחנו פחות מתאימים.</p>
     <div class="ledger">
       <div class="ledger__col">
@@ -613,9 +622,9 @@
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="faq sheet" id="faq" data-title="שאלות נפוצות" aria-labelledby="faq-title">
+<section class="faq sheet" data-hero="hero.jpg" id="faq" data-title="שאלות נפוצות" aria-labelledby="faq-title">
   <div class="wrap narrow">
-    <h2 class="h2" id="faq-title">שאלות שחוזרות</h2>
+    <h2 class="h2" id="faq-title" data-hero-title>שאלות שחוזרות</h2>
     <details>
       <summary>מה כלול במחיר הנופש?</summary>
       <p>לינה במלון, כל הארוחות בכשרות מהדרין, שיעורים, ערבי מופעים ומועדון ילדים. לפני ההרשמה מקבלים פירוט מלא של מה כלול ומה לא, כדי שלא יהיו הפתעות.</p>
@@ -648,10 +657,10 @@
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section class="contact sheet" id="contact" data-title="בקשת הצעת מחיר" aria-labelledby="contact-title">
+<section class="contact sheet" data-hero="event-gala.jpg" id="contact" data-title="בקשת הצעת מחיר" aria-labelledby="contact-title">
   <div class="wrap split">
     <div class="split__text">
-      <h2 class="h2" id="contact-title">בקשת הצעת מחיר</h2>
+      <h2 class="h2" id="contact-title" data-hero-title>בקשת הצעת מחיר</h2>
       <p class="lead">ממלאים כמה פרטים, ההודעה נפתחת בוואטסאפ ונשלחת אלינו ישירות. חוזרים אליכם באותו יום.</p>
       <ul class="reach">
         <li><a href="https://wa.me/972585182655" target="_blank" rel="noopener">וואטסאפ: 058-518-2655</a></li>

@@ -357,7 +357,21 @@ button { font: inherit; color: inherit; cursor: pointer; }
   box-shadow: 0 0 0 1px rgba(227,182,92,.35), 0 50px 100px -40px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.08);
   min-height: 400px; overflow: hidden;
 }
-.stage__note { text-align: center; color: #8597B4; font-size: var(--step--1); margin-top: 16px; }
+.stage__note { text-align: center; color: #8597B4; font-size: var(--step--1); margin-top: 16px; max-width: 70ch; margin-inline: auto; }
+.stage__note b { color: var(--sun); font-weight: 700; }
+
+/* The demo screen sits in a dimmed event hall, like the projector on the night. */
+.venue { position: relative; padding: clamp(18px, 4vw, 48px); border-radius: 28px; overflow: hidden; isolation: isolate; }
+.venue::before { content: ""; position: absolute; inset: -20px; z-index: -2; background: url("media/banner-tables.jpg") center / cover; filter: blur(10px) brightness(.45) saturate(1.2); }
+.venue::after { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at 50% 0%, rgba(227,182,92,.28), transparent 60%); }
+.screen { box-shadow: 0 0 0 1px rgba(227,182,92,.45), 0 0 60px rgba(227,182,92,.18), 0 40px 80px -30px rgba(0,0,0,.9); }
+.screen__head { display: flex; align-items: center; gap: 14px; margin: -8px 0 26px; padding-bottom: 16px; border-bottom: 1px solid rgba(227,182,92,.3); }
+.screen__head img { width: 54px; height: auto; }
+.screen__head span { display: grid; color: #AFC0D8; font-size: .9rem; }
+.screen__head b { font: 700 1.25rem/1.2 var(--display); color: var(--sun); }
+.ticket { position: relative; width: min(100%, 380px); }
+.ticket img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 20px 40px -20px rgba(0,0,0,.8); }
+.ticket #qr { position: absolute; left: 77.5%; top: 27%; width: 19.5%; height: auto; padding: 4%; background: transparent; border-radius: 0; }
 
 .donate { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
 .donate__total { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
@@ -588,6 +602,40 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .event-film { grid-template-columns: 1fr; gap: 24px; margin-bottom: 56px; }
   .event-film .vthumb--big { max-width: 280px; margin-inline: auto; }
 }
+
+/* ---------- Windows: luxurious dark theme + cinematic banner (same world as the gala window) ---------- */
+.sheet--dark {
+  --paper: #0B1430; --foam: #121E44; --ink: #FFFFFF; --ink-soft: #B6C4DA; --line: rgba(255,255,255,.12);
+  --indigo: #F3D58E; --lake: #7CC4F5;
+  background: var(--paper) !important; color: var(--ink);
+}
+.sheet--dark .lead, .sheet--dark p { color: var(--ink-soft); }
+.sheet--dark .h2, .sheet--dark .h3, .sheet--dark h3, .sheet--dark h4 { color: #fff; }
+.sheet--dark .ledger__col { background: var(--foam); }
+.sheet--dark .ledger__col--honest { background: #060C1F; box-shadow: inset 0 0 0 1px rgba(227,182,92,.35); }
+.sheet--dark .steps li, .sheet--dark .kinds article { background: var(--foam); border-radius: 18px; }
+.sheet--dark .kinds { border: 0; gap: 16px; }
+.sheet--dark .kinds article + article { border: 0; }
+.sheet--dark .steps li::before, .sheet--dark .timeline time { color: var(--sun); }
+.sheet--dark .round { background: var(--foam); color: #fff; }
+.sheet--dark .btn--line { color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.5); }
+.sheet--dark .btn--line:hover { background: rgba(255,255,255,.08); }
+.sheet--dark .faq summary::after, .sheet--dark summary::after { background: var(--foam); color: var(--sun); }
+.sheet--dark .kinds__art path, .sheet--dark .kinds__art circle, .sheet--dark .kinds__art ellipse, .sheet--dark .kinds__art rect { stroke: var(--sun); }
+/* The phone mock-up keeps its light app screen. */
+.sheet--dark .phone { --paper: #fff; --foam: #EEF3F8; --ink: #16203A; --ink-soft: #4A5675; --line: #D5DEEA; --indigo: #2C2F84; --lake: #1270BA; color: var(--ink); }
+.sheet--dark .phone p { color: var(--ink-soft); }
+
+.sheet-hero { position: relative; height: clamp(300px, 52vh, 520px); display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; margin-bottom: 70px; }
+.sheet-hero > img, .sheet-hero > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; animation: hero-zoom 14s ease-out both; }
+@keyframes hero-zoom { from { transform: scale(1.08); } }
+.sheet-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, #0B1430 2%, rgba(11,20,48,.55) 45%, rgba(11,20,48,.2) 100%); }
+.sheet-hero .wrap { padding-bottom: 36px; }
+.sheet-hero h2 { margin: 0; font: 900 var(--step-4)/1 var(--display); color: #fff; letter-spacing: -.01em; text-shadow: 0 4px 30px rgba(11,20,48,.6); }
+.sheet-hero .horizon__line { position: absolute; inset-inline: 0; bottom: 0; height: 1.5px; animation: none; }
+.sheet--dark.has-hero [data-hero-title] { display: none; }
+.sheet.is-open.has-hero > :not(.sheet__bar):first-of-type { margin-top: 0; }
+@media (max-width: 760px) { .sheet-hero { height: 300px; margin-bottom: 48px; } }
 
 /* ---------- Holidays: one category on the main page, separate trips inside ---------- */
 .door__subs { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; }

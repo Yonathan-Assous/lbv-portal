@@ -194,9 +194,9 @@
 </section>
 
 <!-- ============ HOLIDAYS ============ -->
-<section class="holidays sheet" id="holidays" data-title="Séjours" aria-labelledby="holidays-title">
+<section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="Séjours" aria-labelledby="holidays-title">
   <div class="wrap trips-head">
-    <h2 class="h2" id="holidays-title">Séjours</h2>
+    <h2 class="h2" id="holidays-title" data-hero-title>Séjours</h2>
     <p class="lead">Les fêtes à l’hôtel, en groupe organisé. Choisissez votre séjour :</p>
     <ul class="trips">
       <li>
@@ -299,10 +299,10 @@
 </section>
 
 <!-- ============ EVENTS ============ -->
-<section class="events sheet" id="events" data-title="Organisation d’événements" aria-labelledby="events-title">
+<section class="events sheet" data-hero="banner-tables.jpg" id="events" data-title="Organisation d’événements" aria-labelledby="events-title">
   <div class="wrap">
     <img class="brand-mark" src="../media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
-    <h2 class="h2" id="events-title">Organisation d’événements</h2>
+    <h2 class="h2" id="events-title" data-hero-title>Organisation d’événements</h2>
     <p class="lead">Mariage, bar-mitsva ou soirée de gala : vous venez avec une idée et une date, nous gérons tout le reste, des prestataires jusqu’au déroulé de la soirée.</p>
 
     <div class="event-film">
@@ -400,7 +400,12 @@
         <button role="tab" aria-selected="false" aria-controls="p-tickets" id="t-tickets" tabindex="-1">Vente de billets</button>
       </div>
 
+      <div class="venue">
       <div class="screen">
+        <div class="screen__head">
+          <img src="../media/logo-events.png" alt="" width="600" height="528">
+          <span><b>Soirée de gala 2026</b>Au profit des enfants de la communauté</span>
+        </div>
         <!-- Donations -->
         <div class="panel" role="tabpanel" id="p-donate" aria-labelledby="t-donate">
           <div class="donate">
@@ -435,8 +440,11 @@
         <div class="panel" role="tabpanel" id="p-tickets" aria-labelledby="t-tickets" hidden>
           <div class="tickets">
             <div class="tickets__qr">
-              <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
-              <span>On scanne, on choisit sa formule et on paie depuis son téléphone</span>
+              <div class="ticket">
+                <img src="../media/gala-ticket.jpg" alt="Billet LBV Gala 2026" width="1200" height="571">
+                <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
+              </div>
+              <span>Le vrai billet du LBV Gala 2026. On scanne, on choisit sa formule et on paie depuis son téléphone.</span>
             </div>
             <div class="tickets__packs">
               <button class="pack" data-n="1"><b>1 billet</b><span>100 ₪</span></button>
@@ -447,7 +455,8 @@
           </div>
         </div>
       </div>
-      <p class="stage__note">Ceci est une démonstration avec des noms et des montants fictifs. Pour une vraie soirée, le système est adapté au nom de votre institution, à vos lots et à vos prix.</p>
+      </div>
+      <p class="stage__note">Voici ce que l’on voit sur le grand écran de la salle. <b>Le fond, les couleurs, le logo et le design s’adaptent à chaque institution et à chaque soirée.</b> Les noms et montants sont fictifs.</p>
     </div>
 
     <div class="gala-more">
@@ -532,10 +541,10 @@
 </section>
 
 <!-- ============ WEDDING APP ============ -->
-<section class="wedding sheet" id="wedding" data-title="Application mariage" aria-labelledby="wedding-title">
+<section class="wedding sheet" data-hero="real-simha-styles.jpg" id="wedding" data-title="Application mariage" aria-labelledby="wedding-title">
   <div class="wrap split split--rev">
     <div class="split__text">
-      <h2 class="h2" id="wedding-title">Application mariage</h2>
+      <h2 class="h2" id="wedding-title" data-hero-title>Application mariage</h2>
       <p class="lead">Au lieu de courir après les invités au téléphone et de faire le plan de table sur un tableur jusqu’à deux heures du matin.</p>
       <ul class="ticks">
         <li><b>Une invitation numérique élégante</b> Sept styles au choix : classique, moderne, élégant, vintage, festif, nature et prestige.</li>
@@ -578,9 +587,9 @@
 </section>
 
 <!-- ============ WHY / HONEST ============ -->
-<section class="why sheet" id="why" data-title="Ce qu’il faut savoir sur nous" aria-labelledby="why-title">
+<section class="why sheet" data-hero="holiday-card.jpg" id="why" data-title="Ce qu’il faut savoir sur nous" aria-labelledby="why-title">
   <div class="wrap">
-    <h2 class="h2" id="why-title">Ce qu’il faut savoir sur nous</h2>
+    <h2 class="h2" id="why-title" data-hero-title>Ce qu’il faut savoir sur nous</h2>
     <p class="lead">Avant de choisir un organisateur, mieux vaut savoir ce que nous faisons de mieux, et à qui nous convenons moins.</p>
     <div class="ledger">
       <div class="ledger__col">
@@ -606,9 +615,9 @@
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="faq sheet" id="faq" data-title="Questions fréquentes" aria-labelledby="faq-title">
+<section class="faq sheet" data-hero="hero.jpg" id="faq" data-title="Questions fréquentes" aria-labelledby="faq-title">
   <div class="wrap narrow">
-    <h2 class="h2" id="faq-title">Questions fréquentes</h2>
+    <h2 class="h2" id="faq-title" data-hero-title>Questions fréquentes</h2>
     <details>
       <summary>Qu’est-ce qui est inclus dans le prix du séjour ?</summary>
       <p>L’hébergement, tous les repas en cacherout méhadrin, les cours, les soirées spectacles et le club enfants. Avant l’inscription, vous recevez le détail complet de ce qui est inclus ou non, pour éviter toute surprise.</p>
@@ -641,10 +650,10 @@
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section class="contact sheet" id="contact" data-title="Demander un devis" aria-labelledby="contact-title">
+<section class="contact sheet" data-hero="event-gala.jpg" id="contact" data-title="Demander un devis" aria-labelledby="contact-title">
   <div class="wrap split">
     <div class="split__text">
-      <h2 class="h2" id="contact-title">Demander un devis</h2>
+      <h2 class="h2" id="contact-title" data-hero-title>Demander un devis</h2>
       <p class="lead">Remplissez quelques informations : le message s’ouvre dans WhatsApp et nous parvient directement. Nous vous répondons le jour même.</p>
       <ul class="reach">
         <li><a href="https://wa.me/972585182655" target="_blank" rel="noopener">WhatsApp : +972 58-518-2655</a></li>

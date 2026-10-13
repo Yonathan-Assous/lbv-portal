@@ -74,6 +74,18 @@
     barEl.className = 'sheet__bar';
     barEl.innerHTML = `<button class="sheet__close" type="button">${RTL ? '&#8594;' : '&#8592;'} ${closeLabel}</button><strong>${s.dataset.title || ''}</strong>`;
     s.prepend(barEl);
+    // Windows with a data-hero image get the dark theme and a cinematic banner carrying their title.
+    if (s.dataset.hero) {
+      const src = MEDIA + s.dataset.hero;
+      const media = /\.mp4$/.test(src)
+        ? `<video src="${src}" autoplay muted loop playsinline aria-hidden="true"></video>`
+        : `<img src="${src}" alt="" loading="lazy">`;
+      const hero = document.createElement('header');
+      hero.className = 'sheet-hero';
+      hero.innerHTML = `${media}<div class="wrap"><h2>${s.dataset.heroText || s.dataset.title}</h2></div><span class="horizon__line"></span>`;
+      barEl.after(hero);
+      s.classList.add('sheet--dark', 'has-hero');
+    }
     barEl.querySelector('button').addEventListener('click', () => closeSheet(true));
   });
   let openSheetEl = null, pageY = 0;
