@@ -53,21 +53,6 @@
       }
     },
     {
-      "photo": "media/team-maayan.jpg",
-      "he": {
-        "name": "מעיין",
-        "role": "מנהלת סושיאל ופרויקטים"
-      },
-      "fr": {
-        "name": "Maayan",
-        "role": "Responsable réseaux sociaux et projets"
-      },
-      "en": {
-        "name": "Maayan",
-        "role": "Social media and projects manager"
-      }
-    },
-    {
       "photo": "",
       "he": {
         "name": "ג׳ואנה",
@@ -80,6 +65,21 @@
       "en": {
         "name": "Johanna",
         "role": "Event production manager and graphic designer"
+      }
+    },
+    {
+      "photo": "media/team-maayan.jpg",
+      "he": {
+        "name": "מעיין",
+        "role": "מנהלת סושיאל ופרויקטים"
+      },
+      "fr": {
+        "name": "Maayan",
+        "role": "Responsable réseaux sociaux et projets"
+      },
+      "en": {
+        "name": "Maayan",
+        "role": "Social media and projects manager"
       }
     },
     {
