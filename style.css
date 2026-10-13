@@ -332,6 +332,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .kinds article + article { border-inline-start: 1px solid var(--line); }
 .kinds h3 { font: 700 var(--step-2)/1.15 var(--display); margin: 0 0 .4em; color: var(--indigo); }
 .kinds p { margin: 0; color: var(--ink-soft); }
+.kinds__more { display: inline-block; margin-top: 12px; font-weight: 700; color: var(--lake); text-decoration: none; border-bottom: 2px solid var(--sun); }
 
 .steps { list-style: none; counter-reset: s; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .steps li { counter-increment: s; position: relative; background: var(--paper); border-radius: 18px; padding: 26px 24px 28px; }
