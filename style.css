@@ -84,7 +84,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .bar.is-solid { background: rgba(11,20,48,.92); backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(255,255,255,.08); padding-block: 8px; }
 .bar__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.bar__logo img { width: 46px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,.3)); }
+.bar__logo img { width: 54px; height: auto; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
 .bar__logo span { font: 500 1.05rem/1 var(--display); letter-spacing: .12em; direction: ltr; }
 .bar__nav { display: flex; gap: 22px; margin-inline-start: 18px; }
 .bar__nav a { text-decoration: none; font-weight: 600; font-size: .98rem; opacity: .88; padding: 6px 0; border-bottom: 2px solid transparent; }
@@ -446,7 +446,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .ledger__col--honest b { color: #fff; }
 
 /* ---------- FAQ ---------- */
-.faq { padding: 110px 0; }
+.faq { padding: 110px 0; background: var(--paper); }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary {
   list-style: none; cursor: pointer; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; gap: 16px;
@@ -478,7 +478,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- Footer ---------- */
 .foot { background: var(--night); color: #8597B4; text-align: center; padding: 30px var(--gutter) 90px; border-top: 1px solid rgba(255,255,255,.07); }
-.foot img { width: 110px; margin: 0 auto 12px; }
+.foot img { width: 150px; margin: 10px auto 16px; }
 .foot p { margin: 4px 0; }
 .foot__small { font-size: .85rem; }
 
@@ -573,6 +573,80 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .player__close { inset-inline-end: 6px; top: 6px; z-index: 2; }
 }
 
+/* The events brand (gold LBV, "vos événements clé en main") heads the events and gala windows. */
+.brand-mark { display: block; width: 150px; height: auto; margin: 0 0 18px; }
+@media (max-width: 760px) { .brand-mark { width: 120px; } }
+
+/* ---------- Event film (events window) ---------- */
+.event-film { display: grid; grid-template-columns: 320px 1fr; gap: 48px; align-items: center; margin: 0 0 80px; }
+.event-film .vthumb--big { max-width: 320px; margin: 0; }
+.event-film__text p { color: var(--ink-soft); max-width: 46ch; font-size: var(--step-1); font-weight: 300; }
+@media (max-width: 760px) {
+  .event-film { grid-template-columns: 1fr; gap: 24px; margin-bottom: 56px; }
+  .event-film .vthumb--big { max-width: 280px; margin-inline: auto; }
+}
+
+/* ---------- Real-system screenshots ---------- */
+.shot { margin: 0 0 36px; }
+.shot img { width: 100%; height: auto; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 30px 70px -30px rgba(0,0,0,.7); }
+.shot figcaption { margin-top: 10px; font-size: var(--step--1); color: #8597B4; text-align: center; }
+.wedding .shot figcaption { color: var(--ink-soft); }
+.shot--light { margin-top: 32px; }
+.shot--light img { box-shadow: 0 0 0 1px var(--line), 0 30px 60px -36px rgba(11,20,48,.45); }
+
+/* ---------- Phoning (call centre) + animated simulation in the real system's look ---------- */
+.phoning { max-width: 980px; margin: 90px auto 0; display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+.phoning .lead { color: #AFC0D8; }
+.phoning .note { color: #AFC0D8; }
+.flow { list-style: none; counter-reset: f; margin: 0 0 1.4em; padding: 0; display: grid; gap: 14px; }
+.flow li { counter-increment: f; position: relative; padding-inline-start: 46px; color: #AFC0D8; }
+.flow li::before {
+  content: counter(f); position: absolute; inset-inline-start: 0; top: 0; width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--sun); color: var(--night); font: 700 1rem var(--display);
+}
+.flow b { display: block; color: #fff; }
+
+/* The phone mirrors the gala system's calling screen: slate background, white cards, teal actions. */
+.sim { display: grid; place-items: center; }
+.sim__phone { position: relative; width: 300px; padding: 12px; border-radius: 42px; background: #0A0F1E; box-shadow: 0 50px 90px -40px rgba(0,0,0,.8), inset 0 0 0 2px #27325A; }
+.sim__notch { position: absolute; top: 20px; left: 50%; translate: -50% 0; width: 84px; height: 20px; border-radius: 20px; background: #000; z-index: 2; }
+.sim__screen { position: relative; height: 540px; border-radius: 32px; background: #F1F5F9; overflow: hidden; font-family: "Assistant", system-ui, sans-serif; color: #0F172A; }
+.sim__step { position: absolute; inset: 0; padding: 54px 14px 16px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(14px); transition: opacity .45s var(--ease), transform .45s var(--ease); }
+.sim__step.is-on { opacity: 1; transform: none; }
+.sim__title { font-weight: 700; font-size: 1.05rem; color: #0F172A; text-align: center; }
+.sim__card { background: #fff; border-radius: 14px; box-shadow: 0 8px 24px -10px rgba(15,23,42,.25); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.sim__card--center { align-items: center; text-align: center; padding: 26px 16px; margin-top: 40px; }
+.sim__muted { font-size: .82rem; color: #64748B; }
+.sim__go { display: inline-block; padding: 14px 30px; border-radius: 12px; background: #0D9488; color: #fff; font-weight: 700; font-size: 1.05rem; box-shadow: 0 10px 20px -10px rgba(13,148,136,.8); }
+.sim__go--sm { padding: 10px 18px; font-size: .92rem; align-self: stretch; text-align: center; }
+.sim__step[data-step="0"].is-on .sim__go { animation: press 1.6s .5s ease-in-out; }
+@keyframes press { 40% { transform: scale(.94); filter: brightness(.9); } 60% { transform: none; filter: none; } }
+.sim__searching { min-height: 1.2em; opacity: 0; }
+.sim__step[data-step="0"].is-on .sim__searching { animation: fade-in .3s 1.3s forwards; }
+@keyframes fade-in { to { opacity: 1; } }
+.sim__name { font-size: 1.25rem; font-weight: 700; }
+.sim__tel { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #F0FDFA; border: 1px solid #99F6E4; color: #115E59; font: 700 1.05rem ui-monospace, monospace; }
+.sim__tel small { margin-inline-start: auto; font: 600 .75rem "Assistant", sans-serif; color: #0D9488; }
+.sim__step[data-step="1"].is-on .sim__tel { animation: ring 1s .6s ease-in-out 2; }
+@keyframes ring { 0%, 100% { box-shadow: 0 0 0 0 rgba(13,148,136,.0); } 50% { box-shadow: 0 0 0 6px rgba(13,148,136,.25); } }
+.sim__h { font-size: .7rem; font-weight: 700; color: #64748B; letter-spacing: .02em; margin-top: 4px; }
+.sim__h2 { font-size: .85rem; font-weight: 700; color: #334155; }
+.sim__info { margin: 0; padding: 8px; border-radius: 6px; background: #FFFBEB; border: 1px solid #FEF3C7; font-size: .82rem; color: #334155; }
+.sim__hist { margin: 0; font-size: .82rem; color: #475569; }
+.sim__outcomes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sim__outcomes span { padding: 8px 4px; border-radius: 8px; text-align: center; font-size: .78rem; font-weight: 600; line-height: 1.35; border: 2px solid transparent; transition: transform .3s, border-color .3s; }
+.o-slate { background: #F1F5F9; color: #334155; } .o-blue { background: #DBEAFE; color: #1D4ED8; } .o-green { background: #DCFCE7; color: #15803D; }
+.o-red { background: #FEE2E2; color: #B91C1C; } .o-purple { background: #F3E8FF; color: #7E22CE; } .o-teal { background: #CCFBF1; color: #0F766E; }
+.sim__step[data-step="2"].is-on .sim__outcomes .is-on { animation: pick .4s .8s forwards; }
+@keyframes pick { to { border-color: #0F172A; transform: scale(1.04); } }
+.sim__pledge { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: #F0FDF4; color: #166534; opacity: 0; }
+.sim__step[data-step="2"].is-on .sim__pledge { animation: fade-in .3s 1.3s forwards; }
+.sim__pledge b { font-size: 1.1rem; }
+.sim__ok { font-weight: 700; color: #047857; font-size: 1.15rem; }
+.sim__total { width: 100%; margin: 10px 0; padding: 12px; border-radius: 12px; background: #F8FAFC; display: grid; gap: 2px; }
+.sim__total small { color: #64748B; font-size: .78rem; }
+.sim__total b { font-size: 1.5rem; color: #15803D; font-variant-numeric: tabular-nums; }
+
 /* ---------- Small windows under the chooser ---------- */
 .mini-doors { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .mini-doors a {
@@ -596,6 +670,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sheet.is-open > :not(.sheet__bar):first-of-type { margin-top: 56px; }
 @keyframes sheet-in { from { opacity: 0; transform: translateY(24px); } }
 body.has-sheet { overflow: hidden; }
+/* A window must never let the page show through, whatever its own section background is. */
+body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; background: var(--paper); }
 .sheet [id] { scroll-margin-top: 72px; }
 .sheet__bar {
   position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 14px;
@@ -640,6 +716,9 @@ body.has-sheet { overflow: hidden; }
   .door__icon { width: 36px; height: 36px; }
   .door--wide { padding: 18px 16px; }
 
+  .phoning { grid-template-columns: 1fr; gap: 32px; margin-top: 64px; }
+  .sim__phone { width: 280px; }
+  .sim__screen { height: 520px; }
   .mini-doors { grid-template-columns: 1fr; gap: 10px; }
   .mini-doors a { padding: 16px 18px; }
   .team-sec { padding-bottom: 72px; }

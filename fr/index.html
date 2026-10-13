@@ -20,7 +20,7 @@
 
 <header class="bar" id="bar">
   <a class="bar__logo" href="#top" aria-label="La Belle Vie – haut de page">
-    <img src="../media/logo-color.png" alt="" width="46" height="44">
+    <img src="../media/logo-mark.png" alt="" width="54" height="38">
     <span>La Belle Vie</span>
   </a>
   <nav class="bar__nav" id="nav" aria-label="Navigation principale">
@@ -141,7 +141,7 @@
         <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="4" width="22" height="40" rx="4"/><circle cx="20" cy="18" r="3"/><circle cx="28" cy="18" r="3"/><circle cx="24" cy="27" r="3"/><path d="M21 38h6"/></svg>
         <div class="door__body">
           <h3><a class="door__link" href="#wedding">Application mariage</a></h3>
-          <p>Confirmations de présence, rappels et placement automatique de tous vos invités, sans tableur et sans coups de fil.</p>
+          <p>Invitations élégantes, confirmations de présence, rappels et plan de table, sans tableur et sans coups de fil.</p>
           <span class="door__more">Comment ça marche</span>
         </div>
       </article>
@@ -297,8 +297,21 @@
 <!-- ============ EVENTS ============ -->
 <section class="events sheet" id="events" data-title="Organisation d’événements" aria-labelledby="events-title">
   <div class="wrap">
+    <img class="brand-mark" src="../media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
     <h2 class="h2" id="events-title">Organisation d’événements</h2>
     <p class="lead">Mariage, bar-mitsva ou soirée de gala : vous venez avec une idée et une date, nous gérons tout le reste, des prestataires jusqu’au déroulé de la soirée.</p>
+
+    <div class="event-film">
+      <button class="vthumb vthumb--big" data-video="event-gala" data-same-video data-title="Les coulisses d’une soirée de gala">
+        <img src="../media/event-gala.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">Les coulisses d’une soirée de gala<small>Une minute et demie</small></span>
+      </button>
+      <div class="event-film__text">
+        <h3 class="h3">Comment se construit une soirée</h3>
+        <p>De la préparation des billets et des invitations jusqu’à la mise en place des tables, le tapis rouge à l’entrée et l’orchestre sur scène. Il n’y a pas de problèmes, il n’y a que des solutions.</p>
+      </div>
+    </div>
 
     <div class="kinds">
       <article>
@@ -362,6 +375,7 @@
 <!-- ============ GALA DEMO ============ -->
 <section class="gala sheet" id="gala" data-title="Soirée de gala" aria-labelledby="gala-title">
   <div class="wrap">
+    <img class="brand-mark" src="../media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
     <h2 class="h2" id="gala-title">Voici à quoi ressemble un gala avec nous</h2>
     <p class="lead">Notre système s’affiche sur le grand écran de la salle et sur le téléphone de chaque invité. Essayez vous-même :</p>
 
@@ -424,6 +438,10 @@
 
     <div class="gala-more">
       <h3 class="h3">Et en coulisses : le tableau de bord des organisateurs</h3>
+      <figure class="shot">
+        <img src="../media/real-gala-dashboard.jpg" alt="Le vrai tableau de bord du système de gala, avec des données de démonstration" loading="lazy" width="1166" height="727">
+        <figcaption>Capture du vrai système, avec des données de démonstration</figcaption>
+      </figure>
       <ul class="features">
         <li><b>Tout en temps réel</b> La collecte, les billets vendus, les participants et les tombolas.</li>
         <li><b>Ambassadeurs</b> Chaque vendeur a un code unique, avec un classement des meilleurs.</li>
@@ -437,6 +455,65 @@
         <a class="btn btn--ghost" data-gala-path="/" href="https://gala.lbv-event.com/" target="_blank" rel="noopener">Espace organisateurs</a>
       </div>
     </div>
+
+    <div class="phoning" id="phoning">
+      <div class="phoning__text">
+        <h3 class="h3">Un centre d’appels pour la levée de fonds</h3>
+        <p class="lead">Avant la soirée, des bénévoles appellent les donateurs depuis leur téléphone, et tout est enregistré dans le système.</p>
+        <ol class="flow">
+          <li><b>On importe la liste</b> La liste des donateurs depuis Excel, en un clic.</li>
+          <li><b>« Prochain appel »</b> Chaque bénévole reçoit la personne suivante. Deux bénévoles n’appellent jamais la même personne.</li>
+          <li><b>On note le résultat</b> Pas répondu, rappeler, engagé, refusé, déjà donné ou lien envoyé.</li>
+          <li><b>Un lien de paiement</b> Celui qui s’engage reçoit un lien, et le don arrive dans le tableau de bord.</li>
+        </ol>
+        <p class="note">Ceux qui n’ont pas répondu reviennent seuls dans la file, et ceux qui ont demandé un rappel sont rappelés à l’heure prévue.</p>
+      </div>
+      <div class="sim" id="sim" aria-label="Simulation du centre d’appels" role="img">
+        <div class="sim__phone">
+          <div class="sim__notch"></div>
+          <div class="sim__screen">
+            <div class="sim__step" data-step="0">
+              <span class="sim__title">Phoning</span>
+              <div class="sim__card sim__card--center">
+                <span class="sim__muted">142 donateurs dans la file</span>
+                <span class="sim__go">Prochain appel</span>
+                <span class="sim__muted sim__searching">Recherche du prochain numéro…</span>
+              </div>
+            </div>
+            <div class="sim__step" data-step="1">
+              <div class="sim__card">
+                <strong class="sim__name">Famille Levy</strong>
+                <span class="sim__tel"><span dir="ltr">054-•••-••12</span><small>Appeler</small></span>
+                <span class="sim__h">Informations donateur</span>
+                <p class="sim__info">A donné au dernier gala. Préfère être appelé après 18h.</p>
+                <span class="sim__h">Historique des appels</span>
+                <p class="sim__hist">🔄 Rappeler · Michal · 02/10</p>
+              </div>
+            </div>
+            <div class="sim__step" data-step="2">
+              <div class="sim__card">
+                <span class="sim__h2">Résultat de l’appel</span>
+                <div class="sim__outcomes">
+                  <span class="o-slate">📵<br>Pas répondu</span><span class="o-blue">🔄<br>Rappeler</span>
+                  <span class="o-green is-on">🤝<br>Engagé</span><span class="o-red">❌<br>Refusé</span>
+                  <span class="o-purple">✅<br>Déjà donné</span><span class="o-teal">🔗<br>Lien envoyé</span>
+                </div>
+                <div class="sim__pledge"><small>Montant engagé :</small><b>1 800 ₪</b></div>
+                <span class="sim__go sim__go--sm">Valider</span>
+              </div>
+            </div>
+            <div class="sim__step" data-step="3">
+              <div class="sim__card sim__card--center">
+                <span class="sim__ok">Engagement créé !</span>
+                <span class="sim__muted">Lien de paiement envoyé au donateur</span>
+                <div class="sim__total"><small>Collecté jusqu’à présent</small><b>143 800 ₪</b></div>
+                <span class="sim__go sim__go--sm">Prochain appel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -447,13 +524,21 @@
       <h2 class="h2" id="wedding-title">Application mariage</h2>
       <p class="lead">Au lieu de courir après les invités au téléphone et de faire le plan de table sur un tableur jusqu’à deux heures du matin.</p>
       <ul class="ticks">
-        <li><b>Invitation numérique</b> Chaque invité reçoit un message avec un lien personnel.</li>
-        <li><b>Confirmations de présence</b> Présent, absent, combien de personnes : tout se met à jour tout seul.</li>
-        <li><b>Rappels</b> Ceux qui n’ont pas répondu reçoivent un rappel automatique.</li>
-        <li><b>Placement automatique</b> Le système place les invités par famille et par amis, vous n’avez plus qu’à ajuster.</li>
-        <li><b>Carte de table à l’entrée</b> Chaque invité sait où il est assis.</li>
+        <li><b>Une invitation numérique élégante</b> Sept styles au choix : classique, moderne, élégant, vintage, festif, nature et prestige.</li>
+        <li><b>Envoi par WhatsApp, SMS ou e-mail</b> Chaque invité reçoit un lien personnel vers l’invitation.</li>
+        <li><b>Confirmations en temps réel</b> Qui vient, combien de personnes, et les préférences de repas de chacun.</li>
+        <li><b>Tous les événements au même endroit</b> Henné, Chabbat Hatan, houppa et réception, avec une réponse pour chaque événement.</li>
+        <li><b>Rappels automatiques</b> Ceux qui n’ont pas répondu reçoivent un rappel, sans que vous ayez à appeler.</li>
+        <li><b>Plan de table</b> Vous placez les invités sur un plan simple de la salle.</li>
       </ul>
-      <a class="btn btn--lake" href="#contact" data-service="wedding-app">En savoir plus sur l’application</a>
+      <div class="actions">
+        <a class="btn btn--lake" href="https://simha.lbv-event.com" target="_blank" rel="noopener">Ouvrir le système d’invitations</a>
+        <a class="btn btn--line" href="#contact" data-service="wedding-app">Nous poser une question</a>
+      </div>
+      <figure class="shot shot--light">
+        <img src="../media/real-simha-styles.jpg" alt="Les styles d’invitation du système mariage" loading="lazy" width="960" height="640">
+        <figcaption>Quelques styles d’invitation du vrai système</figcaption>
+      </figure>
     </div>
 
     <div class="split__media">
@@ -470,7 +555,7 @@
             <div><output id="aWait">63</output><span>sans réponse</span></div>
           </div>
           <div class="hall" id="hall" aria-label="Plan de table"></div>
-          <button class="btn btn--sun btn--block" id="seatBtn">Placement automatique</button>
+          <button class="btn btn--sun btn--block" id="seatBtn">Placer les invités</button>
           <p class="app-legend"><i class="g1"></i>Famille du marié <i class="g2"></i>Famille de la mariée <i class="g3"></i>Amis</p>
         </div>
       </div>
@@ -591,7 +676,7 @@
 </main>
 
 <footer class="foot">
-  <img src="../media/logo-color.png" alt="La Belle Vie – Séjours &amp; Voyages" width="120" height="115" loading="lazy">
+  <img src="../media/logo-white.png" alt="La Belle Vie – Séjours &amp; Voyages" width="150" height="144" loading="lazy">
   <p>Séjours de fêtes, organisation d’événements et soirées de gala</p>
   <p class="foot__small">© La Belle Vie</p>
 </footer>

@@ -20,7 +20,7 @@
       prizes: ['סוף שבוע זוגי במלון', 'נופש פסח למשפחה', 'ארוחה זוגית במסעדה', 'סט כלי כסף לשבת'],
       ticket: 'כרטיס מס׳ ',
       nextPrize: 'להגרלת הפרס הבא',
-      seat: 'הושבה אוטומטית',
+      seat: 'לסדר את השולחנות',
       seated: 'כל האורחים הושבו. לאפס',
       fields: { service: 'שירות', name: 'שם', phone: 'טלפון' },
       missing: list => 'חסר: ' + list.join(', ') + '. מלאו ונסו שוב.',
@@ -32,7 +32,7 @@
       prizes: ['Un week-end en couple à l’hôtel', 'Un séjour de Pessah en famille', 'Un dîner pour deux au restaurant', 'Un service en argent pour Chabbat'],
       ticket: 'Billet n° ',
       nextPrize: 'Tirer le lot suivant',
-      seat: 'Placement automatique',
+      seat: 'Placer les invités',
       seated: 'Tous les invités sont placés. Recommencer',
       fields: { service: 'service', name: 'nom', phone: 'téléphone' },
       missing: list => 'Il manque : ' + list.join(', ') + '. Complétez puis réessayez.',
@@ -130,7 +130,8 @@
 
   const player = $('#player'), pv = $('#playerVideo');
   $$('[data-video]').forEach(b => b.addEventListener('click', () => {
-    const name = b.dataset.video + VSUFFIX;
+    // Videos that exist in one version only (e.g. the event film) skip the language suffix.
+    const name = b.dataset.video + ('sameVideo' in b.dataset ? '' : VSUFFIX);
     pv.src = `${MEDIA}${name}.mp4`;
     pv.poster = `${MEDIA}${name}.jpg`;
     player.setAttribute('aria-label', b.dataset.title);
@@ -192,6 +193,16 @@
   };
   $('#dAdd').addEventListener('click', () => donate(pick(gifts)));
 
+  /* ---------- Call-centre simulation: loops through the real system's four screens ---------- */
+  const simSteps = $$('#sim .sim__step');
+  let simTimer = null, simIdx = 0;
+  const simShow = i => simSteps.forEach((s, k) => s.classList.toggle('is-on', k === i));
+  const simDurations = [3200, 3000, 3600, 3200];
+  const simRun = () => { simShow(simIdx); simTimer = setTimeout(() => { simIdx = (simIdx + 1) % simSteps.length; simRun(); }, simDurations[simIdx]); };
+  const simStart = () => { if (!simTimer && simSteps.length) { simIdx = 0; reduced ? simShow(2) : simRun(); } };
+  const simStop = () => { clearTimeout(simTimer); simTimer = null; };
+  addEventListener('sheet:change', e => (e.detail === 'gala' ? simStart : simStop)());
+
   // Donations run only while the gala window is open.
   let donateTimer = null;
   const startDonations = () => {
@@ -204,7 +215,7 @@
   };
   const stopDonations = () => { clearInterval(donateTimer); donateTimer = null; };
   addEventListener('sheet:change', e => (e.detail === 'gala' ? startDonations : stopDonations)());
-  if ($('#gala.is-open')) startDonations();
+  if ($('#gala.is-open')) { startDonations(); simStart(); }
 
   /* ---------- Raffle demo ---------- */
   const rName = $('#rName'), rTicket = $('#rTicket'), rGo = $('#rGo'), raffle = $('.raffle'), rPrize = $('#rPrize');
