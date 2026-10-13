@@ -23,15 +23,16 @@
     <span>La Belle Vie</span>
   </a>
   <nav class="bar__nav" id="nav" aria-label="Navigation principale">
+    <a href="#services">Que recherchez-vous</a>
     <a href="#about">Qui sommes-nous</a>
+    <a href="#team">Notre équipe</a>
     <a href="#holidays">Souccot et Pessah</a>
     <a href="#events">Événements</a>
     <a href="#gala">Galas</a>
-    <a href="#wedding">Appli mariage</a>
     <a href="#faq">Questions</a>
   </nav>
-  <a class="bar__lang" href="../" hreflang="he" lang="he" aria-label="גרסה בעברית">עב</a>
   <a class="btn btn--sun bar__cta" href="#contact">Devis</a>
+  <a class="bar__lang" href="../" hreflang="he" lang="he" aria-label="גרסה בעברית">עב</a>
   <button class="bar__menu" id="menuBtn" aria-expanded="false" aria-controls="nav" aria-label="Menu">
     <span></span><span></span>
   </button>
@@ -144,6 +145,12 @@
         </div>
       </article>
     </div>
+
+    <ul class="mini-doors">
+      <li><a href="#why"><b>Ce qu’il faut savoir sur nous</b><span>Nos points forts, et à qui nous convenons moins</span></a></li>
+      <li><a href="#faq"><b>Questions fréquentes</b><span>Ce qui est inclus, la soucca, combien de temps à l’avance</span></a></li>
+      <li><a href="#contact"><b>Demander un devis</b><span>Quelques informations, et nous vous répondons le jour même</span></a></li>
+    </ul>
   </div>
 </section>
 
@@ -179,7 +186,14 @@
       </div>
     </div>
 
-    <h3 class="h3 team__title">Notre équipe</h3>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="team-sec" id="team" aria-labelledby="team-title">
+  <div class="wrap">
+    <h2 class="h2" id="team-title">Notre équipe</h2>
+    <p class="lead">Les personnes que vous rencontrerez à l’hôtel et dans la salle.</p>
     <ul class="team">
       <li>
         <img src="../media/team-ilan.jpg" alt="" loading="lazy" width="480" height="600">
@@ -198,7 +212,7 @@
 </section>
 
 <!-- ============ HOLIDAYS ============ -->
-<section class="holidays" id="holidays" aria-labelledby="holidays-title">
+<section class="holidays sheet" id="holidays" data-title="Souccot et Pessah" aria-labelledby="holidays-title">
   <div class="wrap split">
     <div class="split__text">
       <h2 class="h2" id="holidays-title">Souccot à l’hôtel Nof Kinneret</h2>
@@ -280,7 +294,7 @@
 </section>
 
 <!-- ============ EVENTS ============ -->
-<section class="events" id="events" aria-labelledby="events-title">
+<section class="events sheet" id="events" data-title="Organisation d’événements" aria-labelledby="events-title">
   <div class="wrap">
     <h2 class="h2" id="events-title">Organisation d’événements</h2>
     <p class="lead">Mariage, bar-mitsva ou soirée de gala : vous venez avec une idée et une date, nous gérons tout le reste, des prestataires jusqu’au déroulé de la soirée.</p>
@@ -345,7 +359,7 @@
 </section>
 
 <!-- ============ GALA DEMO ============ -->
-<section class="gala" id="gala" aria-labelledby="gala-title">
+<section class="gala sheet" id="gala" data-title="Soirée de gala" aria-labelledby="gala-title">
   <div class="wrap">
     <h2 class="h2" id="gala-title">Voici à quoi ressemble un gala avec nous</h2>
     <p class="lead">Notre système s’affiche sur le grand écran de la salle et sur le téléphone de chaque invité. Essayez vous-même :</p>
@@ -426,7 +440,7 @@
 </section>
 
 <!-- ============ WEDDING APP ============ -->
-<section class="wedding" id="wedding" aria-labelledby="wedding-title">
+<section class="wedding sheet" id="wedding" data-title="Application mariage" aria-labelledby="wedding-title">
   <div class="wrap split split--rev">
     <div class="split__text">
       <h2 class="h2" id="wedding-title">Application mariage</h2>
@@ -464,7 +478,7 @@
 </section>
 
 <!-- ============ WHY / HONEST ============ -->
-<section class="why" aria-labelledby="why-title">
+<section class="why sheet" id="why" data-title="Ce qu’il faut savoir sur nous" aria-labelledby="why-title">
   <div class="wrap">
     <h2 class="h2" id="why-title">Ce qu’il faut savoir sur nous</h2>
     <p class="lead">Avant de choisir un organisateur, mieux vaut savoir ce que nous faisons de mieux, et à qui nous convenons moins.</p>
@@ -492,7 +506,7 @@
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="faq" id="faq" aria-labelledby="faq-title">
+<section class="faq sheet" id="faq" data-title="Questions fréquentes" aria-labelledby="faq-title">
   <div class="wrap narrow">
     <h2 class="h2" id="faq-title">Questions fréquentes</h2>
     <details>
@@ -527,7 +541,7 @@
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section class="contact" id="contact" aria-labelledby="contact-title">
+<section class="contact sheet" id="contact" data-title="Demander un devis" aria-labelledby="contact-title">
   <div class="wrap split">
     <div class="split__text">
       <h2 class="h2" id="contact-title">Demander un devis</h2>

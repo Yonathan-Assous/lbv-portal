@@ -66,6 +66,50 @@
     menuBtn.setAttribute('aria-expanded', 'false');
   }));
 
+  /* ---------- Windows: detail sections open full-screen from their #hash ---------- */
+  const sheets = $$('.sheet');
+  const closeLabel = LANG === 'fr' ? 'Retour à l’accueil' : 'חזרה לדף הראשי';
+  sheets.forEach(s => {
+    const barEl = document.createElement('div');
+    barEl.className = 'sheet__bar';
+    barEl.innerHTML = `<button class="sheet__close" type="button">${RTL ? '&#8594;' : '&#8592;'} ${closeLabel}</button><strong>${s.dataset.title || ''}</strong>`;
+    s.prepend(barEl);
+    barEl.querySelector('button').addEventListener('click', () => closeSheet(true));
+  });
+  let openSheetEl = null, pageY = 0;
+  function openSheet(sheet, target) {
+    if (openSheetEl !== sheet) {
+      if (!openSheetEl) pageY = scrollY;
+      if (openSheetEl) openSheetEl.classList.remove('is-open');
+      sheet.classList.add('is-open');
+      document.body.classList.add('has-sheet');
+      openSheetEl = sheet;
+      sheet.scrollTop = 0;
+      dispatchEvent(new CustomEvent('sheet:change', { detail: sheet.id }));
+    }
+    if (target && target !== sheet) setTimeout(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }), 60);
+    sheet.querySelector('.sheet__close').focus({ preventScroll: true });
+  }
+  function closeSheet(clearHash) {
+    if (!openSheetEl) return;
+    openSheetEl.classList.remove('is-open');
+    document.body.classList.remove('has-sheet');
+    openSheetEl = null;
+    dispatchEvent(new CustomEvent('sheet:change', { detail: null }));
+    if (clearHash) history.replaceState(null, '', location.pathname + location.search);
+    scrollTo({ top: pageY, behavior: 'instant' });
+  }
+  function route() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id && document.getElementById(id);
+    const sheet = target && target.closest('.sheet');
+    if (sheet) openSheet(sheet, target);
+    else if (openSheetEl) { closeSheet(false); if (target) target.scrollIntoView({ behavior: 'instant' }); }
+  }
+  addEventListener('hashchange', route);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) closeSheet(true); });
+  route();
+
   /* ---------- Line drawings sketch in when visible ---------- */
   const drawings = $$('.draw');
   if (reduced || !('IntersectionObserver' in window)) drawings.forEach(d => d.classList.add('is-drawn'));
@@ -148,19 +192,19 @@
   };
   $('#dAdd').addEventListener('click', () => donate(pick(gifts)));
 
+  // Donations run only while the gala window is open.
   let donateTimer = null;
-  const gala = $('#gala');
-  new IntersectionObserver(([e]) => {
-    if (e.isIntersecting && !donateTimer) {
-      if (total === 0) {
-        total = 136000;
-        [1800, 360, 3600].forEach(donate);
-      }
-      donateTimer = setInterval(() => { if (total < GOAL * 0.96) donate(pick(gifts)); }, 2200);
-    } else if (!e.isIntersecting && donateTimer) {
-      clearInterval(donateTimer); donateTimer = null;
+  const startDonations = () => {
+    if (donateTimer) return;
+    if (total === 0) {
+      total = 136000;
+      [1800, 360, 3600].forEach(donate);
     }
-  }, { threshold: 0.25 }).observe(gala);
+    donateTimer = setInterval(() => { if (total < GOAL * 0.96) donate(pick(gifts)); }, 2200);
+  };
+  const stopDonations = () => { clearInterval(donateTimer); donateTimer = null; };
+  addEventListener('sheet:change', e => (e.detail === 'gala' ? startDonations : stopDonations)());
+  if ($('#gala.is-open')) startDonations();
 
   /* ---------- Raffle demo ---------- */
   const rName = $('#rName'), rTicket = $('#rTicket'), rGo = $('#rGo'), raffle = $('.raffle'), rPrize = $('#rPrize');

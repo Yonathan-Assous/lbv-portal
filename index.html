@@ -30,15 +30,16 @@
     <span>La Belle Vie</span>
   </a>
   <nav class="bar__nav" id="nav" aria-label="ניווט ראשי">
+    <a href="#services">מה אתם מחפשים</a>
     <a href="#about">מי אנחנו</a>
+    <a href="#team">הצוות שלנו</a>
     <a href="#holidays">סוכות ופסח</a>
-    <a href="#events">הפקת אירועים</a>
-    <a href="#gala">ערבי גאלה</a>
-    <a href="#wedding">אפליקציה לחתונה</a>
+    <a href="#events">אירועים</a>
+    <a href="#gala">גאלה</a>
     <a href="#faq">שאלות</a>
   </nav>
-  <a class="bar__lang" href="fr/" hreflang="fr" lang="fr" aria-label="Version française">FR</a>
   <a class="btn btn--sun bar__cta" href="#contact">הצעת מחיר</a>
+  <a class="bar__lang" href="fr/" hreflang="fr" lang="fr" aria-label="Version française">FR</a>
   <button class="bar__menu" id="menuBtn" aria-expanded="false" aria-controls="nav" aria-label="תפריט">
     <span></span><span></span>
   </button>
@@ -151,6 +152,12 @@
         </div>
       </article>
     </div>
+
+    <ul class="mini-doors">
+      <li><a href="#why"><b>מה חשוב לדעת עלינו</b><span>במה אנחנו חזקים, ולמי אנחנו פחות מתאימים</span></a></li>
+      <li><a href="#faq"><b>שאלות נפוצות</b><span>מה כלול, סוכה לכל משפחה, כמה זמן מראש</span></a></li>
+      <li><a href="#contact"><b>בקשת הצעת מחיר</b><span>כמה פרטים, ואנחנו חוזרים אליכם באותו יום</span></a></li>
+    </ul>
   </div>
 </section>
 
@@ -186,7 +193,14 @@
       </div>
     </div>
 
-    <h3 class="h3 team__title">הצוות שלנו</h3>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="team-sec" id="team" aria-labelledby="team-title">
+  <div class="wrap">
+    <h2 class="h2" id="team-title">הצוות שלנו</h2>
+    <p class="lead">האנשים שתפגשו במלון ובאולם.</p>
     <ul class="team">
       <li>
         <img src="media/team-ilan.jpg" alt="" loading="lazy" width="480" height="600">
@@ -205,7 +219,7 @@
 </section>
 
 <!-- ============ HOLIDAYS ============ -->
-<section class="holidays" id="holidays" aria-labelledby="holidays-title">
+<section class="holidays sheet" id="holidays" data-title="סוכות ופסח" aria-labelledby="holidays-title">
   <div class="wrap split">
     <div class="split__text">
       <h2 class="h2" id="holidays-title">סוכות במלון נוף כנרת</h2>
@@ -287,7 +301,7 @@
 </section>
 
 <!-- ============ EVENTS ============ -->
-<section class="events" id="events" aria-labelledby="events-title">
+<section class="events sheet" id="events" data-title="הפקת אירועים" aria-labelledby="events-title">
   <div class="wrap">
     <h2 class="h2" id="events-title">הפקת אירועים</h2>
     <p class="lead">חתונה, בר מצווה או ערב גאלה: אתם מגיעים עם רעיון ותאריך, ואנחנו מחזיקים את כל הקצוות, מהספקים ועד הלו״ז של הערב.</p>
@@ -352,7 +366,7 @@
 </section>
 
 <!-- ============ GALA DEMO ============ -->
-<section class="gala" id="gala" aria-labelledby="gala-title">
+<section class="gala sheet" id="gala" data-title="ערב גאלה" aria-labelledby="gala-title">
   <div class="wrap">
     <h2 class="h2" id="gala-title">ככה נראה ערב גאלה שלנו</h2>
     <p class="lead">המערכת שלנו רצה על המסך הגדול באולם ובטלפון של כל אורח. נסו בעצמכם:</p>
@@ -433,7 +447,7 @@
 </section>
 
 <!-- ============ WEDDING APP ============ -->
-<section class="wedding" id="wedding" aria-labelledby="wedding-title">
+<section class="wedding sheet" id="wedding" data-title="אפליקציה לחתונה" aria-labelledby="wedding-title">
   <div class="wrap split split--rev">
     <div class="split__text">
       <h2 class="h2" id="wedding-title">אפליקציה לחתונה</h2>
@@ -471,7 +485,7 @@
 </section>
 
 <!-- ============ WHY / HONEST ============ -->
-<section class="why" aria-labelledby="why-title">
+<section class="why sheet" id="why" data-title="מה חשוב לדעת עלינו" aria-labelledby="why-title">
   <div class="wrap">
     <h2 class="h2" id="why-title">מה חשוב לדעת עלינו</h2>
     <p class="lead">לפני שבוחרים מפיק, כדאי לדעת גם מה אנחנו עושים הכי טוב, וגם למי אנחנו פחות מתאימים.</p>
@@ -499,7 +513,7 @@
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="faq" id="faq" aria-labelledby="faq-title">
+<section class="faq sheet" id="faq" data-title="שאלות נפוצות" aria-labelledby="faq-title">
   <div class="wrap narrow">
     <h2 class="h2" id="faq-title">שאלות שחוזרות</h2>
     <details>
@@ -534,7 +548,7 @@
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section class="contact" id="contact" aria-labelledby="contact-title">
+<section class="contact sheet" id="contact" data-title="בקשת הצעת מחיר" aria-labelledby="contact-title">
   <div class="wrap split">
     <div class="split__text">
       <h2 class="h2" id="contact-title">בקשת הצעת מחיר</h2>
