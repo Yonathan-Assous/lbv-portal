@@ -314,6 +314,11 @@
       <div class="event-film__text">
         <h3 class="h3">Comment se construit une soirée</h3>
         <p>De la préparation des billets et des invitations jusqu’à la mise en place des tables, le tapis rouge à l’entrée et l’orchestre sur scène. Il n’y a pas de problèmes, il n’y a que des solutions.</p>
+        <a class="gala-cta" href="#gala">
+          <span class="gala-cta__ic">🎰</span>
+          <span><b>Système de gala avancé</b><small>Écran en direct, tombolas, billetterie, dons et centre d’appels</small></span>
+          <span class="gala-cta__go">Voir le système</span>
+        </a>
       </div>
     </div>
 
@@ -384,15 +389,29 @@
     <h2 class="h2" id="gala-title">Système de gala avancé</h2>
     <p class="lead">Notre système s’affiche sur le grand écran de la salle et sur le téléphone de chaque invité. Vous pouvez le prendre avec une organisation complète, ou seul pour une soirée que vous organisez. Essayez vous-même :</p>
 
-    <ul class="modules">
-      <li><a href="#events"><span class="modules__ic">🎩</span><b>L’organisation de la soirée</b><small>Salle, traiteur, programme et scène</small></a></li>
-      <li><a href="#gala-demo" data-tab="t-raffle"><span class="modules__ic">🎰</span><b>Le système de gala</b><small>Écran en direct et tombolas</small></a></li>
-      <li><a href="#gala-demo" data-tab="t-tickets"><span class="modules__ic">🎟️</span><b>La billetterie</b><small>Depuis le téléphone, tous moyens de paiement</small></a></li>
-      <li><a href="#gala-demo" data-tab="t-donate"><span class="modules__ic">💝</span><b>Le système de dons</b><small>Dons en direct et promesses</small></a></li>
-      <li><a href="#phoning"><span class="modules__ic">📞</span><b>Le centre d’appels</b><small>Des bénévoles appellent les donateurs</small></a></li>
-      <li class="modules__dream"><span class="modules__ic">✨</span><b>Et tout ce dont vous rêvez</b><small>Dites-le-nous, nous le construisons</small></li>
+    <ul class="modules" role="tablist" aria-label="Les parties du gala">
+      <li><button type="button" role="tab" aria-selected="false" data-mod="production"><span class="modules__ic">🎩</span><b>L’organisation de la soirée</b><small>Salle, traiteur, programme et scène</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-raffle"><span class="modules__ic">🎰</span><b>Le système de gala</b><small>Écran en direct et tombolas</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-tickets"><span class="modules__ic">🎟️</span><b>La billetterie</b><small>Depuis le téléphone, tous moyens de paiement</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-donate"><span class="modules__ic">💝</span><b>Le système de dons</b><small>Dons en direct et promesses</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="phoning"><span class="modules__ic">📞</span><b>Le centre d’appels</b><small>Des bénévoles appellent les donateurs</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="dream" class="modules__dream"><span class="modules__ic">✨</span><b>Et tout ce dont vous rêvez</b><small>Dites-le-nous, nous le construisons</small></button></li>
     </ul>
+    <p class="modules__hint">Choisissez une partie pour la découvrir</p>
 
+    <div class="mod-panel mod-panel--text" data-mod="production" hidden>
+      <h3 class="h3">L’organisation de la soirée</h3>
+      <p class="lead">Nous organisons votre gala du début à la fin : salle, traiteur, programme artistique, scène, sonorisation et décoration, avec notre système numérique au cœur de la soirée.</p>
+      <a class="btn btn--sun" href="#events">Comment se passe une organisation</a>
+    </div>
+
+    <div class="mod-panel mod-panel--text" data-mod="dream" hidden>
+      <h3 class="h3">Et tout ce dont vous rêvez</h3>
+      <p class="lead">Un écran qui met les donateurs en valeur d’une façon unique ? Une tombola avec un lot exceptionnel ? Un billet au design sur mesure ? Dites-nous ce que vous voulez, et nous le construisons pour vous.</p>
+      <a class="btn btn--sun" href="#contact" data-service="gala-system">Nous parler de votre idée</a>
+    </div>
+
+    <div class="mod-panel" data-mod="system" hidden>
     <div class="stage" id="gala-demo">
       <div class="stage__tabs" role="tablist" aria-label="Démonstration du système">
         <button role="tab" aria-selected="true" aria-controls="p-donate" id="t-donate">Dons en direct</button>
@@ -439,18 +458,56 @@
         <!-- Tickets -->
         <div class="panel" role="tabpanel" id="p-tickets" aria-labelledby="t-tickets" hidden>
           <div class="tickets">
-            <div class="tickets__qr">
+            <div class="tickets__info">
               <div class="ticket">
                 <img src="../media/gala-ticket.jpg" alt="Billet LBV Gala 2026" width="1200" height="571">
                 <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
               </div>
-              <span>Le vrai billet du LBV Gala 2026. On scanne, on choisit sa formule et on paie depuis son téléphone.</span>
-            </div>
-            <div class="tickets__packs">
-              <button class="pack" data-n="1"><b>1 billet</b><span>100 ₪</span></button>
-              <button class="pack" data-n="3"><b>3 billets</b><span>250 ₪</span></button>
-              <button class="pack pack--best" data-n="10"><b>10 billets</b><span>700 ₪</span></button>
+              <div class="tiers">
+                <button class="pack tier tier--bronze" data-n="1"><b>Bronze</b><small>1 invité · 1 numéro de tombola</small><span>180 ₪</span></button>
+                <button class="pack tier tier--silver" data-n="2"><b>Argent</b><small>2 invités · 3 numéros</small><span>360 ₪</span></button>
+                <button class="pack tier tier--gold pack--best" data-n="2"><b>Or</b><small>2 invités · 5 numéros</small><span>600 ₪</span></button>
+                <button class="pack tier tier--diamond" data-n="2"><b>Diamant</b><small>2 invités · 10 numéros</small><span>1 000 ₪</span></button>
+              </div>
               <p class="tickets__sold"><output id="tSold">312</output> billets vendus ce soir</p>
+            </div>
+
+            <div class="sim sim--buy" data-durations="2600,3400,3200,3800" role="img" aria-label="Simulation : achat d’un billet depuis le téléphone">
+              <div class="sim__phone">
+                <div class="sim__notch"></div>
+                <div class="sim__screen buy">
+                  <div class="sim__step" data-step="0">
+                    <div class="buy__cam">
+                      <div class="buy__frame"><svg class="buy__qr" viewBox="0 0 25 25" aria-hidden="true"></svg><span class="buy__scan"></span></div>
+                      <span class="buy__hint">On vise le code posé sur la table</span>
+                    </div>
+                  </div>
+                  <div class="sim__step" data-step="1">
+                    <div class="buy__top"><img src="../media/logo-events.png" alt=""><span><b>Soirée de gala 2026</b>Choisissez votre billet</span></div>
+                    <div class="buy__tiers">
+                      <span class="t-bronze">Bronze<em>180 ₪</em></span>
+                      <span class="t-silver">Argent<em>360 ₪</em></span>
+                      <span class="t-gold is-on">Or<em>600 ₪</em></span>
+                      <span class="t-diamond">Diamant<em>1 000 ₪</em></span>
+                    </div>
+                    <span class="buy__note">2 invités · 5 numéros de tombola</span>
+                  </div>
+                  <div class="sim__step" data-step="2">
+                    <div class="buy__top"><img src="../media/logo-events.png" alt=""><span><b>Paiement</b>Billet Or</span></div>
+                    <div class="buy__field">Nom complet<span>Famille Cohen</span></div>
+                    <div class="buy__pay"><span class="is-on">Bit</span><span>Carte</span><span>Virement</span></div>
+                    <div class="buy__sum">À payer<b>600 ₪</b></div>
+                    <span class="buy__btn">Paiement sécurisé</span>
+                  </div>
+                  <div class="sim__step" data-step="3">
+                    <span class="buy__ok">Paiement reçu !</span>
+                    <div class="buy__ticket"><img src="../media/gala-ticket.jpg" alt=""><svg class="buy__qr buy__qr--mini" viewBox="0 0 25 25" aria-hidden="true"></svg></div>
+                    <span class="buy__h">Vos numéros de tombola</span>
+                    <div class="buy__nums"><span>1042</span><span>1043</span><span>1044</span><span>1045</span><span>1046</span></div>
+                    <span class="buy__note">Le billet est aussi envoyé par WhatsApp et e-mail</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -478,8 +535,9 @@
         <a class="btn btn--ghost" data-gala-path="/" href="https://gala.lbv-event.com/" target="_blank" rel="noopener">Espace organisateurs</a>
       </div>
     </div>
+    </div><!-- /system panel -->
 
-    <div class="phoning" id="phoning">
+    <div class="phoning mod-panel" id="phoning" data-mod="phoning" hidden>
       <div class="phoning__text">
         <h3 class="h3">Un centre d’appels pour la levée de fonds</h3>
         <p class="lead">Avant la soirée, des bénévoles appellent les donateurs depuis leur téléphone, et tout est enregistré dans le système.</p>
@@ -491,7 +549,7 @@
         </ol>
         <p class="note">Ceux qui n’ont pas répondu reviennent seuls dans la file, et ceux qui ont demandé un rappel sont rappelés à l’heure prévue.</p>
       </div>
-      <div class="sim" id="sim" aria-label="Simulation du centre d’appels" role="img">
+      <div class="sim" id="sim" data-durations="3200,3000,3600,3200" aria-label="Simulation du centre d’appels" role="img">
         <div class="sim__phone">
           <div class="sim__notch"></div>
           <div class="sim__screen">
@@ -587,7 +645,7 @@
 </section>
 
 <!-- ============ WHY / HONEST ============ -->
-<section class="why sheet" data-hero="holiday-card.jpg" id="why" data-title="Ce qu’il faut savoir sur nous" aria-labelledby="why-title">
+<section class="why sheet" data-hero="banner-tables.jpg" id="why" data-title="Ce qu’il faut savoir sur nous" aria-labelledby="why-title">
   <div class="wrap">
     <h2 class="h2" id="why-title" data-hero-title>Ce qu’il faut savoir sur nous</h2>
     <p class="lead">Avant de choisir un organisateur, mieux vaut savoir ce que nous faisons de mieux, et à qui nous convenons moins.</p>
@@ -615,7 +673,7 @@
 </section>
 
 <!-- ============ FAQ ============ -->
-<section class="faq sheet" data-hero="hero.jpg" id="faq" data-title="Questions fréquentes" aria-labelledby="faq-title">
+<section class="faq sheet" data-hero="holiday-card.jpg" id="faq" data-title="Questions fréquentes" aria-labelledby="faq-title">
   <div class="wrap narrow">
     <h2 class="h2" id="faq-title" data-hero-title>Questions fréquentes</h2>
     <details>
@@ -650,20 +708,20 @@
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section class="contact sheet" data-hero="event-gala.jpg" id="contact" data-title="Demander un devis" aria-labelledby="contact-title">
+<section class="contact sheet" data-hero="hero.jpg" id="contact" data-title="Demander un devis" aria-labelledby="contact-title">
   <div class="wrap split">
     <div class="split__text">
       <h2 class="h2" id="contact-title" data-hero-title>Demander un devis</h2>
       <p class="lead">Remplissez quelques informations : le message s’ouvre dans WhatsApp et nous parvient directement. Nous vous répondons le jour même.</p>
       <ul class="reach">
-        <li><a href="https://wa.me/972585182655" target="_blank" rel="noopener">WhatsApp : +972 58-518-2655</a></li>
-        <li><a href="tel:+972585182655">Téléphone : +972 58-518-2655</a></li>
-        <li><a href="tel:+972585551826">Autre numéro : +972 58-555-1826</a></li>
-        <li><a href="mailto:LBV0585551826@gmail.com">E-mail : LBV0585551826@gmail.com</a></li>
-        <li><a href="https://youtube.com/@lbv-la_belle_vie" target="_blank" rel="noopener">YouTube : lbv-la_belle_vie</a></li>
-        <li><a href="https://www.facebook.com/share/1JXfFgiY9Y/" target="_blank" rel="noopener">Facebook : La Belle Vie</a></li>
-        <li><a href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener">Instagram : @la_belle_vie_lbv</a></li>
-        <li><a href="https://www.tiktok.com/@la.belle.vie.event" target="_blank" rel="noopener">TikTok : @la.belle.vie.event</a></li>
+        <li><a class="reach__wa" href="https://wa.me/972585182655" target="_blank" rel="noopener" title="+972 58-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm5.8 15.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.4z"/></svg></span><span class="reach__label">WhatsApp</span></a></li>
+        <li><a class="reach__tel" href="tel:+972585182655" title="+972 58-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">Téléphone</span></a></li>
+        <li><a class="reach__tel" href="tel:+972585551826" title="+972 58-555-1826"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">Autre numéro</span></a></li>
+        <li><a class="reach__mail" href="mailto:LBV0585551826@gmail.com" title="LBV0585551826@gmail.com"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="reach__label">E-mail</span></a></li>
+        <li><a class="reach__ig" href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener" title="@la_belle_vie_lbv"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></span><span class="reach__label">Instagram</span></a></li>
+        <li><a class="reach__tt" href="https://www.tiktok.com/@la.belle.vie.event" target="_blank" rel="noopener" title="@la.belle.vie.event"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 3h3a5 5 0 0 0 4 4v3a8 8 0 0 1-4-1.2V15a6 6 0 1 1-6-6v3.2A2.8 2.8 0 1 0 14 15z"/></svg></span><span class="reach__label">TikTok</span></a></li>
+        <li><a class="reach__fb" href="https://www.facebook.com/share/1JXfFgiY9Y/" target="_blank" rel="noopener" title="La Belle Vie"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5z"/></svg></span><span class="reach__label">Facebook</span></a></li>
+        <li><a class="reach__yt" href="https://youtube.com/@lbv-la_belle_vie" target="_blank" rel="noopener" title="lbv-la_belle_vie"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg></span><span class="reach__label">YouTube</span></a></li>
       </ul>
     </div>
 
@@ -700,6 +758,16 @@
 
 <footer class="foot">
   <img src="../media/logo-white.png" alt="La Belle Vie – Séjours &amp; Voyages" width="150" height="144" loading="lazy">
+  <ul class="reach reach--foot">
+        <li><a class="reach__wa" href="https://wa.me/972585182655" target="_blank" rel="noopener" title="+972 58-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm5.8 15.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.4z"/></svg></span><span class="reach__label">WhatsApp</span></a></li>
+        <li><a class="reach__tel" href="tel:+972585182655" title="+972 58-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">Téléphone</span></a></li>
+        <li><a class="reach__tel" href="tel:+972585551826" title="+972 58-555-1826"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">Autre numéro</span></a></li>
+        <li><a class="reach__mail" href="mailto:LBV0585551826@gmail.com" title="LBV0585551826@gmail.com"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="reach__label">E-mail</span></a></li>
+        <li><a class="reach__ig" href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener" title="@la_belle_vie_lbv"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></span><span class="reach__label">Instagram</span></a></li>
+        <li><a class="reach__tt" href="https://www.tiktok.com/@la.belle.vie.event" target="_blank" rel="noopener" title="@la.belle.vie.event"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 3h3a5 5 0 0 0 4 4v3a8 8 0 0 1-4-1.2V15a6 6 0 1 1-6-6v3.2A2.8 2.8 0 1 0 14 15z"/></svg></span><span class="reach__label">TikTok</span></a></li>
+        <li><a class="reach__fb" href="https://www.facebook.com/share/1JXfFgiY9Y/" target="_blank" rel="noopener" title="La Belle Vie"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5z"/></svg></span><span class="reach__label">Facebook</span></a></li>
+        <li><a class="reach__yt" href="https://youtube.com/@lbv-la_belle_vie" target="_blank" rel="noopener" title="lbv-la_belle_vie"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg></span><span class="reach__label">YouTube</span></a></li>
+      </ul>
   <p>Séjours de fêtes, organisation d’événements et soirées de gala</p>
   <p class="foot__small">© La Belle Vie</p>
 </footer>

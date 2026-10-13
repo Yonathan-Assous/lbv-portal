@@ -40,6 +40,62 @@
     },
   }[LANG];
 
+  /* ---------- Editable content (managed from /admin) ---------- */
+  // The HTML ships with the same content, so the page reads fine before (or without) this step.
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const asset = p => !p ? '' : /^(https?:|data:|\/)/.test(p) ? p : MEDIA + p.replace(/^media\//, '');
+  const SITE = MEDIA.replace(/media\/$/, '');
+  async function loadContent() {
+    for (const url of ['/api/content', SITE + 'content.json']) {
+      try {
+        const r = await fetch(url, { cache: 'no-store' });
+        if (r.ok) return await r.json();
+      } catch (e) {}
+    }
+    return null;
+  }
+  function renderContent(c) {
+    if (!c) return;
+    const L = LANG;
+    const ceo = c.ceo && c.ceo[L];
+    const letter = $('.letter__body');
+    if (ceo && letter) {
+      letter.innerHTML = `<h3 class="h3">${esc(ceo.title)}</h3>` +
+        ceo.paragraphs.filter(p => p.trim()).map(p => `<p>${esc(p)}</p>`).join('') +
+        `<p class="letter__sign">${esc(ceo.name)}<small>${esc(ceo.role)}</small></p>`;
+      if (c.ceo.photo) $('.letter__photo img').src = asset(c.ceo.photo);
+    }
+    const team = $('.team');
+    if (team && Array.isArray(c.team)) {
+      team.innerHTML = c.team.map(m => `<li><img src="${esc(asset(m.photo))}" alt="" loading="lazy" width="480" height="600"><b>${esc(m[L]?.name)}</b><span>${esc(m[L]?.role)}</span></li>`).join('');
+    }
+    const trips = (c.trips || []).filter(t => t.status !== 'hidden');
+    const badge = t => t.status === 'open'
+      ? `<span class="badge">${L === 'fr' ? 'Réservations ouvertes' : 'ההרשמה פתוחה'}</span>`
+      : `<span class="badge badge--soft">${L === 'fr' ? 'Bientôt' : 'בקרוב'}</span>`;
+    const subs = $('.door__subs');
+    if (subs) subs.innerHTML = trips.map(t => `<li><b>${esc(t[L]?.name)}</b> ${esc(t[L]?.subline || '')} ${badge(t)}</li>`).join('');
+    const cards = $('.trips');
+    if (cards) {
+      const soonArt = $('.trips__card--soon svg')?.outerHTML || '';
+      cards.innerHTML = trips.map(t => {
+        const book = t.bookingUrl && t.bookingUrl[L];
+        const href = t.link || book || '#contact';
+        const ext = /^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '';
+        const visual = t.image ? `<img src="${esc(asset(t.image))}" alt="" loading="lazy">` : soonArt;
+        return `<li><a href="${esc(href)}"${ext} class="trips__card${t.image ? '' : ' trips__card--soon'}">${visual}${badge(t)}<b>${esc(t[L]?.name)}</b><small>${esc(t[L]?.place)}</small></a></li>`;
+      }).join('');
+    }
+    const rail = $('#rail');
+    if (rail && Array.isArray(c.videos) && c.videos.length) {
+      rail.innerHTML = c.videos.map(v => {
+        const x = v[L] || v.he;
+        return `<button class="vthumb" data-src="${esc(asset(x.file))}" data-poster="${esc(asset(x.poster))}" data-title="${esc(x.title)}"><img src="${esc(asset(x.poster))}" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(x.title)}</span></button>`;
+      }).join('');
+    }
+  }
+  loadContent().then(renderContent);
+
   /* ---------- Gala links follow the environment (dev.* → dev gala), as on the old portal ---------- */
   const host = location.hostname;
   const galaBase = (host.startsWith('dev.') || host.includes('localhost')) ? 'https://dev.gala.lbv-event.com' : 'https://gala.lbv-event.com';
@@ -99,7 +155,12 @@
       sheet.scrollTop = 0;
       dispatchEvent(new CustomEvent('sheet:change', { detail: sheet.id }));
     }
-    if (target && target !== sheet) setTimeout(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }), 60);
+    if (target && target !== sheet) {
+      // A link into a hidden gala part (e.g. #phoning) opens that part first.
+      const panel = target.closest('.mod-panel');
+      if (panel && panel.hidden && window.lbvShowModule) lbvShowModule(panel.dataset.mod);
+      setTimeout(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }), 60);
+    }
     sheet.querySelector('.sheet__close').focus({ preventScroll: true });
   }
   function closeSheet(clearHash) {
@@ -141,15 +202,23 @@
   }));
 
   const player = $('#player'), pv = $('#playerVideo');
-  $$('[data-video]').forEach(b => b.addEventListener('click', () => {
-    // Videos that exist in one version only (e.g. the event film) skip the language suffix.
-    const name = b.dataset.video + ('sameVideo' in b.dataset ? '' : VSUFFIX);
-    pv.src = `${MEDIA}${name}.mp4`;
-    pv.poster = `${MEDIA}${name}.jpg`;
+  // Delegated, so video cards rendered later from content.json work too.
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-video], [data-src]');
+    if (!b) return;
+    if (b.dataset.src) {
+      pv.src = b.dataset.src;
+      pv.poster = b.dataset.poster || '';
+    } else {
+      // Videos that exist in one version only (e.g. the event film) skip the language suffix.
+      const name = b.dataset.video + ('sameVideo' in b.dataset ? '' : VSUFFIX);
+      pv.src = `${MEDIA}${name}.mp4`;
+      pv.poster = `${MEDIA}${name}.jpg`;
+    }
     player.setAttribute('aria-label', b.dataset.title);
     player.showModal();
     pv.play().catch(() => {});
-  }));
+  });
   const closePlayer = () => { pv.pause(); pv.removeAttribute('src'); pv.load(); if (player.open) player.close(); };
   $('#playerClose').addEventListener('click', closePlayer);
   player.addEventListener('click', e => { if (e.target === player) closePlayer(); });
@@ -176,10 +245,21 @@
     });
   });
 
-  // Module tiles in the gala window open the matching demo tab.
-  $$('.modules [data-tab]').forEach(a => a.addEventListener('click', () => {
-    const t = document.getElementById(a.dataset.tab);
+  // Gala window: nothing below the tiles until one is chosen; each tile shows its own content.
+  const modTiles = $$('.modules [data-mod]');
+  const modPanels = $$('.mod-panel');
+  const hint = $('.modules__hint');
+  window.lbvShowModule = (mod, tabId, tile) => {
+    modPanels.forEach(p => { p.hidden = p.dataset.mod !== mod; });
+    modTiles.forEach(t => t.setAttribute('aria-selected', String(tile ? t === tile : t.dataset.mod === mod && !t.dataset.tab)));
+    if (hint) hint.hidden = true;
+    const t = tabId && document.getElementById(tabId);
     if (t) select(t);
+  };
+  modTiles.forEach(tile => tile.addEventListener('click', () => {
+    lbvShowModule(tile.dataset.mod, tile.dataset.tab, tile);
+    const panel = modPanels.find(p => p.dataset.mod === tile.dataset.mod);
+    if (panel) setTimeout(() => panel.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }), 30);
   }));
 
   /* ---------- Live donations demo ---------- */
@@ -211,14 +291,20 @@
   };
   $('#dAdd').addEventListener('click', () => donate(pick(gifts)));
 
-  /* ---------- Call-centre simulation: loops through the real system's four screens ---------- */
-  const simSteps = $$('#sim .sim__step');
-  let simTimer = null, simIdx = 0;
-  const simShow = i => simSteps.forEach((s, k) => s.classList.toggle('is-on', k === i));
-  const simDurations = [3200, 3000, 3600, 3200];
-  const simRun = () => { simShow(simIdx); simTimer = setTimeout(() => { simIdx = (simIdx + 1) % simSteps.length; simRun(); }, simDurations[simIdx]); };
-  const simStart = () => { if (!simTimer && simSteps.length) { simIdx = 0; reduced ? simShow(2) : simRun(); } };
-  const simStop = () => { clearTimeout(simTimer); simTimer = null; };
+  /* ---------- Phone simulations (call centre, ticket purchase): loop through their screens ---------- */
+  const sims = $$('.sim').map(el => {
+    const steps = $$('.sim__step', el);
+    const durations = (el.dataset.durations || '3200,3000,3600,3200').split(',').map(Number);
+    let timer = null, idx = 0;
+    const show = i => steps.forEach((s, k) => s.classList.toggle('is-on', k === i));
+    const run = () => { show(idx); timer = setTimeout(() => { idx = (idx + 1) % steps.length; run(); }, durations[idx] || 3000); };
+    return {
+      start() { if (!timer && steps.length) { idx = 0; reduced ? show(steps.length - 1) : run(); } },
+      stop() { clearTimeout(timer); timer = null; },
+    };
+  });
+  const simStart = () => sims.forEach(s => s.start());
+  const simStop = () => sims.forEach(s => s.stop());
   addEventListener('sheet:change', e => (e.detail === 'gala' ? simStart : simStop)());
 
   // Donations run only while the gala window is open.
@@ -301,6 +387,7 @@
       if (!inFinder && rnd() > .52) html += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
     }
     qr.innerHTML = html + finder(0, 0) + finder(18, 0) + finder(0, 18);
+    $$('.buy__qr').forEach(s => { s.innerHTML = qr.innerHTML; });
   })();
   const tSold = $('#tSold');
   let sold = 312;

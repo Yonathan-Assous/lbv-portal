@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "ceo": {
+    "he": {
+      "title": "דבר המנכ״ל",
+      "paragraphs": [
+        "לאורחים ולחברים שלנו, שלום רב.",
+        "כשאנחנו מתחילים להכין חג, אנחנו לא חושבים על חדרים ועל תפריטים. אנחנו חושבים על הרגע שבו משפחה יושבת יחד בסוכה, הילדים שמחים, וההורים סוף סוף נחים.",
+        "אחרי כל ההשקעה וכל ההכנות, לראות את כולם יוצאים עם חיוך, זה מה שמחמם לנו את הלב. ואם זה מצליח, זה בזכות כל אחד ואחת מכם, ובזכות האווירה שאתם מביאים איתכם.",
+        "אנחנו כאן כדי שתיהנו ותחלמו, בגשמיות וברוחניות. מחכים לכם בפסח, בסוכות, ובכל אירוע שנפיק יחד."
+      ],
+      "name": "אילן",
+      "role": "מנכ״ל La Belle Vie"
+    },
+    "fr": {
+      "title": "Le mot du directeur",
+      "paragraphs": [
+        "Chers invités, chers amis,",
+        "Quand nous commençons à préparer une fête, nous ne pensons pas aux chambres ni aux menus. Nous pensons au moment où une famille est réunie dans la soucca, où les enfants sont heureux, et où les parents peuvent enfin se reposer.",
+        "Après tout notre investissement et toute notre préparation, voir chacun repartir avec le sourire, c’est ce qui nous fait chaud au cœur. Et si c’est une réussite, c’est grâce à chacun d’entre vous, et à l’ambiance que vous apportez.",
+        "Nous sommes là pour vous faire kiffer et rêver, du côté matériel comme du côté spirituel. On vous attend à Pessah, à Souccot, et à chaque événement que nous organiserons ensemble."
+      ],
+      "name": "Ilan",
+      "role": "Directeur de La Belle Vie"
+    },
+    "photo": "media/ilan.jpg"
+  },
+  "team": [
+    { "photo": "media/team-ilan.jpg", "he": { "name": "אילן", "role": "מנכ״ל ומייסד" }, "fr": { "name": "Ilan", "role": "Directeur et fondateur" } },
+    { "photo": "media/team-maayan.jpg", "he": { "name": "מעיין", "role": "מנהלת סושיאל ופרויקטים" }, "fr": { "name": "Maayan", "role": "Responsable réseaux sociaux et projets" } },
+    { "photo": "media/team-yishai.jpg", "he": { "name": "ישי", "role": "צוות" }, "fr": { "name": "Yishai", "role": "Équipe" } }
+  ],
+  "trips": [
+    {
+      "id": "sukkot",
+      "status": "open",
+      "image": "media/hero.jpg",
+      "link": "#sukkot",
+      "bookingUrl": { "he": "https://booking.lbv-event.com/he/reservation", "fr": "https://booking.lbv-event.com/fr/reservation" },
+      "he": { "name": "סוכות", "place": "מלון נוף כנרת, טבריה", "subline": "במלון נוף כנרת" },
+      "fr": { "name": "Souccot", "place": "Hôtel Nof Kinneret, Tibériade", "subline": "à l’hôtel Nof Kinneret" }
+    },
+    {
+      "id": "pesach",
+      "status": "soon",
+      "image": "",
+      "link": "#pesach",
+      "bookingUrl": { "he": "", "fr": "" },
+      "he": { "name": "פסח", "place": "השאירו פרטים ותשמעו ראשונים", "subline": "" },
+      "fr": { "name": "Pessah", "place": "Laissez vos coordonnées pour être informés en premier", "subline": "" }
+    }
+  ],
+  "videos": [
+    { "he": { "title": "האורחים מספרים", "file": "media/guests.mp4", "poster": "media/guests.jpg" }, "fr": { "title": "Nos invités racontent", "file": "media/guests-fr.mp4", "poster": "media/guests-fr.jpg" } },
+    { "he": { "title": "יום אחד איתנו", "file": "media/day.mp4", "poster": "media/day.jpg" }, "fr": { "title": "Une journée avec nous", "file": "media/day-fr.mp4", "poster": "media/day-fr.jpg" } },
+    { "he": { "title": "גן עדן לילדים", "file": "media/kids.mp4", "poster": "media/kids.jpg" }, "fr": { "title": "Le paradis des enfants", "file": "media/kids-fr.mp4", "poster": "media/kids-fr.jpg" } },
+    { "he": { "title": "ערבי מופעים", "file": "media/shows.mp4", "poster": "media/shows.jpg" }, "fr": { "title": "Les soirées spectacles", "file": "media/shows-fr.mp4", "poster": "media/shows-fr.jpg" } },
+    { "he": { "title": "האווירה אצלנו", "file": "media/vibe.mp4", "poster": "media/vibe.jpg" }, "fr": { "title": "L’ambiance chez nous", "file": "media/vibe-fr.mp4", "poster": "media/vibe-fr.jpg" } },
+    { "he": { "title": "מה מקבלים", "file": "media/included.mp4", "poster": "media/included.jpg" }, "fr": { "title": "Ce qui est inclus", "file": "media/included-fr.mp4", "poster": "media/included-fr.jpg" } },
+    { "he": { "title": "מהקמח ועד הפיצה", "file": "media/pizza.mp4", "poster": "media/pizza.jpg" }, "fr": { "title": "De la farine à la pizza", "file": "media/pizza-fr.mp4", "poster": "media/pizza-fr.jpg" } }
+  ]
+}
