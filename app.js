@@ -245,7 +245,9 @@
   player.addEventListener('click', e => { if (e.target === player) closePlayer(); });
   player.addEventListener('close', () => { pv.pause(); });
 
-  /* ---------- Gala tabs ---------- */
+  /* ---------- Gala tabs: order tickets → raffle → donations (the order of an evening) ---------- */
+  const tabBar = $('.stage__tabs');
+  if (tabBar) ['t-tickets', 't-raffle', 't-donate'].forEach(id => { const b = document.getElementById(id); if (b) tabBar.appendChild(b); });
   const tabs = $$('.stage__tabs [role=tab]');
   const select = t => {
     tabs.forEach(x => {
@@ -265,6 +267,7 @@
       select(n); n.focus();
     });
   });
+  if (document.getElementById('t-tickets')) select(document.getElementById('t-tickets'));
 
   // Gala window: nothing below the tiles until one is chosen; each tile shows its own content.
   const modTiles = $$('.modules [data-mod]');
@@ -278,6 +281,13 @@
     if (t) select(t);
   };
   modTiles.forEach(tile => tile.addEventListener('click', () => {
+    // Clicking the open tile again closes it.
+    if (tile.getAttribute('aria-selected') === 'true') {
+      tile.setAttribute('aria-selected', 'false');
+      modPanels.forEach(p => { p.hidden = true; });
+      if (hint) hint.hidden = false;
+      return;
+    }
     lbvShowModule(tile.dataset.mod, tile.dataset.tab, tile);
     const panel = modPanels.find(p => p.dataset.mod === tile.dataset.mod);
     if (panel) setTimeout(() => panel.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }), 30);

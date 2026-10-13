@@ -508,7 +508,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .reach--foot { justify-content: center; grid-template-columns: repeat(8, 64px); margin: 22px auto 18px; }
 .reach--foot .reach__ic { width: 50px; height: 50px; }
 .reach--foot .reach__ic svg { width: 22px; height: 22px; }
-@media (max-width: 760px) { .reach { grid-template-columns: repeat(4, 1fr); } .reach--foot { grid-template-columns: repeat(4, 64px); } }
+@media (max-width: 760px) { .reach { grid-template-columns: repeat(4, 1fr); } .reach--foot { grid-template-columns: repeat(8, auto); gap: 8px; } .reach--foot .reach__ic { width: 38px; height: 38px; } .reach--foot .reach__ic svg { width: 18px; height: 18px; } .reach--foot .reach__label { display: none; } }
 .form { display: grid; gap: 16px; background: var(--night-2); padding: clamp(22px, 4vw, 40px); border-radius: 22px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
 .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form label { display: grid; gap: 6px; font-weight: 600; font-size: .95rem; color: #C7D3E4; }
@@ -728,6 +728,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .modules button { width: 100%; border: 0; font: inherit; text-align: start; cursor: pointer; }
 .modules button[aria-selected="true"] { box-shadow: inset 0 0 0 2px var(--sun); background: rgba(227,182,92,.14); }
 .modules__hint { text-align: center; color: #8597B4; margin: -36px 0 0; font-size: var(--step--1); }
+.mod-panel[hidden] { display: none !important; }
 .mod-panel { scroll-margin-top: 80px; animation: sheet-in .4s var(--ease); }
 .mod-panel--text { max-width: 760px; margin: 0 auto; padding: clamp(24px, 4vw, 44px); border-radius: 22px; background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px rgba(227,182,92,.3); }
 .mod-panel--text .lead { color: #C7D3E4; max-width: none; }
