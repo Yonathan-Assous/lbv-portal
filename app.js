@@ -1,0 +1,313 @@
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const WA = '972585182655';
+
+  // The same script serves the Hebrew page (/) and the French page (/fr/).
+  const root = document.documentElement;
+  const LANG = root.lang === 'fr' ? 'fr' : 'he';
+  const RTL = root.dir === 'rtl';
+  const MEDIA = root.dataset.media || 'media/';
+  const VSUFFIX = root.dataset.vsuffix || '';
+  const ils = n => n.toLocaleString(LANG === 'fr' ? 'fr-FR' : 'he-IL');
+
+  const T = {
+    he: {
+      families: ['משפחת כהן', 'משפחת לוי', 'משפחת אזולאי', 'משפחת פרץ', 'משפחת ביטון', 'משפחת דהן', 'משפחת אוחיון', 'משפחת חדד', 'משפחת עמר', 'משפחת סעדה', 'משפחת אלמליח', 'משפחת בן חמו', 'אנונימי'],
+      people: ['יוסף אזולאי', 'שרה לוי', 'דוד פרץ', 'רחל ביטון', 'משה דהן', 'אסתר חדד', 'אברהם עמר', 'מרים כהן', 'יעקב אוחיון', 'חנה אלמליח', 'שמואל בן חמו', 'רבקה סעדה'],
+      prizes: ['סוף שבוע זוגי במלון', 'נופש פסח למשפחה', 'ארוחה זוגית במסעדה', 'סט כלי כסף לשבת'],
+      ticket: 'כרטיס מס׳ ',
+      nextPrize: 'להגרלת הפרס הבא',
+      seat: 'הושבה אוטומטית',
+      seated: 'כל האורחים הושבו. לאפס',
+      fields: { service: 'שירות', name: 'שם', phone: 'טלפון' },
+      missing: list => 'חסר: ' + list.join(', ') + '. מלאו ונסו שוב.',
+      msg: ['שלום La Belle Vie, אשמח להצעת מחיר.', 'שירות: ', 'שם: ', 'טלפון: ', 'תאריך: ', 'מספר אנשים: ', 'הערות: '],
+    },
+    fr: {
+      families: ['Famille Cohen', 'Famille Levy', 'Famille Azoulay', 'Famille Peretz', 'Famille Bitton', 'Famille Dahan', 'Famille Ohayon', 'Famille Haddad', 'Famille Amar', 'Famille Saadia', 'Famille Elmaleh', 'Famille Benhamou', 'Anonyme'],
+      people: ['Yossef Azoulay', 'Sarah Levy', 'David Peretz', 'Rachel Bitton', 'Moché Dahan', 'Esther Haddad', 'Avraham Amar', 'Myriam Cohen', 'Yaakov Ohayon', 'Hanna Elmaleh', 'Chmouel Benhamou', 'Rivka Saadia'],
+      prizes: ['Un week-end en couple à l’hôtel', 'Un séjour de Pessah en famille', 'Un dîner pour deux au restaurant', 'Un service en argent pour Chabbat'],
+      ticket: 'Billet n° ',
+      nextPrize: 'Tirer le lot suivant',
+      seat: 'Placement automatique',
+      seated: 'Tous les invités sont placés. Recommencer',
+      fields: { service: 'service', name: 'nom', phone: 'téléphone' },
+      missing: list => 'Il manque : ' + list.join(', ') + '. Complétez puis réessayez.',
+      msg: ['Bonjour La Belle Vie, je souhaite recevoir un devis.', 'Service : ', 'Nom : ', 'Téléphone : ', 'Date : ', 'Nombre de personnes : ', 'Remarques : '],
+    },
+  }[LANG];
+
+  /* ---------- Gala links follow the environment (dev.* → dev gala), as on the old portal ---------- */
+  const host = location.hostname;
+  const galaBase = (host.startsWith('dev.') || host.includes('localhost')) ? 'https://dev.gala.lbv-event.com' : 'https://gala.lbv-event.com';
+  $$('[data-gala-path]').forEach(a => { a.href = galaBase + a.dataset.galaPath; });
+
+  // Remember an explicit language choice so the Hebrew page doesn't send French browsers back to /fr/.
+  $$('.bar__lang').forEach(a => a.addEventListener('click', () => {
+    try { localStorage.setItem('lbv-lang', a.hreflang); } catch (e) {}
+  }));
+
+  /* ---------- Header ---------- */
+  const bar = $('#bar');
+  const onScroll = () => bar.classList.toggle('is-solid', scrollY > 40);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const menuBtn = $('#menuBtn'), nav = $('#nav');
+  menuBtn.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  $$('a', nav).forEach(a => a.addEventListener('click', () => {
+    nav.classList.remove('is-open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }));
+
+  /* ---------- Line drawings sketch in when visible ---------- */
+  const drawings = $$('.draw');
+  if (reduced || !('IntersectionObserver' in window)) drawings.forEach(d => d.classList.add('is-drawn'));
+  else {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('is-drawn'); io.unobserve(e.target); }
+    }), { threshold: 0.4 });
+    drawings.forEach(d => io.observe(d));
+  }
+
+  /* ---------- Video rail + player ---------- */
+  const rail = $('#rail');
+  $$('[data-rail]').forEach(b => b.addEventListener('click', () => {
+    // "Next" moves toward the reading direction: left in Hebrew, right in French.
+    const dir = RTL ? -1 : 1;
+    rail.scrollBy({ left: dir * Number(b.dataset.rail) * rail.clientWidth * 0.8, behavior: reduced ? 'auto' : 'smooth' });
+  }));
+
+  const player = $('#player'), pv = $('#playerVideo');
+  $$('[data-video]').forEach(b => b.addEventListener('click', () => {
+    const name = b.dataset.video + VSUFFIX;
+    pv.src = `${MEDIA}${name}.mp4`;
+    pv.poster = `${MEDIA}${name}.jpg`;
+    player.setAttribute('aria-label', b.dataset.title);
+    player.showModal();
+    pv.play().catch(() => {});
+  }));
+  const closePlayer = () => { pv.pause(); pv.removeAttribute('src'); pv.load(); if (player.open) player.close(); };
+  $('#playerClose').addEventListener('click', closePlayer);
+  player.addEventListener('click', e => { if (e.target === player) closePlayer(); });
+  player.addEventListener('close', () => { pv.pause(); });
+
+  /* ---------- Gala tabs ---------- */
+  const tabs = $$('.stage__tabs [role=tab]');
+  const select = t => {
+    tabs.forEach(x => {
+      const on = x === t;
+      x.setAttribute('aria-selected', on);
+      x.tabIndex = on ? 0 : -1;
+      $('#' + x.getAttribute('aria-controls')).hidden = !on;
+    });
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', e => {
+      const fwd = RTL ? 'ArrowLeft' : 'ArrowRight', back = RTL ? 'ArrowRight' : 'ArrowLeft';
+      const d = e.key === fwd ? 1 : e.key === back ? -1 : 0;
+      if (!d) return;
+      const n = tabs[(i + d + tabs.length) % tabs.length];
+      select(n); n.focus();
+    });
+  });
+
+  /* ---------- Live donations demo ---------- */
+  const gifts = [180, 360, 500, 770, 1000, 1800, 2600, 3600, 5000, 10000];
+  const GOAL = 250000;
+  let total = 0, shown = 0;
+  const dTotal = $('#dTotal'), dBar = $('#dBar'), dFeed = $('#dFeed');
+
+  const tween = (from, to) => {
+    if (reduced) { dTotal.textContent = ils(to) + ' ₪'; return; }
+    const t0 = performance.now();
+    const step = now => {
+      const k = Math.min(1, (now - t0) / 700);
+      shown = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+      dTotal.textContent = ils(shown) + ' ₪';
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const donate = amount => {
+    const prev = total;
+    total = Math.min(GOAL, total + amount);
+    tween(prev, total);
+    dBar.style.width = (total / GOAL * 100) + '%';
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${pick(T.families)}</span><b>${ils(amount)} ₪</b>`;
+    dFeed.prepend(li);
+    while (dFeed.children.length > 6) dFeed.lastChild.remove();
+  };
+  $('#dAdd').addEventListener('click', () => donate(pick(gifts)));
+
+  let donateTimer = null;
+  const gala = $('#gala');
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !donateTimer) {
+      if (total === 0) {
+        total = 136000;
+        [1800, 360, 3600].forEach(donate);
+      }
+      donateTimer = setInterval(() => { if (total < GOAL * 0.96) donate(pick(gifts)); }, 2200);
+    } else if (!e.isIntersecting && donateTimer) {
+      clearInterval(donateTimer); donateTimer = null;
+    }
+  }, { threshold: 0.25 }).observe(gala);
+
+  /* ---------- Raffle demo ---------- */
+  const rName = $('#rName'), rTicket = $('#rTicket'), rGo = $('#rGo'), raffle = $('.raffle'), rPrize = $('#rPrize');
+  let prizeIdx = 0, spinning = false;
+
+  rGo.addEventListener('click', () => {
+    if (spinning) return;
+    if (raffle.classList.contains('is-won')) {
+      prizeIdx = (prizeIdx + 1) % T.prizes.length;
+      rPrize.textContent = T.prizes[prizeIdx];
+    }
+    spinning = true;
+    raffle.classList.remove('is-won');
+    rGo.disabled = true;
+    const end = performance.now() + (reduced ? 0 : 2600);
+    let delay = 50;
+    const tick = () => {
+      rName.textContent = pick(T.people);
+      rTicket.textContent = T.ticket + String(1000 + Math.floor(Math.random() * 900));
+      if (performance.now() < end) { delay *= 1.09; setTimeout(tick, delay); return; }
+      raffle.classList.add('is-won');
+      burst();
+      spinning = false;
+      rGo.disabled = false;
+      rGo.textContent = T.nextPrize;
+    };
+    tick();
+  });
+
+  const canvas = $('#confetti'), ctx = canvas.getContext('2d');
+  function burst() {
+    if (reduced) return;
+    const r = canvas.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+    canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const colors = ['#E3B65C', '#F3D58E', '#1E7FD0', '#FFFFFF'];
+    const bits = Array.from({ length: 120 }, () => ({
+      x: r.width / 2, y: r.height * 0.45,
+      vx: (Math.random() - .5) * 12, vy: -Math.random() * 11 - 3,
+      s: 4 + Math.random() * 5, c: pick(colors), a: Math.random() * 6, va: (Math.random() - .5) * .3
+    }));
+    const t0 = performance.now();
+    const frame = now => {
+      ctx.clearRect(0, 0, r.width, r.height);
+      bits.forEach(b => {
+        b.vy += .32; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.a += b.va;
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.a);
+        ctx.fillStyle = b.c; ctx.fillRect(-b.s / 2, -b.s / 4, b.s, b.s / 2);
+        ctx.restore();
+      });
+      if (now - t0 < 2600) requestAnimationFrame(frame); else ctx.clearRect(0, 0, r.width, r.height);
+    };
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- Tickets demo ---------- */
+  const qr = $('#qr');
+  (() => {
+    // Decorative code: three finder squares and a seeded pattern.
+    let seed = 7, html = '';
+    const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const finder = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff" style="fill:#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3"/>`;
+    for (let y = 0; y < 25; y++) for (let x = 0; x < 25; x++) {
+      const inFinder = (x < 8 && y < 8) || (x > 16 && y < 8) || (x < 8 && y > 16);
+      if (!inFinder && rnd() > .52) html += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+    }
+    qr.innerHTML = html + finder(0, 0) + finder(18, 0) + finder(0, 18);
+  })();
+  const tSold = $('#tSold');
+  let sold = 312;
+  $$('.pack').forEach(p => p.addEventListener('click', () => {
+    sold += Number(p.dataset.n);
+    tSold.textContent = ils(sold);
+    p.classList.add('is-bought');
+    setTimeout(() => p.classList.remove('is-bought'), 600);
+  }));
+
+  /* ---------- Wedding seating demo ---------- */
+  const hall = $('#hall');
+  const TABLES = 9, SEATS = 10;
+  for (let t = 0; t < TABLES; t++) {
+    const el = document.createElement('div');
+    el.className = 'table';
+    let seats = '';
+    for (let s = 0; s < SEATS; s++) seats += `<i class="seat" style="--a:${s * 360 / SEATS}deg"></i>`;
+    el.innerHTML = seats + `<span class="table__top">${t + 1}</span>`;
+    hall.appendChild(el);
+  }
+  // Table groups: groom's family, bride's family, friends.
+  const plan = ['g1', 'g1', 'g1', 'g2', 'g2', 'g2', 'g3', 'g3', 'g3'];
+  const seatBtn = $('#seatBtn');
+  let seated = false, seating = false;
+  seatBtn.addEventListener('click', () => {
+    if (seating) return;
+    const all = $$('.table', hall);
+    if (seated) {
+      $$('.seat', hall).forEach(s => s.className = 'seat');
+      seated = false; seatBtn.textContent = T.seat;
+      return;
+    }
+    seating = true;
+    let i = 0;
+    const order = [];
+    all.forEach((t, ti) => $$('.seat', t).forEach((s, si) => { if (!(ti === 8 && si > 5)) order.push([s, plan[ti]]); }));
+    const step = () => {
+      for (let k = 0; k < 3 && i < order.length; k++, i++) {
+        const [s, g] = order[i];
+        s.classList.add(g, 'is-in');
+        setTimeout(() => s.classList.remove('is-in'), 300);
+      }
+      if (i < order.length) setTimeout(step, reduced ? 0 : 28);
+      else { seating = false; seated = true; seatBtn.textContent = T.seated; }
+    };
+    step();
+  });
+
+  /* ---------- Quote form → WhatsApp ---------- */
+  const form = $('#quote'), fService = $('#fService'), fErr = $('#fErr');
+  $$('[data-service]').forEach(a => a.addEventListener('click', () => { fService.value = a.dataset.service; }));
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const missing = [];
+    ['service', 'name', 'phone'].forEach(k => {
+      const el = form.elements[k];
+      const bad = !String(d.get(k) || '').trim() || (k === 'phone' && String(d.get(k)).replace(/\D/g, '').length < 9);
+      el.setAttribute('aria-invalid', bad);
+      if (bad) missing.push(T.fields[k]);
+    });
+    if (missing.length) {
+      fErr.hidden = false;
+      fErr.textContent = T.missing(missing);
+      form.querySelector('[aria-invalid="true"]').focus();
+      return;
+    }
+    fErr.hidden = true;
+    const m = T.msg;
+    const lines = [
+      m[0],
+      m[1] + fService.options[fService.selectedIndex].text,
+      m[2] + d.get('name'),
+      m[3] + d.get('phone'),
+      d.get('date') && m[4] + d.get('date'),
+      d.get('guests') && m[5] + d.get('guests'),
+      d.get('notes') && m[6] + d.get('notes'),
+    ].filter(Boolean);
+    window.open(`https://wa.me/${WA}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+  });
+})();
