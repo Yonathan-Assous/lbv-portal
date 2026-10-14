@@ -1215,3 +1215,17 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ---------- Design chosen in the admin for a single text (see edit-map.js → style) ---------- */
+.lbv-sz-sm { zoom: .82; }
+.lbv-sz-lg { zoom: 1.2; }
+.lbv-sz-xl { zoom: 1.45; }
+.lbv-c-gold, .lbv-c-gold > span, .lbv-c-white, .lbv-c-white > span, .lbv-c-dark, .lbv-c-dark > span { background: none !important; -webkit-text-fill-color: currentColor !important; }
+.lbv-c-gold, .lbv-c-gold > span { color: #D4A54C !important; }
+.lbv-c-white, .lbv-c-white > span { color: #fff !important; }
+.lbv-c-dark, .lbv-c-dark > span { color: #14213D !important; }
+.lbv-it-on, .lbv-it-on > span { font-style: italic !important; }
+.lbv-it-off, .lbv-it-off > span { font-style: normal !important; }
+.lbv-al-right { text-align: right !important; }
+.lbv-al-center { text-align: center !important; }
+.lbv-al-left { text-align: left !important; }

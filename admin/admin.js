@@ -26,7 +26,7 @@ function changed() {
   $('#saveBar').hidden = !d;
   return d;
 }
-const touch = () => changed();
+const touch = () => { changed(); pvReload(); };
 const date = iso => (iso || '').slice(0, 10).split('-').reverse().join('/');
 const autosize = ta => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight + 2, 420) + 'px'; };
 
@@ -107,6 +107,86 @@ function tools(arr, i, rerender, opt = {}) {
   return t;
 }
 
+/* ---------- live preview: the real site, with the changes that are not published yet ---------- */
+// The preview page (…/?preview=1) reads the unsaved content from here, and is updated in place while typing.
+window.LBV_PREVIEW_STATE = () => state;
+const pv = { on: false, url: '', dev: 'desktop', want: true };
+try { pv.dev = localStorage.getItem('lbv-pv-dev') || 'desktop'; pv.want = localStorage.getItem('lbv-pv-off') !== '1'; } catch (e) {}
+const wide = () => matchMedia('(min-width: 1181px)').matches;
+const pvWin = () => { try { return $('#pvIframe').contentWindow; } catch (e) { return null; } };
+/** The site page that shows the part being edited, or '' when this admin page has nothing to preview. */
+function pvTarget() {
+  if (!(page.startsWith('w-') || page.startsWith('trip-'))) return '';
+  const sid = page.startsWith('trip-') ? page.slice(5) : page.slice(2);
+  return `../${lang === 'he' ? '' : lang + '/'}?preview=1${['home', 'menu'].includes(sid) ? '' : '#' + sid}`;
+}
+function pvShow(open) {
+  const url = pvTarget(), visible = !!url && open;
+  $('#pv').hidden = !visible;
+  $('#pvOpen').hidden = !url || visible;
+  document.body.classList.toggle('pv-on', visible);
+  pv.on = visible;
+  if (!visible) return;
+  document.documentElement.style.setProperty('--hbh', $('.hb').offsetHeight + 'px');
+  if (pv.url !== url) {
+    const [doc, hash = ''] = url.split('#');
+    if (pv.url && pv.url.split('#')[0] === doc && pvWin()) pvWin().location.hash = hash;   // same page: just open the right window
+    else $('#pvIframe').src = url;
+    pv.url = url;
+  }
+  pvFit();
+}
+/** Fits the page into the panel: a full computer screen scaled down, or a phone. */
+function pvFit() {
+  if (!pv.on) return;
+  const st = $('#pvStage'), f = $('#pvFrame'), W = st.clientWidth, H = st.clientHeight;
+  const phone = pv.dev === 'phone', w = phone ? 410 : 1280, h = phone ? 864 : 0;
+  const s = phone ? Math.min((W - 32) / w, (H - 32) / h, 1) : W / w;
+  f.classList.toggle('is-phone', phone);
+  f.style.width = w + 'px';
+  f.style.height = (phone ? h : H / s) + 'px';
+  f.style.transform = `scale(${s})`;
+  f.style.left = phone ? (W - w * s) / 2 + 'px' : '0px';
+  f.style.top = phone ? (H - h * s) / 2 + 'px' : '0px';
+  $$('#pv [data-dev]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.dev === pv.dev)));
+}
+/** Reloads the preview with the latest changes, keeping the spot it was showing. */
+function pvReload(now) {
+  if (!pv.on) return;
+  clearTimeout(pvReload.t);
+  pvReload.t = setTimeout(() => {
+    const w = pvWin();
+    if (!w) return;
+    let y = 0, sy = 0;
+    try { y = w.scrollY; sy = w.document.querySelector('.sheet.is-open')?.scrollTop || 0; } catch (e) {}
+    $('#pvIframe').addEventListener('load', () => setTimeout(() => {
+      try { const w2 = pvWin(); w2.scrollTo(0, y); const s = w2.document.querySelector('.sheet.is-open'); if (s) s.scrollTop = sy; } catch (e) {}
+    }, 400), { once: true });
+    try { w.location.reload(); } catch (e) {}
+  }, now ? 0 : 700);
+}
+const pvCall = (fn, ...a) => { try { pvWin()?.LBVPreview?.[fn](...a); } catch (e) {} };
+const pvText = key => pvCall('text', key, textVal(lang, key));
+const pvStyle = key => pvCall('style', key, state.styles?.[key] || {});
+const pvFocus = key => pv.on && pvCall('show', key);
+$$('#pv [data-dev]').forEach(b => b.addEventListener('click', () => {
+  pv.dev = b.dataset.dev;
+  try { localStorage.setItem('lbv-pv-dev', pv.dev); } catch (e) {}
+  pvFit();
+}));
+$('#pvReload').addEventListener('click', () => pvReload(true));
+$('#pvClose').addEventListener('click', () => {
+  if (wide()) { pv.want = false; try { localStorage.setItem('lbv-pv-off', '1'); } catch (e) {} }
+  pvShow(false);
+});
+$('#pvOpen').addEventListener('click', () => {
+  if (wide()) { pv.want = true; try { localStorage.removeItem('lbv-pv-off'); } catch (e) {} }
+  pvShow(true);
+});
+new ResizeObserver(() => pvFit()).observe($('#pvStage'));
+let pvWasWide = wide();
+addEventListener('resize', () => { if (wide() !== pvWasWide) { pvWasWide = wide(); if (state) pvShow(pvWasWide && pv.want); } });
+
 /* ---------- the site's own pages: originals of every text ---------- */
 async function loadDocs() {
   const urls = { he: '../index.html', fr: '../fr/index.html', en: '../en/index.html' };
@@ -137,7 +217,8 @@ function setText(l, key, val) {
   const t = (T()[key] ??= {});
   if (E.same(val, b.orig)) delete t[l]; else t[l] = { orig: b.orig, val };
   if (!Object.keys(t).length) delete T()[key];
-  touch();
+  changed();
+  if (l === lang) pvText(key);   // the preview changes as you type, without reloading
 }
 const isChanged = key => !!state.texts?.[key] && LANGS.some(l => state.texts[key][l]);
 const titleOrig = (l, id) => docs[l].getElementById(id)?.dataset.title || '';
@@ -234,6 +315,7 @@ function go(p, opts = {}) {
   history.replaceState(null, '', '#' + page);
   drawNav();
   render();
+  pvShow(wide() ? pv.want : false);
   scrollTo({ top: 0 });
   if (opts.anchor) setTimeout(() => $(opts.anchor)?.scrollIntoView({ block: 'center' }), 80);
 }
@@ -247,6 +329,7 @@ $$('#langPick button').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang;
   $$('#langPick button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
   render();
+  pvShow(wide() ? pv.want : pv.on);
 }));
 
 /* ---------- one tab per part of the site: everything about it, in the site's order ---------- */
@@ -529,11 +612,49 @@ function textBlock(b) {
   } else if (b.sh === 'lines') {
     blk.append(field('כל שורה בשורה נפרדת', v.text || '', x => upd({ text: x }), { multi: true, rows: 3 }));
   } else {
-    blk.append(field('', v.text || '', x => upd({ text: x }), { multi: (v.text || '').length > 60 || /^(P|LI)$/.test(b.tag) && (v.text || '').length > 40 }));
+    blk.append(field('הטקסט <small class="muted">(Enter = שורה חדשה)</small>', v.text || '', x => upd({ text: x }), { multi: true, rows: 1 }));
   }
+  blk.append(styleBox(key));
+  blk.addEventListener('focusin', () => pvFocus(key));
   $('[data-reset]', blk)?.addEventListener('click', () => { delete state.texts[key][lang]; if (!Object.keys(state.texts[key]).length) delete state.texts[key]; touch(); render(); });
   $('[data-hide]', blk).addEventListener('click', () => { const t = (T()[key] ??= {}); if (t.hidden) delete t.hidden; else t.hidden = true; if (!Object.keys(t).length) delete T()[key]; touch(); render(); });
   return blk;
+}
+/* Design of one text: the same four simple choices for every text on the site. */
+const STYLE_OPTS = [
+  ['sz', 'גודל', [['', 'רגיל'], ['sm', 'קטן'], ['lg', 'גדול'], ['xl', 'גדול מאוד']]],
+  ['c', 'צבע', [['', 'רגיל'], ['gold', 'זהב', '#D4A54C'], ['white', 'לבן', '#FFFFFF'], ['dark', 'כהה', '#14213D']]],
+  ['it', 'אותיות', [['', 'רגיל'], ['off', 'ישרות'], ['on', 'נטויות']]],
+  ['al', 'יישור', [['', 'רגיל'], ['right', 'ימין'], ['center', 'מרכז'], ['left', 'שמאל']]],
+];
+const openSty = new Set();   // design panels left open stay open when the page is redrawn
+function setStyle(key, k, v) {
+  const S = (state.styles ??= {}), o = { ...(S[key] || {}) };
+  if (v) o[k] = v; else delete o[k];
+  if (Object.keys(o).length) S[key] = o; else delete S[key];
+  if (!Object.keys(S).length) delete state.styles;
+  changed(); pvStyle(key); pvFocus(key);
+}
+function styleBox(key) {
+  const box = html('<div class="sty"><button type="button" class="sty__toggle"></button><div class="sty__panel" hidden></div></div>');
+  const tg = $('.sty__toggle', box), panel = $('.sty__panel', box);
+  const cur = () => state.styles?.[key] || {};
+  const sum = () => {
+    const s = cur(), chosen = STYLE_OPTS.filter(([k]) => s[k]).map(([k, , o]) => o.find(x => x[0] === s[k])?.[1]).filter(Boolean);
+    tg.innerHTML = `${panel.hidden ? '＋' : '−'} עיצוב הטקסט: גודל, צבע, יישור ${chosen.length ? `<span class="tag tag--gold">${esc(chosen.join(', '))}</span>` : ''}`;
+  };
+  const draw = () => {
+    const s = cur();
+    panel.innerHTML = STYLE_OPTS.map(([k, label, opts]) => `<div class="sty__row"><span>${label}</span><div class="seg">${opts.map(([v, t, sw]) =>
+      `<button type="button" data-k="${k}" data-v="${v}" aria-pressed="${(s[k] || '') === v}">${sw ? `<i class="sw" style="background:${sw}"></i>` : ''}${t}</button>`).join('')}</div></div>`).join('')
+      + `<div class="sty__foot"><p>רואים את השינוי מיד בתצוגה החיה. "רגיל" = כמו שהאתר בנוי. העיצוב חל על הטקסט הזה בכל השפות.</p>${Object.keys(s).length ? '<button type="button" class="btn btn--line btn--sm" data-reset-sty>איפוס העיצוב</button>' : ''}</div>`;
+    $$('[data-k]', panel).forEach(b => b.addEventListener('click', () => { setStyle(key, b.dataset.k, b.dataset.v); draw(); sum(); }));
+    $('[data-reset-sty]', panel)?.addEventListener('click', () => { STYLE_OPTS.forEach(([k]) => setStyle(key, k, '')); draw(); sum(); });
+  };
+  tg.addEventListener('click', () => { panel.hidden = !panel.hidden; panel.hidden ? openSty.delete(key) : (openSty.add(key), pvFocus(key)); sum(); });
+  if (openSty.has(key)) panel.hidden = false;
+  draw(); sum();
+  return box;
 }
 function listEditor(key, hasLead, title) {
   const own = !!state.lists?.[key];
@@ -854,6 +975,7 @@ function stats(pg) {
 /* ---------- 11. guide, tech support and the first-visit tour ---------- */
 const HOWTO = [
   ['לשנות טקסט באתר', ['כותבים מילה מהטקסט בחיפוש שלמעלה, ולוחצים על התוצאה.', 'או: "עמודי האתר" ← בוחרים את החלק (למשל "סוכות").', 'משנים את הטקסט בשדה. השדה נצבע בזהב כדי שתדעו מה שיניתם.', 'לוחצים "שמירה ופרסום" בפס שלמטה. תוך דקה זה באתר.'], 'w-home'],
+  ['לראות איך זה ייראה, ולשנות גודל, צבע ויישור', ['במחשב: ליד העריכה מופיעה "תצוגה חיה" של האתר. בטלפון: לוחצים על הכפתור "תצוגה חיה" למטה.', 'בוחרים "מחשב" או "טלפון" כדי לראות איך זה ייראה בכל מסך.', 'כל מה שכותבים מופיע בתצוגה מיד, עוד לפני ששומרים. לחיצה על שדה מראה בתצוגה איפה הטקסט נמצא.', 'מתחת לכל טקסט לוחצים "עיצוב הטקסט" ובוחרים גודל, צבע, אותיות ישרות או נטויות, ויישור.', 'שורה חדשה: לוחצים Enter בתוך הטקסט.', 'כשזה נראה טוב, לוחצים "שמירה ופרסום".'], 'w-home'],
   ['לתרגם לצרפתית או לאנגלית', ['נכנסים לחלק שרוצים לתרגם.', 'למעלה בצד בוחרים "Français" או "English".', 'כל שדה מציג את העברית באפור, וכותבים מעליו את התרגום.', 'מה שלא תורגם יופיע באתר בעברית, אז אפשר לתרגם בהדרגה.'], 'w-home'],
   ['להסתיר משהו מהאתר בלי למחוק', ['ליד כל טקסט, פריט, סרטון או תמונה יש כפתור "להסתיר".', 'הדבר נשאר בניהול, חיוור, ואפשר להחזיר אותו בלחיצה על "להציג באתר".'], 'w-home'],
   ['לבנות דף לפסח, או לפתוח נופש חדש', ['"עמודי האתר" ← "נופשים" ← "+ נופש חדש" (או הלשונית "פסח").', 'כותבים שם ומצב ("בקרוב" או "ההרשמה פתוחה").', 'מסמנים "לנופש יש דף משלו באתר".', 'לוחצים "מילוי מהתבנית של סוכות" כדי להתחיל עם דף מלא, ומשנים מה שצריך.', 'מעלים סרטון ראשי, סרטונים לפס, תמונות לגלריה ותמונת רקע.', '"שמירה ופרסום". הנופש מופיע כרטיס בחלון "נופשים", עם דף משלו.'], 'w-holidays'],
@@ -1070,19 +1192,19 @@ async function openApp() {
 $('#saveBtn').addEventListener('click', async () => {
   const btn = $('#saveBtn');
   btn.disabled = true; btn.textContent = 'שומר…';
-  for (const k of ['texts', 'lists', 'titles', 'heroes', 'contact']) if (state[k] && !Object.keys(state[k]).length) delete state[k];
+  for (const k of ['texts', 'lists', 'titles', 'heroes', 'contact', 'styles']) if (state[k] && !Object.keys(state[k]).length) delete state[k];
   try {
     const r = await fetch('/api/content', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(state) });
     if (r.status === 401) { toast('פג תוקף הכניסה. היכנסו שוב', 'err'); return showLogin(); }
     if (!r.ok) throw new Error(String(r.status));
     saved = JSON.stringify(state); changed();
-    toast('נשמר ופורסם! השינויים יופיעו באתר תוך דקה');
+    toast('נשמר ופורסם! השינויים כבר באתר');
   } catch (e) { toast(e.message === '503' ? 'האחסון עוד לא מחובר, אי אפשר לשמור' : 'השמירה נכשלה. נסו שוב', 'err'); }
   finally { btn.disabled = false; btn.textContent = 'שמירה ופרסום'; }
 });
 $('#undoBtn').addEventListener('click', () => {
   if (!confirm('לבטל את כל השינויים שעוד לא פורסמו?')) return;
-  state = JSON.parse(saved); changed(); render(); toast('השינויים בוטלו', 'info');
+  state = JSON.parse(saved); changed(); render(); pvReload(true); toast('השינויים בוטלו', 'info');
 });
 function showLogin() { $('#app').hidden = true; $('#login').hidden = false; $('[name=password]').focus(); }
 $('#loginForm').addEventListener('submit', async e => {

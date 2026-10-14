@@ -59,6 +59,24 @@
     <main class="page" id="page"></main>
   </div>
 
+  <!-- Live preview: the real site, with the changes that are not published yet -->
+  <aside class="pv" id="pv" hidden aria-label="תצוגה חיה">
+    <div class="pv__bar">
+      <div class="pv__title"><b>תצוגה חיה</b><small>כך זה ייראה באתר. עוד לא פורסם.</small></div>
+      <div class="seg" role="group" aria-label="סוג מסך">
+        <button type="button" data-dev="desktop">מחשב</button>
+        <button type="button" data-dev="phone">טלפון</button>
+      </div>
+      <button type="button" class="icon" id="pvReload" title="רענון התצוגה">⟳</button>
+      <button type="button" class="icon" id="pvClose" title="סגירת התצוגה">✕</button>
+    </div>
+    <div class="pv__stage" id="pvStage"><div class="pv__frame" id="pvFrame"><iframe id="pvIframe" title="תצוגה חיה של האתר"></iframe></div></div>
+  </aside>
+  <button type="button" class="pv-open" id="pvOpen" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    תצוגה חיה
+  </button>
+
   <div class="savebar" id="saveBar" hidden>
     <span class="savebar__dot" aria-hidden="true"></span>
     <span class="savebar__text">יש שינויים שעוד לא פורסמו באתר</span>

@@ -54,7 +54,17 @@
       while (b.nextSibling) b.nextSibling.remove();
       if (span) { span.textContent = v.text || ''; el.append(span); }
       else if (v.text) el.append(' ' + v.text);
-    } else el.textContent = v.text || '';
+    } else {
+      // Enter in the admin = a line break on the site.
+      el.textContent = '';
+      String(v.text || '').split('\n').forEach((t, i) => { if (i) el.append(document.createElement('br')); el.append(t); });
+    }
+  }
+  // Design chosen in the admin for one text: size, colour, upright/italic letters, alignment.
+  const STY = { sz: ['sm', 'lg', 'xl'], c: ['gold', 'white', 'dark'], it: ['on', 'off'], al: ['right', 'center', 'left'] };
+  function style(el, st) {
+    [...el.classList].filter(c => /^lbv-(sz|c|it|al)-/.test(c)).forEach(c => el.classList.remove(c));
+    for (const k in STY) if (st && STY[k].includes(st[k])) el.classList.add(`lbv-${k}-${st[k]}`);
   }
   // A list item in the visitor's language, or the Hebrew one when that language is still empty.
   const pick = (it, lang, keys) => {
@@ -103,6 +113,7 @@
     const texts = (content && content.texts) || {}, lists = (content && content.lists) || {};
     for (const sc of map) {
       for (const b of sc.blocks) {
+        if (content && content.styles && content.styles[b.key]) style(b.el, content.styles[b.key]);
         const c = texts[b.key];
         if (!c) continue;
         if (c.hidden) { b.el.hidden = true; b.el.style.display = 'none'; continue; }
@@ -154,7 +165,7 @@
     }
   }
 
-  window.LBVEdit = { scan, apply, read, shape, same };
+  window.LBVEdit = { scan, apply, read, shape, same, write, style };
   // The live page is scanned now, before anything else changes it.
   if (document.querySelector('main')) window.LBVEdit.map = scan(document);
 })();

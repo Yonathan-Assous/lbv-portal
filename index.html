@@ -13,7 +13,7 @@
   // French-speaking visitors land on /fr/ unless they picked Hebrew themselves.
   try {
     var choice = localStorage.getItem('lbv-lang');
-    if (!choice && /^fr\b/i.test(navigator.language || '')) location.replace('fr/' + location.hash);
+    if (!choice && !/[?&]preview\b/.test(location.search) && /^fr\b/i.test(navigator.language || '')) location.replace('fr/' + location.hash);
   } catch (e) {}
 </script>
 <link rel="icon" type="image/png" href="media/icon-gold.png">

@@ -57,7 +57,12 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const asset = p => !p ? '' : /^(https?:|data:|\/)/.test(p) ? p : MEDIA + p.replace(/^media\//, '');
   const SITE = MEDIA.replace(/media\/$/, '');
+  // Live preview inside the admin: the page shows the admin's unsaved content and is updated in place.
+  const PREVIEW = /[?&]preview\b/.test(location.search) && window.parent !== window;
   async function loadContent() {
+    if (PREVIEW) {
+      try { const s = parent.LBV_PREVIEW_STATE && parent.LBV_PREVIEW_STATE(); if (s) return JSON.parse(JSON.stringify(s)); } catch (e) {}
+    }
     for (const url of ['/api/content', SITE + 'content.json']) {
       try {
         const r = await fetch(url, { cache: 'no-store' });
@@ -244,6 +249,26 @@
     if (made && location.hash) route();
   }
   loadContent().then(renderContent);
+  if (PREVIEW) {
+    // The admin's own preview is not a visit: drop it from the visitor statistics.
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    window.va('beforeSend', () => null);
+    const css = document.createElement('style');
+    css.textContent = '.lbv-pv-flash{outline:3px solid #E3B65C;outline-offset:6px;border-radius:6px;transition:outline-color 1.2s}.lbv-pv-flash.is-off{outline-color:transparent}';
+    document.head.append(css);
+    const block = key => { for (const sc of LBVEdit.map || []) { const b = sc.blocks.find(x => x.key === key); if (b) return b; } };
+    window.LBVPreview = {
+      text(key, v) { const b = block(key); if (b && v) LBVEdit.write(b.el, b.sh, v); },
+      style(key, s) { const b = block(key); if (b) LBVEdit.style(b.el, s || {}); },
+      show(key) {
+        const b = block(key);
+        if (!b || !b.el.getClientRects().length) return;
+        b.el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        b.el.classList.remove('is-off'); b.el.classList.add('lbv-pv-flash');
+        clearTimeout(b.flash); b.flash = setTimeout(() => b.el.classList.add('is-off'), 1200);
+      },
+    };
+  }
 
   /* ---------- Gala links follow the environment (dev.* → dev gala), as on the old portal ---------- */
   const host = location.hostname;
