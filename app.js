@@ -146,11 +146,13 @@
 
   /* ---------- Windows: detail sections open full-screen from their #hash ---------- */
   const sheets = $$('.sheet');
+  // The company name never breaks across two lines in a title.
+  const brand = s => s.replace(/La Belle Vie/g, '<span class="nw">La Belle Vie</span>');
   const closeLabel = { fr: 'Retour à l’accueil', en: 'Back to home' }[LANG] || 'חזרה לדף הראשי';
   sheets.forEach(s => {
     const barEl = document.createElement('div');
     barEl.className = 'sheet__bar';
-    barEl.innerHTML = `<button class="sheet__close" type="button">${RTL ? '&#8594;' : '&#8592;'} ${closeLabel}</button><strong>${s.dataset.title || ''}</strong>`;
+    barEl.innerHTML = `<button class="sheet__close" type="button">${RTL ? '&#8594;' : '&#8592;'} ${closeLabel}</button><strong>${brand(s.dataset.title || '')}</strong>`;
     s.prepend(barEl);
     // Windows with a data-hero image get the dark theme and a cinematic banner carrying their title.
     if (s.dataset.hero) {
@@ -160,7 +162,7 @@
         : `<img src="${src}" alt="" loading="lazy">`;
       const hero = document.createElement('header');
       hero.className = 'sheet-hero';
-      hero.innerHTML = `${media}<div class="wrap"><h2>${s.dataset.heroText || s.dataset.title}</h2></div><span class="horizon__line"></span>`;
+      hero.innerHTML = `${media}<div class="wrap"><h2>${brand(s.dataset.heroText || s.dataset.title)}</h2></div><span class="horizon__line"></span>`;
       barEl.after(hero);
       s.classList.add('sheet--dark', 'has-hero');
     }

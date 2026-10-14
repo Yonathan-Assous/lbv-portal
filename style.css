@@ -1126,8 +1126,11 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
   padding: 12px var(--gutter); background: rgba(11,20,48,.95); color: #fff; backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 rgba(255,255,255,.08);
 }
-.sheet__bar strong { font: 700 1.15rem var(--display); }
+.sheet__bar strong { font: 700 1.15rem var(--display); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nw { white-space: nowrap; }
+@media (max-width: 560px) { .sheet__bar strong { font-size: 1rem; } .sheet__close { padding: 0 13px; font-size: .92rem; } }
 .sheet__close {
+  flex: none; white-space: nowrap;
   display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 0; border-radius: 99px;
   background: var(--sun); color: var(--night); font-weight: 700;
 }
