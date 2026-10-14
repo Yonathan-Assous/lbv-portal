@@ -275,6 +275,28 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .holidays { padding: 110px 0 90px; background: var(--paper); }
 .holidays--pesach .pesach { margin-top: 0; }
 
+/* ---------- Photo gallery (Sukkot window) + lightbox ---------- */
+.gallery { margin-top: 56px; margin-bottom: 56px; }
+.gallery__grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.gallery__item { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; cursor: zoom-in; background: var(--foam); }
+.gallery__item img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; transition: transform .6s var(--ease); }
+.gallery__item span { position: absolute; inset-inline: 0; bottom: 0; padding: 26px 12px 10px; text-align: start; color: #fff; font-weight: 700; font-size: .9rem;
+  background: linear-gradient(to top, rgba(11,20,48,.85), transparent); }
+.gallery__item:hover img { transform: scale(1.05); }
+.gallery__item:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+@media (max-width: 760px) { .gallery__grid { grid-template-columns: 1fr 1fr; gap: 8px; } .gallery__item { border-radius: 12px; } }
+.lightbox { max-width: none; max-height: none; width: 100vw; height: 100dvh; margin: 0; padding: 0; border: 0; background: rgba(6,10,24,.94); color: #fff; }
+.lightbox[open] { display: grid; grid-template-columns: auto 1fr auto; align-items: center; direction: ltr; }
+[dir="rtl"] .lightbox figure { direction: rtl; }
+.lightbox::backdrop { background: rgba(6,10,24,.6); }
+.lightbox figure { margin: 0; display: grid; justify-items: center; gap: 12px; padding: 16px; min-width: 0; }
+.lightbox img { max-width: 100%; max-height: calc(100dvh - 110px); border-radius: 14px; object-fit: contain; }
+.lightbox figcaption { font: 700 1.1rem var(--display); }
+.lightbox__close { position: absolute; top: 14px; inset-inline-end: 14px; z-index: 2; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255,255,255,.12); color: #fff; font-size: 1.6rem; cursor: pointer; }
+.lightbox__nav { width: 48px; height: 48px; margin: 0 10px; border: 0; border-radius: 50%; background: rgba(255,255,255,.12); color: #fff; font-size: 1.8rem; line-height: 1; cursor: pointer; }
+.lightbox__nav:hover, .lightbox__close:hover { background: var(--sun); color: var(--night); }
+@media (max-width: 760px) { .lightbox__nav { position: absolute; bottom: 24px; margin: 0; } .lightbox__nav--prev { inset-inline-start: 24px; } .lightbox__nav--next { inset-inline-end: 24px; } .lightbox[open] { grid-template-columns: 1fr; } }
+
 /* ---------- About: short intro on the homepage, the full story in its own window (#about-us) ---------- */
 .about__intro--short { grid-template-columns: 1fr; max-width: 760px; }
 .about__intro--short .h2, .about__intro--short .lead { grid-column: 1; }

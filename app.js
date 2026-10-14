@@ -229,6 +229,41 @@
   addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) goBack(); });
   route();
 
+  /* ---------- Phone hero: vertical poster to match the vertical video ---------- */
+  const heroVideo = $('.hero__video');
+  if (heroVideo && matchMedia('(max-width: 760px)').matches) heroVideo.poster = MEDIA + 'hero-mobile.jpg';
+
+  /* ---------- Photo gallery: a tap opens the photo large; arrows / swipe move through them ---------- */
+  const gItems = $$('.gallery__item');
+  if (gItems.length) {
+    const box = document.createElement('dialog');
+    box.className = 'lightbox';
+    box.innerHTML = `<button class="lightbox__close" type="button" aria-label="${{ fr: 'Fermer', en: 'Close' }[LANG] || 'סגירה'}">&times;</button>
+      <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="‹">‹</button>
+      <figure><img alt=""><figcaption></figcaption></figure>
+      <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="›">›</button>`;
+    document.body.append(box);
+    let at = 0;
+    const show = i => {
+      at = (i + gItems.length) % gItems.length;
+      const b = gItems[at];
+      $('img', box).src = b.dataset.full;
+      $('img', box).alt = $('img', b).alt;
+      $('figcaption', box).textContent = $('span', b).textContent;
+    };
+    // In Hebrew "next" is to the left.
+    const step = d => show(at + (RTL ? -d : d));
+    gItems.forEach((b, i) => b.addEventListener('click', () => { show(i); box.showModal(); }));
+    $('.lightbox__close', box).addEventListener('click', () => box.close());
+    $('.lightbox__nav--prev', box).addEventListener('click', () => step(-1));
+    $('.lightbox__nav--next', box).addEventListener('click', () => step(1));
+    box.addEventListener('click', e => { if (e.target === box) box.close(); });
+    box.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
+    let x0 = null;
+    box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1); x0 = null; });
+  }
+
   /* ---------- "About us" window: the team opens and closes from its button ---------- */
   $$('.au__teambtn').forEach(btn => btn.addEventListener('click', () => {
     const box = document.getElementById(btn.getAttribute('aria-controls'));
