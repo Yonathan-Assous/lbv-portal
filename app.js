@@ -228,16 +228,6 @@
   route();
 
   /* ---------- "About us" window: the team opens and closes from its button ---------- */
-  $$('.au__teambtn').forEach(btn => {
-    // A second "hide" button under the photos, so nobody has to scroll back up to close it.
-    const box = document.getElementById(btn.getAttribute('aria-controls'));
-    const closer = document.createElement('button');
-    closer.type = 'button';
-    closer.className = 'btn btn--line au__teamclose';
-    closer.innerHTML = `${btn.dataset.close} <span aria-hidden="true">↑</span>`;
-    closer.addEventListener('click', () => { btn.click(); btn.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' }); });
-    box.append(closer);
-  });
   $$('.au__teambtn').forEach(btn => btn.addEventListener('click', () => {
     const box = document.getElementById(btn.getAttribute('aria-controls'));
     const open = box.hidden;
