@@ -156,16 +156,33 @@
     {
       "he": {
         "title": "האורחים מספרים",
+        "file": "media/guests-full.mp4",
+        "poster": "media/guests-full.jpg"
+      },
+      "fr": {
+        "title": "Nos invités racontent",
+        "file": "media/guests-full-fr.mp4",
+        "poster": "media/guests-full-fr.jpg"
+      },
+      "en": {
+        "title": "Our guests tell",
+        "file": "media/guests-full-fr.mp4",
+        "poster": "media/guests-full-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "כמו אבא ואמא",
         "file": "media/guests.mp4",
         "poster": "media/guests.jpg"
       },
       "fr": {
-        "title": "Nos invités racontent",
+        "title": "Comme papa et maman",
         "file": "media/guests-fr.mp4",
         "poster": "media/guests-fr.jpg"
       },
       "en": {
-        "title": "Our guests tell",
+        "title": "Like mum and dad",
         "file": "media/guests-fr.mp4",
         "poster": "media/guests-fr.jpg"
       }
@@ -270,6 +287,40 @@
         "title": "From flour to pizza",
         "file": "media/pizza-fr.mp4",
         "poster": "media/pizza-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "הילדים",
+        "file": "media/guests-kids.mp4",
+        "poster": "media/guests-kids.jpg"
+      },
+      "fr": {
+        "title": "Les enfants",
+        "file": "media/guests-kids-fr.mp4",
+        "poster": "media/guests-kids-fr.jpg"
+      },
+      "en": {
+        "title": "The children",
+        "file": "media/guests-kids-fr.mp4",
+        "poster": "media/guests-kids-fr.jpg"
+      }
+    },
+    {
+      "he": {
+        "title": "חג עם נשמה",
+        "file": "media/guests-soul.mp4",
+        "poster": "media/guests-soul.jpg"
+      },
+      "fr": {
+        "title": "Une fête avec une âme",
+        "file": "media/guests-soul-fr.mp4",
+        "poster": "media/guests-soul-fr.jpg"
+      },
+      "en": {
+        "title": "A holiday with soul",
+        "file": "media/guests-soul-fr.mp4",
+        "poster": "media/guests-soul-fr.jpg"
       }
     }
   ]
