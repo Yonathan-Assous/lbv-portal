@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       const { blobs } = await list({ prefix: CONTENT_KEY, limit: 1 });
       if (!blobs.length) return res.status(204).end();
       const r = await fetch(`${blobs[0].url}?v=${Date.parse(blobs[0].uploadedAt) || Date.now()}`, { cache: 'no-store' });
-      res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=300');
+      res.setHeader('Cache-Control', 'public, s-maxage=5, stale-while-revalidate=10');
       return res.status(200).json(await r.json());
     } catch (e) {
       return res.status(502).json({ error: 'read-failed' });
