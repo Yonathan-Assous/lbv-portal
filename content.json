@@ -343,5 +343,35 @@
       },
       "hidden": true
     }
-  ]
+  ],
+  "texts": {
+    "top:0": {
+      "he": {
+        "orig": {
+          "text": "החג שלכם.\nהאירוע שלכם.\nאנחנו דואגים לכל השאר."
+        },
+        "val": {
+          "text": "לא רק אירוע.\nחוויה שנשארת לתמיד."
+        }
+      },
+      "fr": {
+        "orig": {
+          "text": "Pas seulement un événement.\nUne expérience inoubliable."
+        },
+        "val": {
+          "text": "Bien plus qu’un événement.\nUne expérience inoubliable. "
+        }
+      }
+    },
+    "top:1": {
+      "he": {
+        "orig": {
+          "text": "נופשים, אירועים ורגעים מיוחדים – עם הקפדה על כל פרט, מהחלום ועד לחוויה."
+        },
+        "val": {
+          "text": "נופשים, אירועים ורגעים מיוחדים עם הקפדה על כל פרט, מהחלום ועד לחוויה."
+        }
+      }
+    }
+  }
 }
