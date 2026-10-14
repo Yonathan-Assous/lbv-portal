@@ -278,6 +278,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* ---------- About: short intro on the homepage, the full story in its own window (#about-us) ---------- */
 .about__intro--short { grid-template-columns: 1fr; max-width: 760px; }
 .about__intro--short .h2, .about__intro--short .lead { grid-column: 1; }
+.about__intro .more-link { grid-column: 1; }
+@media (min-width: 761px) { .about__intro .more-link ~ .about__values { grid-row: 1 / span 4; } }
 .more-link { justify-self: start; display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; padding: 12px 22px; border-radius: 99px;
   font-weight: 700; color: var(--night); background: var(--sun); text-decoration: none; transition: gap .25s var(--ease), background-color .2s; }
 .more-link span { font-size: 1.2em; line-height: 1; }
