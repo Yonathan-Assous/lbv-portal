@@ -201,7 +201,8 @@ const GROUPS = () => [
     { id: 'users', title: 'מנהלים והרשאות', sub: 'להוסיף מנהלים, לקבוע מה כל אחד רשאי לעשות, ולהסיר' }] },
   { id: 'help', name: 'עזרה', pages: [
     { id: 'guide', title: 'הדרכה', sub: 'איך עושים כל דבר, צעד אחר צעד' },
-    { id: 'support', title: 'תמיכה טכנית', sub: 'בדיקה שהכול מחובר, ומה עושים כשמשהו לא עובד' }] },
+    { id: 'support', title: 'תמיכה טכנית', sub: 'בדיקה שהכול מחובר, ומה עושים כשמשהו לא עובד' },
+    { id: 'account', title: 'החשבון שלי', sub: 'להחליף את הסיסמה שלכם' }] },
 ];
 /** Only the areas this manager may use. */
 const myGroups = () => GROUPS().map(g => ({ ...g, pages: g.pages.filter(p => pageAllowed(p.id)) })).filter(g => g.pages.length);
@@ -209,7 +210,7 @@ function pageAllowed(id) {
   if (['inbox', 'mail'].includes(id)) return canDo('leads');
   if (id === 'users') return canDo('users');
   if (id === 'dashboard') return canDo('leads');
-  if (['guide', 'support', 'stats'].includes(id)) return true;
+  if (['guide', 'support', 'stats', 'account'].includes(id)) return true;
   return canDo('content');
 }
 const allPages = () => myGroups().flatMap(g => g.pages.map(p => ({ ...p, group: g.id })));
@@ -240,7 +241,7 @@ function render() {
   const pg = $('#page');
   pg.innerHTML = '';
   if (page.startsWith('w-') || page.startsWith('trip-')) return windowPage(pg, page);
-  ({ dashboard, inbox, mail, team, contact, banners, stats, guide, support, users })[page](pg);
+  ({ dashboard, inbox, mail, team, contact, banners, stats, guide, support, users, account })[page](pg);
 }
 $$('#langPick button').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang;
@@ -1020,6 +1021,28 @@ async function users(pg) {
   load();
 }
 
+/* ---------- 13. my account: change my own password ---------- */
+function account(pg) {
+  const c = card('החשבון שלי', me ? `${me.role === 'owner' ? 'הבעלים' : esc(me.name)} · ${ROLE[me.role]?.[0] || ''}` : '');
+  const form = html(`<form style="max-width:460px">
+    <label class="field"><span>הסיסמה הנוכחית</span><input type="password" name="current" required autocomplete="current-password" dir="ltr"></label>
+    <label class="field"><span>סיסמה חדשה (8 תווים לפחות)</span><input type="password" name="next" required minlength="8" autocomplete="new-password" dir="ltr"></label>
+    <label class="field"><span>שוב את הסיסמה החדשה</span><input type="password" name="again" required minlength="8" autocomplete="new-password" dir="ltr"></label>
+    <button class="btn btn--gold" type="submit">החלפת הסיסמה</button></form>`);
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = Object.fromEntries(new FormData(form));
+    if (f.next !== f.again) return toast('הסיסמאות החדשות לא זהות', 'err');
+    if (f.next.length < 8) return toast('הסיסמה החדשה קצרה מדי', 'err');
+    const r = await fetch('/api/password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ current: f.current, next: f.next }) });
+    if (r.ok) { form.reset(); toast('הסיסמה הוחלפה. בפעם הבאה נכנסים עם הסיסמה החדשה'); }
+    else toast(r.status === 403 ? 'הסיסמה הנוכחית לא נכונה' : 'לא הצלחנו להחליף. נסו שוב', 'err');
+  });
+  c.append(form);
+  if (me?.role === 'owner') c.append(html('<p class="hint" style="margin-top:14px">הסיסמה הראשית שמוגדרת בחשבון האחסון ממשיכה לעבוד כגיבוי, למקרה ששכחתם את החדשה.</p>'));
+  pg.append(c);
+}
+
 /* ---------- load / save / auth ---------- */
 async function loadContent() {
   for (const url of ['/api/content', '../content.json']) {
@@ -1038,6 +1061,8 @@ async function openApp() {
   const start = location.hash.slice(1);
   go(allPages().some(p => p.id === start) ? start : 'dashboard');
   setTimeout(() => tour(false), 600);
+  $('#me').onclick = () => go('account');
+  $('#me').title = 'החשבון שלי';
   $('#me').innerHTML = !me ? '' : me.role === 'owner' ? '<span>הבעלים</span><small>כל ההרשאות</small>' : `${esc(me.name)}<small>${ROLE[me.role]?.[0] || ''}</small>`;
   if (canDo('leads')) loadLeads().then(() => { if (['dashboard', 'inbox', 'stats', 'mail'].includes(page)) render(); });
   else { leadsReady = true; }

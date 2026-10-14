@@ -18,7 +18,9 @@ export default async function handler(req, res) {
   const name = String(username || '').trim().toLowerCase();
   let user = null;
   const owner = leadsReady() ? await loadOwner() : { username: 'owner' };
-  if ((!name || name === owner.username) && passwordMatches(password)) {
+  // The owner: their own password (if they set one in the admin), or the main password as a backup.
+  const ownerOk = (owner.hash && checkPassword(password, owner.hash)) || passwordMatches(password);
+  if ((!name || name === owner.username) && ownerOk) {
     user = { id: 'owner', n: 'הבעלים', r: 'owner' };
     if (leadsReady()) saveOwner({ ...owner, last: new Date().toISOString() }).catch(() => {});
   } else if (name && leadsReady()) {

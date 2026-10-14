@@ -35,7 +35,8 @@ async function api(req, res, p) {
     const { username, password } = JSON.parse((await body(req)).toString() || '{}');
     const uname = String(username || '').trim().toLowerCase();
     let user = null;
-    if ((!uname || uname === loadOwner().username) && PASSWORD && password === PASSWORD) user = { n: 'הבעלים', r: 'owner' };
+    const o = loadOwner();
+    if ((!uname || uname === o.username) && PASSWORD && (password === PASSWORD || (o.hash && check(password, o.hash)))) user = { n: 'הבעלים', r: 'owner' };
     else if (uname) { const u = loadUsers().find(x => x.username === uname); if (u && check(password, u.hash)) user = { n: u.name, r: u.role }; }
     if (!user) return json(res, 401, { error: 'wrong-password' });
     const id = crypto.randomUUID(); sessions.set(id, user);
@@ -98,7 +99,7 @@ async function api(req, res, p) {
     if (!me) return json(res, 401, { error: 'login' });
     if (!can(me, 'users')) return json(res, 403, { error: 'forbidden' });
     const list = loadUsers();
-    if (req.method === 'GET') return json(res, 200, { owner: loadOwner(), users: list.map(({ hash: _, ...u }) => u) });
+    if (req.method === 'GET') return json(res, 200, { owner: (({ hash: _h, ...o }) => o)(loadOwner()), users: list.map(({ hash: _, ...u }) => u) });
     const b = req.method === 'DELETE' ? {} : JSON.parse((await body(req)).toString() || '{}');
     const role = ['admin', 'editor', 'sales'].includes(b.role) ? b.role : null;
     const username = String(b.username || '').trim().toLowerCase();
@@ -114,6 +115,16 @@ async function api(req, res, p) {
     if (!u) return json(res, 404, { error: 'not-found' });
     if (req.method === 'PATCH') { if (b.name) u.name = b.name; if (role) u.role = role; if (b.password) u.hash = hash(b.password); saveUsers(list); return json(res, 200, { ok: true }); }
     if (req.method === 'DELETE') { saveUsers(list.filter(x => x !== u)); return json(res, 200, { ok: true }); }
+  }
+  if (p === '/api/password') {
+    const me = authed(req);
+    if (!me) return json(res, 401, { error: 'login' });
+    const b = JSON.parse((await body(req)).toString() || '{}');
+    if (String(b.next || '').length < 8) return json(res, 400, { error: 'short' });
+    if (me.r === 'owner') { const o = loadOwner(); if (!((o.hash && check(b.current, o.hash)) || b.current === PASSWORD)) return json(res, 403, { error: 'wrong-current' }); saveOwner({ ...o, hash: hash(b.next) }); return json(res, 200, { ok: true }); }
+    const list = loadUsers(), u = list.find(x => x.name === me.n);
+    if (!u || !check(b.current, u.hash)) return json(res, 403, { error: 'wrong-current' });
+    u.hash = hash(b.next); saveUsers(list); return json(res, 200, { ok: true });
   }
   if (p === '/api/upload-local') {
     if (!authed(req)) return json(res, 401, { error: 'login' });
