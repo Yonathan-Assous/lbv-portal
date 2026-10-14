@@ -35,6 +35,26 @@ async function api(req, res, p) {
     fs.writeFileSync(path.join(root, 'content.json'), JSON.stringify({ ...data, savedAt: new Date().toISOString() }, null, 2) + '\n');
     return json(res, 200, { ok: true });
   }
+  if (p === '/api/leads') {
+    const file = path.join(root, 'data', 'leads.local.json');
+    const all = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
+    if (req.method === 'POST') {
+      const b = JSON.parse((await body(req)).toString() || '{}');
+      if (b.website) return json(res, 200, { ok: true });
+      if (!b.name || !b.consent || (String(b.phone || '').replace(/\D/g, '').length < 9 && !b.email)) return json(res, 400, { error: 'invalid' });
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      all.push({ name: b.name, phone: b.phone || '', email: b.email || '', interest: b.interest || '', lang: b.lang || '', consent: true, at: new Date().toISOString(), url: 'local-' + Date.now() });
+      fs.writeFileSync(file, JSON.stringify(all, null, 2));
+      return json(res, 200, { ok: true });
+    }
+    if (!authed(req)) return json(res, 401, { error: 'login' });
+    if (req.method === 'GET') return json(res, 200, [...all].reverse());
+    if (req.method === 'DELETE') {
+      const url = new URL(req.url, 'http://x').searchParams.get('url');
+      fs.writeFileSync(file, JSON.stringify(all.filter(l => l.url !== url), null, 2));
+      return json(res, 200, { ok: true });
+    }
+  }
   if (p === '/api/upload-local') {
     if (!authed(req)) return json(res, 401, { error: 'login' });
     const name = (new URL(req.url, 'http://x').searchParams.get('name') || 'file').replace(/[^\w.\-]/g, '_');

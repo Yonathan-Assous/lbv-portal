@@ -134,6 +134,63 @@ $$('[data-add]').forEach(b => b.addEventListener('click', () => {
   $(`[data-list="${name}"]`).lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }));
 
+/* ---------- sign-ups for updates ---------- */
+const INTEREST = { pesach: 'פסח', sukkot: 'סוכות', all: 'כל הנופשים והאירועים' };
+const LANG_NAME = { he: 'עברית', fr: 'צרפתית', en: 'אנגלית' };
+let leads = [];
+const escH = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const filtered = () => leads.filter(l => !$('#leadsFilter').value || l.interest === $('#leadsFilter').value);
+function waLink(phone) {
+  let d = String(phone || '').replace(/\D/g, '');
+  if (d.startsWith('0')) d = '972' + d.slice(1);
+  return d.length >= 9 ? `https://wa.me/${d}` : '';
+}
+function renderLeads() {
+  const list = filtered();
+  $('#leadsCount').textContent = `${list.length} נרשמים`;
+  $('#leadsBody').innerHTML = list.length ? list.map((l, i) => {
+    const wa = waLink(l.phone);
+    return `<tr>
+      <td>${escH(l.name)}</td><td dir="ltr">${escH(l.phone)}</td><td dir="ltr">${escH(l.email)}</td>
+      <td>${escH(INTEREST[l.interest] || l.interest)}</td><td>${escH(LANG_NAME[l.lang] || l.lang)}</td>
+      <td>${escH((l.at || '').slice(0, 10).split('-').reverse().join('/'))}</td>
+      <td class="leads__act">${wa ? `<a class="btn btn--line btn--sm" href="${wa}" target="_blank" rel="noopener">וואטסאפ</a>` : ''}
+        <button type="button" class="icon icon--del" data-lead="${i}" aria-label="מחיקה">✕</button></td></tr>`;
+  }).join('') : '<tr><td colspan="7" class="leads__empty">עוד אין נרשמים.</td></tr>';
+  $$('[data-lead]').forEach(b => b.addEventListener('click', async () => {
+    const l = list[Number(b.dataset.lead)];
+    if (!confirm(`למחוק את ${l.name} מהרשימה?`)) return;
+    const r = await fetch(`/api/leads?url=${encodeURIComponent(l.url)}`, { method: 'DELETE' });
+    if (r.ok) { leads = leads.filter(x => x !== l); renderLeads(); toast('נמחק'); } else toast('המחיקה נכשלה', 'err');
+  }));
+}
+async function loadLeads() {
+  try {
+    const r = await fetch('/api/leads', { cache: 'no-store' });
+    if (r.status === 503) { $('#leadsBody').innerHTML = '<tr><td colspan="7" class="leads__empty">האחסון עוד לא מחובר, ולכן עוד אין רשימה.</td></tr>'; return; }
+    if (!r.ok) throw new Error();
+    leads = await r.json();
+    renderLeads();
+  } catch (e) { toast('לא הצלחנו לטעון את הנרשמים', 'err'); }
+}
+$('#leadsFilter').addEventListener('change', renderLeads);
+$('#leadsReload').addEventListener('click', loadLeads);
+$('#leadsEmails').addEventListener('click', async () => {
+  const emails = [...new Set(filtered().map(l => l.email).filter(Boolean))].join(', ');
+  if (!emails) return toast('אין מיילים ברשימה', 'err');
+  try { await navigator.clipboard.writeText(emails); toast('כל המיילים הועתקו. אפשר להדביק בשדה ״עותק מוסתר״ במייל'); }
+  catch (e) { prompt('העתיקו את המיילים:', emails); }
+});
+$('#leadsCsv').addEventListener('click', () => {
+  const rows = [['שם', 'טלפון', 'מייל', 'מעניין אותו', 'שפה', 'תאריך']].concat(filtered().map(l => [l.name, l.phone, l.email, INTEREST[l.interest] || l.interest, LANG_NAME[l.lang] || l.lang, (l.at || '').slice(0, 10)]));
+  const csv = '﻿' + rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `נרשמים-LBV-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
 /* ---------- load / save / auth ---------- */
 async function loadContent() {
   for (const url of ['/api/content', '../content.json']) {
@@ -148,6 +205,7 @@ async function openEditor() {
   $('#app').hidden = false;
   $('#storageWarn').hidden = storage !== 'none';
   renderAll();
+  loadLeads();
 }
 
 $('#saveBtn').addEventListener('click', async () => {

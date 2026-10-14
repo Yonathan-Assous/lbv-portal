@@ -433,30 +433,34 @@
         </div>
         <!-- Donations -->
         <div class="panel" role="tabpanel" id="p-donate" aria-labelledby="t-donate">
-          <div class="donate">
-            <div class="donate__total">
-              <span class="muted">Collecté jusqu’à présent</span>
-              <output class="big" id="dTotal">0 ₪</output>
-              <div class="meter" aria-hidden="true"><span id="dBar"></span></div>
-              <span class="muted">Objectif de la soirée : <b>250 000 ₪</b></span>
-              <button class="btn btn--sun" id="dAdd">Ajouter un don</button>
+          <div class="gn">
+            <aside class="gn__board"><h4 data-t="board"></h4><ol id="gBoard"></ol></aside>
+            <div class="gn__stage">
+              <div class="gn__doors" id="gDoors">
+                <div class="gn__light" aria-hidden="true"></div>
+                <div class="gn__plate" aria-live="polite"><small data-t="plaque"></small><b id="gName"></b><span id="gAmount"></span><em id="gChild"></em></div>
+                <div class="gn__door gn__door--a" aria-hidden="true"><i></i></div>
+                <div class="gn__door gn__door--b" aria-hidden="true"><i></i></div>
+              </div>
             </div>
-            <ul class="feed" id="dFeed" aria-live="polite"></ul>
+            <div class="gn__bottom">
+              <p class="gn__collective" id="gCollective"></p>
+              <div class="meter" aria-hidden="true"><span id="dBar"></span></div>
+              <div class="gn__nums"><span id="gTowards"></span><span><span data-t="goal"></span> <output id="dTotal">0</output> / <span id="gGoal"></span></span></div>
+              <button class="btn btn--sun" id="dAdd" data-t="add"></button>
+            </div>
           </div>
         </div>
 
         <!-- Raffle -->
         <div class="panel" role="tabpanel" id="p-raffle" aria-labelledby="t-raffle" hidden>
-          <div class="raffle">
-            <div class="raffle__prize">
-              <span class="muted">Lot de la tombola</span>
-              <strong id="rPrize">Un week-end en couple à l’hôtel</strong>
-            </div>
-            <div class="raffle__drum" aria-live="polite">
-              <span class="raffle__ticket" id="rTicket">Billet n° ----</span>
-              <span class="raffle__name" id="rName">Qui va gagner ?</span>
-            </div>
-            <button class="btn btn--sun" id="rGo">Lancer le tirage</button>
+          <div class="rf" data-phase="presenting">
+            <span class="rf__kicker" data-t="raffleKicker"></span>
+            <strong class="rf__prize" id="rPrize"></strong>
+            <div class="rf__prizeZone"><div class="rf__glow" aria-hidden="true"></div><img id="rImg" alt=""><span class="rf__prizeText" id="rPrizeText"></span></div>
+            <div class="rf__reels" id="rReels" dir="ltr" aria-hidden="true"></div>
+            <div class="rf__winner" id="rWinner" aria-live="polite"></div>
+            <button class="btn btn--sun" id="rGo"></button>
             <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
           </div>
         </div>

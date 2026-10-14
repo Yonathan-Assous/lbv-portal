@@ -293,34 +293,52 @@
     if (panel) setTimeout(() => panel.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }), 30);
   }));
 
-  /* ---------- Live donations demo ---------- */
-  const gifts = [180, 360, 500, 770, 1000, 1800, 2600, 3600, 5000, 10000];
-  const GOAL = 250000;
-  let total = 0, shown = 0;
-  const dTotal = $('#dTotal'), dBar = $('#dBar'), dFeed = $('#dFeed');
+  /* ---------- Live donation screen: mirrors the gala system's real "doors" screen ---------- */
+  // Wording comes from the real screen (app/[gala]/live-screen/page.tsx in gala-system).
+  const UI = {
+    he: { board: '10 התורמים האחרונים', plaque: 'התורם האחרון', goal: 'יעד', childOne: 'פתחתם דלת לעתיד של ילד', childMany: 'פתחתם דלת לעתיד של {n} ילדים', collective: 'כבר נפתחו דלתות לעתיד של {n} ילדים', towards: 'לקראת הילד הבא: {have} מתוך {need}', add: 'הוסיפו תרומה', raffleKicker: 'הגרלה', draw: 'להגרלה', drawNext: 'לפרס הבא', winner: 'הזוכה', ticketNo: 'כרטיס מס׳' },
+    fr: { board: 'Les 10 derniers donateurs', plaque: 'Dernier donateur', goal: 'Objectif', childOne: 'Vous avez ouvert une porte vers l’avenir d’un enfant', childMany: 'Vous avez ouvert une porte vers l’avenir de {n} enfants', collective: 'Des portes se sont déjà ouvertes vers l’avenir de {n} enfants', towards: 'Vers le prochain enfant : {have} sur {need}', add: 'Ajouter un don', raffleKicker: 'Tombola', draw: 'Lancer le tirage', drawNext: 'Lot suivant', winner: 'Gagnant', ticketNo: 'Billet n°' },
+    en: { board: 'Latest 10 donors', plaque: 'Latest donor', goal: 'Target', childOne: 'You opened a door to a child’s future', childMany: 'You opened a door to the future of {n} children', collective: 'Doors have already opened to the future of {n} children', towards: 'Towards the next child: {have} of {need}', add: 'Add a donation', raffleKicker: 'Raffle', draw: 'Start the draw', drawNext: 'Next prize', winner: 'Winner', ticketNo: 'Ticket no.' },
+  }[LANG];
+  $$('[data-t]').forEach(el => { el.textContent = UI[el.dataset.t] || ''; });
+  const fill = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k]);
 
-  const tween = (from, to) => {
-    if (reduced) { dTotal.textContent = ils(to) + ' ₪'; return; }
-    const t0 = performance.now();
-    const step = now => {
-      const k = Math.min(1, (now - t0) / 700);
-      shown = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
-      dTotal.textContent = ils(shown) + ' ₪';
-      if (k < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
+  const GOAL = 250000, PER_CHILD = 500;
+  const gifts = [500, 770, 1000, 1800, 2600, 3600, 5000, 10000];
+  let total = 0;
+  const dTotal = $('#dTotal'), dBar = $('#dBar'), gBoard = $('#gBoard'), gDoors = $('#gDoors');
+  $('#gGoal').textContent = ils(GOAL) + ' ₪';
+
+  const renderTotals = () => {
+    dTotal.textContent = ils(total) + ' ₪';
+    dBar.style.width = Math.min(100, total / GOAL * 100) + '%';
+    $('#gCollective').textContent = fill(UI.collective, { n: ils(Math.floor(total / PER_CHILD)) });
+    $('#gTowards').textContent = fill(UI.towards, { have: ils(total % PER_CHILD) + ' ₪', need: ils(PER_CHILD) + ' ₪' });
   };
-  const donate = amount => {
-    const prev = total;
-    total = Math.min(GOAL, total + amount);
-    tween(prev, total);
-    dBar.style.width = (total / GOAL * 100) + '%';
+  let doorTimer = null;
+  const donate = (amount, reveal = true) => {
+    const name = pick(T.families);
+    total += amount; // the goal can be passed, as on a real night
     const li = document.createElement('li');
-    li.innerHTML = `<span>${pick(T.families)}</span><b>${ils(amount)} ₪</b>`;
-    dFeed.prepend(li);
-    while (dFeed.children.length > 6) dFeed.lastChild.remove();
+    li.innerHTML = `<span>${name}</span><b>${ils(amount)} ₪</b>`;
+    gBoard.prepend(li);
+    while (gBoard.children.length > 10) gBoard.lastChild.remove();
+    if (reveal) {
+      const n = Math.max(1, Math.floor(amount / PER_CHILD));
+      $('#gName').textContent = name;
+      $('#gAmount').textContent = ils(amount) + ' ₪';
+      $('#gChild').textContent = n === 1 ? UI.childOne : fill(UI.childMany, { n: ils(n) });
+      // The doors swing open on every donation, then close again for the next one.
+      gDoors.classList.remove('is-open');
+      void gDoors.offsetWidth;
+      gDoors.classList.add('is-open');
+      clearTimeout(doorTimer);
+      doorTimer = setTimeout(() => gDoors.classList.remove('is-open'), 3800);
+    }
+    renderTotals();
   };
   $('#dAdd').addEventListener('click', () => donate(pick(gifts)));
+  renderTotals();
 
   /* ---------- Phone simulations (call centre, ticket purchase): loop through their screens ---------- */
   const sims = $$('.sim').map(el => {
@@ -343,41 +361,75 @@
   const startDonations = () => {
     if (donateTimer) return;
     if (total === 0) {
-      total = 136000;
-      [1800, 360, 3600].forEach(donate);
+      total = 132000;
+      [1800, 500, 3600, 1000, 770, 2600, 5000, 1000, 1800].forEach(a => donate(a, false));
+      donate(1800);
     }
-    donateTimer = setInterval(() => { if (total < GOAL * 0.96) donate(pick(gifts)); }, 2200);
+    // After passing the goal the demo quietly starts a new evening, so the totals always move.
+    donateTimer = setInterval(() => { if (total >= GOAL * 1.06) { total = 132000; gBoard.innerHTML = ''; } donate(pick(gifts)); }, 5200);
   };
   const stopDonations = () => { clearInterval(donateTimer); donateTimer = null; };
   addEventListener('sheet:change', e => (e.detail === 'gala' ? startDonations : stopDonations)());
   if ($('#gala.is-open')) { startDonations(); simStart(); }
 
-  /* ---------- Raffle demo ---------- */
-  const rName = $('#rName'), rTicket = $('#rTicket'), rGo = $('#rGo'), raffle = $('.raffle'), rPrize = $('#rPrize');
+  /* ---------- Raffle: the real projector screen — prize first, then digit reels stop left to right ---------- */
+  const rf = $('.rf'), rReels = $('#rReels'), rGo = $('#rGo'), rWinner = $('#rWinner');
+  const rPrize = $('#rPrize'), rImg = $('#rImg'), rPrizeText = $('#rPrizeText');
+  const PRIZE_IMG = ['hero.jpg', 'holiday-card.jpg', 'banner-tables.jpg', ''];
+  const DIGITS = 4, LOOPS = 6;
   let prizeIdx = 0, spinning = false;
+  const cells = Array.from({ length: DIGITS }, () => {
+    const cell = document.createElement('div');
+    cell.className = 'rf__cell';
+    cell.innerHTML = '<div class="rf__strip"><span>0</span></div>';
+    rReels.appendChild(cell);
+    return cell;
+  });
+  const showPrize = () => {
+    const name = T.prizes[prizeIdx], img = PRIZE_IMG[prizeIdx];
+    rPrize.textContent = name;
+    rImg.hidden = !img;
+    if (img) rImg.src = MEDIA + img;
+    rPrizeText.textContent = img ? '' : name;
+    rf.dataset.phase = 'presenting';
+    rWinner.textContent = '';
+    cells.forEach(c => { const s = $('.rf__strip', c); s.style.transition = 'none'; s.style.transform = 'none'; s.innerHTML = '<span>–</span>'; c.classList.remove('is-locked'); });
+    rGo.textContent = UI.draw;
+  };
+  showPrize();
 
   rGo.addEventListener('click', () => {
     if (spinning) return;
-    if (raffle.classList.contains('is-won')) {
-      prizeIdx = (prizeIdx + 1) % T.prizes.length;
-      rPrize.textContent = T.prizes[prizeIdx];
-    }
+    if (rf.dataset.phase === 'revealed') { prizeIdx = (prizeIdx + 1) % T.prizes.length; showPrize(); return; }
     spinning = true;
-    raffle.classList.remove('is-won');
     rGo.disabled = true;
-    const end = performance.now() + (reduced ? 0 : 2600);
-    let delay = 50;
-    const tick = () => {
-      rName.textContent = pick(T.people);
-      rTicket.textContent = T.ticket + String(1000 + Math.floor(Math.random() * 900));
-      if (performance.now() < end) { delay *= 1.09; setTimeout(tick, delay); return; }
-      raffle.classList.add('is-won');
+    rf.dataset.phase = 'revealing';
+    const number = String(1000 + Math.floor(Math.random() * 9000));
+    let last = 0;
+    cells.forEach((cell, i) => {
+      const strip = $('.rf__strip', cell);
+      const target = Number(number[i]);
+      let html = '';
+      for (let l = 0; l < LOOPS; l++) for (let d = 0; d < 10; d++) html += `<span>${d}</span>`;
+      strip.innerHTML = html + `<span>${target}</span>`;
+      const h = strip.firstElementChild.offsetHeight || cell.offsetHeight;
+      const dur = reduced ? 0 : 2200 + i * 650; // stops left to right, like the real screen
+      last = Math.max(last, dur);
+      strip.style.transition = 'none';
+      strip.style.transform = 'translateY(0)';
+      void strip.offsetWidth;
+      strip.style.transition = `transform ${dur}ms cubic-bezier(.12,.72,.18,1)`;
+      strip.style.transform = `translateY(${-LOOPS * 10 * h}px)`;
+      setTimeout(() => cell.classList.add('is-locked'), dur);
+    });
+    setTimeout(() => {
+      rf.dataset.phase = 'revealed';
+      rWinner.innerHTML = `<small>${UI.winner}</small><b>${pick(T.people)}</b><span>${UI.ticketNo} ${number}</span>`;
       burst();
       spinning = false;
       rGo.disabled = false;
-      rGo.textContent = T.nextPrize;
-    };
-    tick();
+      rGo.textContent = UI.drawNext;
+    }, last + 250);
   });
 
   const canvas = $('#confetti'), ctx = canvas.getContext('2d');
@@ -467,6 +519,69 @@
     };
     step();
   });
+
+  /* ---------- Sign-up for updates (Pesach first, or all news) → saved for the admin ---------- */
+  const SU = {
+    he: { title: 'רוצים לשמוע ראשונים?', lead: 'השאירו פרטים, ונעדכן אתכם על נופשים חדשים, פסח, ואירועים מיוחדים.', name: 'שם מלא', phone: 'טלפון', email: 'מייל', interest: 'מה מעניין אתכם?', opts: { pesach: 'נופש פסח', sukkot: 'נופש סוכות', all: 'כל הנופשים והאירועים' }, consent: 'אני מאשר/ת לקבל עדכונים ופרסומים מ-La Belle Vie. אפשר להסיר בכל רגע.', send: 'הרשמה לעדכונים', thanks: 'תודה! נרשמתם, ונעדכן אתכם ראשונים.', err: 'משהו לא נשלח. בדקו שם, טלפון או מייל, ואישור לקבלת עדכונים.', strip: 'רוצים לשמוע ראשונים על נופשים ואירועים חדשים?', stripBtn: 'להרשמה לעדכונים', close: 'סגירה' },
+    fr: { title: 'Être informé en premier', lead: 'Laissez vos coordonnées, nous vous informerons des nouveaux séjours, de Pessah et des événements spéciaux.', name: 'Nom complet', phone: 'Téléphone', email: 'E-mail', interest: 'Ce qui vous intéresse', opts: { pesach: 'Séjour de Pessah', sukkot: 'Séjour de Souccot', all: 'Tous les séjours et événements' }, consent: 'J’accepte de recevoir des nouvelles et des offres de La Belle Vie. Désinscription à tout moment.', send: 'M’inscrire', thanks: 'Merci ! Vous êtes inscrit, vous serez informé en premier.', err: 'L’envoi a échoué. Vérifiez le nom, le téléphone ou l’e-mail, et l’accord.', strip: 'Envie d’être informé en premier des nouveaux séjours et événements ?', stripBtn: 'Recevoir les nouvelles', close: 'Fermer' },
+    en: { title: 'Be the first to know', lead: 'Leave your details and we will tell you about new holidays, Pesach and special events.', name: 'Full name', phone: 'Phone', email: 'Email', interest: 'What interests you?', opts: { pesach: 'Pesach stay', sukkot: 'Sukkot stay', all: 'All holidays and events' }, consent: 'I agree to receive news and offers from La Belle Vie. Unsubscribe any time.', send: 'Sign me up', thanks: 'Thank you! You are signed up and will hear first.', err: 'That didn’t go through. Check your name, phone or email, and the consent box.', strip: 'Want to hear first about new holidays and events?', stripBtn: 'Get updates', close: 'Close' },
+  }[LANG];
+  const su = document.createElement('dialog');
+  su.className = 'signup';
+  su.innerHTML = `
+    <form class="signup__card" novalidate>
+      <button type="button" class="signup__x" aria-label="${SU.close}">&times;</button>
+      <h3>${SU.title}</h3><p>${SU.lead}</p>
+      <label>${SU.name}<input name="name" autocomplete="name" required></label>
+      <div class="signup__row"><label>${SU.phone}<input name="phone" type="tel" inputmode="tel" autocomplete="tel"></label>
+      <label>${SU.email}<input name="email" type="email" autocomplete="email"></label></div>
+      <label>${SU.interest}<select name="interest">${Object.entries(SU.opts).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
+      <input name="website" tabindex="-1" autocomplete="off" class="signup__hp" aria-hidden="true">
+      <label class="signup__ok"><input type="checkbox" name="consent" required> <span>${SU.consent}</span></label>
+      <p class="signup__msg" role="status" hidden></p>
+      <button class="btn btn--sun btn--block" type="submit">${SU.send}</button>
+    </form>`;
+  document.body.appendChild(su);
+  const suForm = $('form', su), suMsg = $('.signup__msg', su);
+  const openSignup = interest => {
+    suForm.reset(); suMsg.hidden = true; suForm.hidden = false;
+    $('[type=submit]', su).hidden = false;
+    if (interest) suForm.interest.value = interest;
+    su.showModal();
+  };
+  $('.signup__x', su).addEventListener('click', () => su.close());
+  su.addEventListener('click', e => { if (e.target === su) su.close(); });
+  suForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(suForm));
+    const payload = { name: d.name, phone: d.phone, email: d.email, interest: d.interest, website: d.website, lang: LANG, consent: suForm.consent.checked };
+    const okLocal = payload.name && payload.consent && ((payload.phone || '').replace(/\D/g, '').length >= 9 || /\S+@\S+\.\S+/.test(payload.email || ''));
+    const show = (text, good) => { suMsg.textContent = text; suMsg.hidden = false; suMsg.classList.toggle('is-good', good); };
+    if (!okLocal) return show(SU.err, false);
+    try {
+      const r = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (r.status === 503) throw new Error('no-storage');
+      if (!r.ok) return show(SU.err, false);
+      show(SU.thanks, true);
+      $('[type=submit]', su).hidden = true;
+    } catch (err) {
+      // Storage not connected yet: fall back to a WhatsApp message so no sign-up is lost.
+      const text = `${SU.title}\n${payload.name}\n${payload.phone || ''} ${payload.email || ''}\n${SU.opts[payload.interest] || ''}`;
+      window.open(`https://wa.me/${WA}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      show(SU.thanks, true);
+    }
+  });
+  // The Pesach buttons open the sign-up instead of the quote form.
+  $$('[data-service="pesach"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); e.stopImmediatePropagation(); openSignup('pesach'); }, true));
+  // A general "get updates" strip just above the footer.
+  const foot = $('.foot');
+  if (foot) {
+    const strip = document.createElement('section');
+    strip.className = 'updates';
+    strip.innerHTML = `<div class="wrap updates__in"><p>${SU.strip}</p><button type="button" class="btn btn--sun">${SU.stripBtn}</button></div>`;
+    foot.before(strip);
+    $('button', strip).addEventListener('click', () => openSignup('all'));
+  }
 
   /* ---------- Quote form → WhatsApp ---------- */
   const form = $('#quote'), fService = $('#fService'), fErr = $('#fErr');

@@ -34,6 +34,7 @@
       <a href="#team">הצוות</a>
       <a href="#trips">נופשים</a>
       <a href="#videos">סרטונים</a>
+      <a href="#leads">נרשמים לעדכונים</a>
     </nav>
     <div class="top__actions">
       <a class="btn btn--line" href="../" target="_blank" rel="noopener">לצפייה באתר</a>
@@ -84,6 +85,18 @@
       <div class="pane__head"><h2>סרטונים מהנופש</h2><button class="btn btn--line" type="button" data-add="videos">הוספת סרטון</button></div>
       <p class="hint">לכל סרטון אפשר להעלות גרסה בעברית, בצרפתית ובאנגלית. אם אין גרסה באנגלית, באתר האנגלי תוצג הגרסה הצרפתית.</p>
       <ol class="cards" data-list="videos"></ol>
+    </section>
+    <section class="pane" id="leads">
+      <div class="pane__head"><h2>נרשמים לעדכונים</h2>
+        <div class="leads__tools">
+          <button class="btn btn--line btn--sm" type="button" id="leadsCsv">ייצוא לאקסל</button>
+          <button class="btn btn--line btn--sm" type="button" id="leadsEmails">העתקת כל המיילים</button>
+          <button class="btn btn--line btn--sm" type="button" id="leadsReload">רענון</button>
+        </div>
+      </div>
+      <p class="hint">כל מי שנרשם באתר לעדכונים (למשל ״לעדכון ראשון על פסח״). אפשר לשלוח לכל אחד הודעה בוואטסאפ, או להעתיק את כל המיילים ולשלוח מהמייל שלכם.</p>
+      <div class="leads__filter"><label>סינון<select id="leadsFilter"><option value="">הכול</option><option value="pesach">פסח</option><option value="sukkot">סוכות</option><option value="all">כל הנופשים והאירועים</option></select></label><span id="leadsCount"></span></div>
+      <div class="leads__wrap"><table class="leads"><thead><tr><th>שם</th><th>טלפון</th><th>מייל</th><th>מעניין אותו</th><th>שפה</th><th>תאריך</th><th></th></tr></thead><tbody id="leadsBody"></tbody></table></div>
     </section>
   </main>
 </div>
