@@ -185,7 +185,12 @@
   let openSheetEl = null, pageY = 0;
   function openSheet(sheet, target) {
     if (openSheetEl !== sheet) {
-      if (!openSheetEl) { pageY = scrollY; setBack(sheet, null); }
+      if (!openSheetEl) {
+        pageY = scrollY;
+        // A window that belongs to another (Sukkot → Holidays) goes back there even when opened straight from the page.
+        const parent = sheet.dataset.parent && document.getElementById(sheet.dataset.parent);
+        setBack(sheet, parent ? { sheet: parent, top: 0 } : null);
+      }
       else if (openSheetEl._from?.sheet !== sheet) setBack(sheet, { sheet: openSheetEl, top: openSheetEl.scrollTop });
       if (openSheetEl) openSheetEl.classList.remove('is-open');
       sheet.classList.add('is-open');

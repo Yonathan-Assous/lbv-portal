@@ -34,7 +34,7 @@
   </a>
   <nav class="bar__nav" id="nav" aria-label="ניווט ראשי">
     <a href="#services">מה אתם מחפשים</a>
-    <a href="#about">מי אנחנו</a>
+    <a href="#about-us">מי אנחנו</a>
     <a href="#team">הצוות שלנו</a>
     <a href="#holidays">נופשים</a>
     <a href="#events">אירועים</a>
@@ -148,15 +148,11 @@
 <!-- ============ ABOUT ============ -->
 <section class="about" id="about" aria-labelledby="about-title">
   <div class="wrap">
-    <div class="about__intro">
+    <div class="about__intro about__intro--short">
       <h2 class="h2" id="about-title">מי אנחנו</h2>
       <p class="tagline">הופכים חלום למציאות</p>
       <p class="lead">La Belle Vie היא עסק משפחתי. כבר 15 שנה אנחנו מארגנים חגים ומפיקים אירועים לציבור שומר מסורת, בעברית ובצרפתית.</p>
-      <ul class="about__values">
-        <li><b>אנחנו בשטח</b>במלון כל החג ובאולם כל הערב, מהבוקר הראשון ועד הריקוד האחרון.</li>
-        <li><b>גשמיות ורוחניות</b>פינוק אמיתי לצד תורה, תפילה ושמחה.</li>
-        <li><b>כמו משפחה</b>אורחים חוזרים אלינו שנה אחרי שנה.</li>
-      </ul>
+      <a class="more-link" href="#about-us">לקרוא עוד עלינו <span aria-hidden="true">←</span></a>
     </div>
 
     <!-- CEO letter: draft built from Ilan's own words at the end of Sukkot. Ilan can replace the text. -->
@@ -207,6 +203,35 @@
   </div>
 </section>
 
+<!-- ============ ABOUT US (own window) ============ -->
+<section class="about-us sheet" data-hero="hero.jpg" id="about-us" data-title="מי אנחנו">
+  <div class="wrap au">
+    <div class="au__text">
+      <p class="tagline">הופכים חלום למציאות</p>
+      <p class="lead">La Belle Vie היא עסק משפחתי. כבר 15 שנה אנחנו מארגנים חגים ומפיקים אירועים לציבור שומר מסורת, בעברית ובצרפתית.</p>
+      <ul class="about__values">
+        <li><b>אנחנו בשטח</b>במלון כל החג ובאולם כל הערב, מהבוקר הראשון ועד הריקוד האחרון.</li>
+        <li><b>גשמיות ורוחניות</b>פינוק אמיתי לצד תורה, תפילה ושמחה.</li>
+        <li><b>כמו משפחה</b>אורחים חוזרים אלינו שנה אחרי שנה.</li>
+      </ul>
+    </div>
+    <figure class="au__video">
+      <button class="vthumb vthumb--big" data-video="special" data-title="מה מיוחד אצלנו">
+        <img src="media/special.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">מה מיוחד אצלנו<small>דקה ועשר שניות</small></span>
+      </button>
+    </figure>
+  </div>
+  <div class="wrap">
+    <h3 class="h3">בקצרה</h3>
+    <ul class="au__facts"><li><b>15</b><span>שנות ניסיון בחגים ובאירועים</span></li><li><b>2</b><span>שפות: עברית וצרפתית</span></li><li><b>2</b><span>חגים בשנה במלון: סוכות ופסח</span></li></ul>
+    <h3 class="h3">מה אנחנו עושים</h3>
+    <ul class="au__what"><li><a href="#holidays"><b>נופש בחגים</b><span>סוכות ופסח במלון, בכשרות מהדרין</span><i aria-hidden="true">←</i></a></li><li><a href="#events"><b>הפקת אירועים</b><span>חתונות, בר מצווה וערבי גאלה</span><i aria-hidden="true">←</i></a></li><li><a href="#gala"><b>מערכת גאלה</b><span>כרטיסים, הגרלות, התרמות ומוקד טלפוני</span><i aria-hidden="true">←</i></a></li><li><a href="#wedding"><b>אפליקציה לחתונה</b><span>הזמנות, אישורי הגעה וסידור שולחנות</span><i aria-hidden="true">←</i></a></li></ul>
+    <div class="actions au__cta"><a class="btn btn--sun" href="#contact">בקשת הצעת מחיר</a><a class="btn btn--line" href="#team">הכירו את הצוות</a></div>
+  </div>
+</section>
+
 <!-- ============ HOLIDAYS ============ -->
 <section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="נופשים" aria-labelledby="holidays-title">
   <div class="wrap trips-head">
@@ -234,7 +259,7 @@
 </section>
 
 <!-- ============ SUKKOT (own window) ============ -->
-<section class="holidays sheet" data-hero="hero.mp4" id="sukkot" data-title="סוכות במלון נוף כנרת">
+<section class="holidays sheet" data-parent="holidays" data-hero="hero.mp4" id="sukkot" data-title="סוכות במלון נוף כנרת">
   <div class="wrap split">
     <div class="split__text">
       <h3 class="h2" data-hero-title>סוכות במלון נוף כנרת</h3>
@@ -303,7 +328,7 @@
 </section>
 
 <!-- ============ PESACH (own window) ============ -->
-<section class="holidays holidays--pesach sheet" data-hero="hero.jpg" id="pesach" data-title="פסח עם La Belle Vie">
+<section class="holidays holidays--pesach sheet" data-parent="holidays" data-hero="hero.jpg" id="pesach" data-title="פסח עם La Belle Vie">
   <div class="pesach wrap">
     <svg class="pesach__art draw" viewBox="0 0 220 140" aria-hidden="true">
       <ellipse cx="110" cy="112" rx="96" ry="18"/>

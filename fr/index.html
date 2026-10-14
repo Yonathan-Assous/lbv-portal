@@ -27,7 +27,7 @@
   </a>
   <nav class="bar__nav" id="nav" aria-label="Navigation principale">
     <a href="#services">Que recherchez-vous</a>
-    <a href="#about">Qui sommes-nous</a>
+    <a href="#about-us">Qui sommes-nous</a>
     <a href="#team">Notre équipe</a>
     <a href="#holidays">Séjours</a>
     <a href="#events">Événements</a>
@@ -141,15 +141,11 @@
 <!-- ============ ABOUT ============ -->
 <section class="about" id="about" aria-labelledby="about-title">
   <div class="wrap">
-    <div class="about__intro">
+    <div class="about__intro about__intro--short">
       <h2 class="h2" id="about-title">Qui sommes-nous</h2>
       <p class="tagline">Nous transformons vos rêves en réalité</p>
       <p class="lead">La Belle Vie est une entreprise familiale. Depuis 15 ans, nous organisons des séjours de fêtes et des événements pour un public attaché à la tradition, en français et en hébreu.</p>
-      <ul class="about__values">
-        <li><b>Toujours sur place</b>À l’hôtel pendant toute la fête et dans la salle toute la soirée, du premier matin à la dernière danse.</li>
-        <li><b>Le matériel et le spirituel</b>Un vrai confort, avec la Torah, la téfila et la joie.</li>
-        <li><b>Comme une famille</b>Nos invités reviennent année après année.</li>
-      </ul>
+      <a class="more-link" href="#about-us">En savoir plus sur nous <span aria-hidden="true">→</span></a>
     </div>
 
     <!-- CEO letter: draft built from Ilan's own words at the end of Souccot. Ilan can replace the text. -->
@@ -200,6 +196,35 @@
   </div>
 </section>
 
+<!-- ============ ABOUT US (own window) ============ -->
+<section class="about-us sheet" data-hero="hero.jpg" id="about-us" data-title="Qui sommes-nous">
+  <div class="wrap au">
+    <div class="au__text">
+      <p class="tagline">Nous transformons vos rêves en réalité</p>
+      <p class="lead">La Belle Vie est une entreprise familiale. Depuis 15 ans, nous organisons des séjours de fêtes et des événements pour un public attaché à la tradition, en français et en hébreu.</p>
+      <ul class="about__values">
+        <li><b>Toujours sur place</b>À l’hôtel pendant toute la fête et dans la salle toute la soirée, du premier matin à la dernière danse.</li>
+        <li><b>Le matériel et le spirituel</b>Un vrai confort, avec la Torah, la téfila et la joie.</li>
+        <li><b>Comme une famille</b>Nos invités reviennent année après année.</li>
+      </ul>
+    </div>
+    <figure class="au__video">
+      <button class="vthumb vthumb--big" data-video="special" data-title="Ce qui nous rend uniques">
+        <img src="../media/special.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">Ce qui nous rend uniques<small>1 min 10</small></span>
+      </button>
+    </figure>
+  </div>
+  <div class="wrap">
+    <h3 class="h3">En bref</h3>
+    <ul class="au__facts"><li><b>15</b><span>ans d’expérience en séjours et événements</span></li><li><b>2</b><span>langues : français et hébreu</span></li><li><b>2</b><span>fêtes par an à l’hôtel : Souccot et Pessah</span></li></ul>
+    <h3 class="h3">Ce que nous faisons</h3>
+    <ul class="au__what"><li><a href="#holidays"><b>Séjours de fêtes</b><span>Souccot et Pessah à l’hôtel, cacherout méhadrin</span><i aria-hidden="true">→</i></a></li><li><a href="#events"><b>Production d’événements</b><span>Mariages, bar-mitsva et soirées de gala</span><i aria-hidden="true">→</i></a></li><li><a href="#gala"><b>Système de gala</b><span>Billets, tombolas, dons et centre d’appels</span><i aria-hidden="true">→</i></a></li><li><a href="#wedding"><b>Application mariage</b><span>Invitations, confirmations et plan de table</span><i aria-hidden="true">→</i></a></li></ul>
+    <div class="actions au__cta"><a class="btn btn--sun" href="#contact">Demander un devis</a><a class="btn btn--line" href="#team">Découvrir l’équipe</a></div>
+  </div>
+</section>
+
 <!-- ============ HOLIDAYS ============ -->
 <section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="Séjours" aria-labelledby="holidays-title">
   <div class="wrap trips-head">
@@ -227,7 +252,7 @@
 </section>
 
 <!-- ============ SUKKOT (own window) ============ -->
-<section class="holidays sheet" data-hero="hero.mp4" id="sukkot" data-title="Souccot à l’hôtel Nof Kinneret">
+<section class="holidays sheet" data-parent="holidays" data-hero="hero.mp4" id="sukkot" data-title="Souccot à l’hôtel Nof Kinneret">
   <div class="wrap split">
     <div class="split__text">
       <h3 class="h2" data-hero-title>Souccot à l’hôtel Nof Kinneret</h3>
@@ -296,7 +321,7 @@
 </section>
 
 <!-- ============ PESACH (own window) ============ -->
-<section class="holidays holidays--pesach sheet" data-hero="hero.jpg" id="pesach" data-title="Pessah avec La Belle Vie">
+<section class="holidays holidays--pesach sheet" data-parent="holidays" data-hero="hero.jpg" id="pesach" data-title="Pessah avec La Belle Vie">
   <div class="pesach wrap">
     <svg class="pesach__art draw" viewBox="0 0 220 140" aria-hidden="true">
       <ellipse cx="110" cy="112" rx="96" ry="18"/>

@@ -27,7 +27,7 @@
   </a>
   <nav class="bar__nav" id="nav" aria-label="Main navigation">
     <a href="#services">What are you looking for</a>
-    <a href="#about">About us</a>
+    <a href="#about-us">About us</a>
     <a href="#team">Our team</a>
     <a href="#holidays">Holidays</a>
     <a href="#events">Events</a>
@@ -141,15 +141,11 @@
 <!-- ============ ABOUT ============ -->
 <section class="about" id="about" aria-labelledby="about-title">
   <div class="wrap">
-    <div class="about__intro">
+    <div class="about__intro about__intro--short">
       <h2 class="h2" id="about-title">About us</h2>
       <p class="tagline">Turning dreams into reality</p>
       <p class="lead">La Belle Vie is a family business. For 15 years we have been organizing holiday stays and events for a traditional Jewish public, in Hebrew, French and English.</p>
-      <ul class="about__values">
-        <li><b>Always on site</b>At the hotel for the whole holiday and in the hall all evening, from the first morning to the last dance.</li>
-        <li><b>Body and soul</b>Real comfort, together with Torah, prayer and joy.</li>
-        <li><b>Like family</b>Our guests come back year after year.</li>
-      </ul>
+      <a class="more-link" href="#about-us">Read more about us <span aria-hidden="true">→</span></a>
     </div>
 
     <!-- CEO letter: draft built from Ilan's own words at the end of Souccot. Ilan can replace the text. -->
@@ -200,6 +196,35 @@
   </div>
 </section>
 
+<!-- ============ ABOUT US (own window) ============ -->
+<section class="about-us sheet" data-hero="hero.jpg" id="about-us" data-title="About us">
+  <div class="wrap au">
+    <div class="au__text">
+      <p class="tagline">Turning dreams into reality</p>
+      <p class="lead">La Belle Vie is a family business. For 15 years we have been organizing holiday stays and events for a traditional Jewish public, in Hebrew, French and English.</p>
+      <ul class="about__values">
+        <li><b>Always on site</b>At the hotel for the whole holiday and in the hall all evening, from the first morning to the last dance.</li>
+        <li><b>Body and soul</b>Real comfort, together with Torah, prayer and joy.</li>
+        <li><b>Like family</b>Our guests come back year after year.</li>
+      </ul>
+    </div>
+    <figure class="au__video">
+      <button class="vthumb vthumb--big" data-video="special" data-title="What makes us special">
+        <img src="../media/special.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">What makes us special<small>1 min 10</small></span>
+      </button>
+    </figure>
+  </div>
+  <div class="wrap">
+    <h3 class="h3">In short</h3>
+    <ul class="au__facts"><li><b>15</b><span>years of holiday stays and events</span></li><li><b>3</b><span>languages: Hebrew, French and English</span></li><li><b>2</b><span>holidays a year at the hotel: Sukkot and Pesach</span></li></ul>
+    <h3 class="h3">What we do</h3>
+    <ul class="au__what"><li><a href="#holidays"><b>Holiday stays</b><span>Sukkot and Pesach at the hotel, mehadrin kashrut</span><i aria-hidden="true">→</i></a></li><li><a href="#events"><b>Event production</b><span>Weddings, bar mitzvahs and gala evenings</span><i aria-hidden="true">→</i></a></li><li><a href="#gala"><b>Gala system</b><span>Tickets, raffles, donations and a call centre</span><i aria-hidden="true">→</i></a></li><li><a href="#wedding"><b>Wedding app</b><span>Invitations, RSVPs and seating</span><i aria-hidden="true">→</i></a></li></ul>
+    <div class="actions au__cta"><a class="btn btn--sun" href="#contact">Ask for a quote</a><a class="btn btn--line" href="#team">Meet the team</a></div>
+  </div>
+</section>
+
 <!-- ============ HOLIDAYS ============ -->
 <section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="Holidays" aria-labelledby="holidays-title">
   <div class="wrap trips-head">
@@ -227,7 +252,7 @@
 </section>
 
 <!-- ============ SUKKOT (own window) ============ -->
-<section class="holidays sheet" data-hero="hero.mp4" id="sukkot" data-title="Sukkot at the Nof Kinneret hotel">
+<section class="holidays sheet" data-parent="holidays" data-hero="hero.mp4" id="sukkot" data-title="Sukkot at the Nof Kinneret hotel">
   <div class="wrap split">
     <div class="split__text">
       <h3 class="h2" data-hero-title>Sukkot at the Nof Kinneret hotel</h3>
@@ -296,7 +321,7 @@
 </section>
 
 <!-- ============ PESACH (own window) ============ -->
-<section class="holidays holidays--pesach sheet" data-hero="hero.jpg" id="pesach" data-title="Pesach with La Belle Vie">
+<section class="holidays holidays--pesach sheet" data-parent="holidays" data-hero="hero.jpg" id="pesach" data-title="Pesach with La Belle Vie">
   <div class="pesach wrap">
     <svg class="pesach__art draw" viewBox="0 0 220 140" aria-hidden="true">
       <ellipse cx="110" cy="112" rx="96" ry="18"/>
