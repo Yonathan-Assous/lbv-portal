@@ -172,41 +172,6 @@
     },
     {
       "he": {
-        "title": "כמו אבא ואמא",
-        "file": "media/guests.mp4",
-        "poster": "media/guests.jpg"
-      },
-      "fr": {
-        "title": "Comme papa et maman",
-        "file": "media/guests-fr.mp4",
-        "poster": "media/guests-fr.jpg"
-      },
-      "en": {
-        "title": "Like mum and dad",
-        "file": "media/guests-fr.mp4",
-        "poster": "media/guests-fr.jpg"
-      }
-    },
-    {
-      "he": {
-        "title": "מה מיוחד אצלנו",
-        "file": "media/special.mp4",
-        "poster": "media/special.jpg"
-      },
-      "fr": {
-        "title": "Ce qui nous rend uniques",
-        "file": "media/special-fr.mp4",
-        "poster": "media/special-fr.jpg"
-      },
-      "en": {
-        "title": "What makes us special",
-        "file": "media/special-fr.mp4",
-        "poster": "media/special-fr.jpg"
-      },
-      "hidden": true
-    },
-    {
-      "he": {
         "title": "יום אחד – אין סוף חוויות",
         "file": "media/day.mp4",
         "poster": "media/day.jpg"
@@ -241,19 +206,19 @@
     },
     {
       "he": {
-        "title": "ערבים בלתי נשכחים",
-        "file": "media/shows.mp4",
-        "poster": "media/shows.jpg"
+        "title": "מהמטבח באהבה",
+        "file": "media/pizza.mp4",
+        "poster": "media/pizza.jpg"
       },
       "fr": {
-        "title": "Des soirées inoubliables",
-        "file": "media/shows-fr.mp4",
-        "poster": "media/shows-fr.jpg"
+        "title": "De notre cuisine, avec amour",
+        "file": "media/pizza-fr.mp4",
+        "poster": "media/pizza-fr.jpg"
       },
       "en": {
-        "title": "Unforgettable evenings",
-        "file": "media/shows-fr.mp4",
-        "poster": "media/shows-fr.jpg"
+        "title": "From our kitchen, with love",
+        "file": "media/pizza-fr.mp4",
+        "poster": "media/pizza-fr.jpg"
       }
     },
     {
@@ -275,6 +240,23 @@
     },
     {
       "he": {
+        "title": "ערבים בלתי נשכחים",
+        "file": "media/shows.mp4",
+        "poster": "media/shows.jpg"
+      },
+      "fr": {
+        "title": "Des soirées inoubliables",
+        "file": "media/shows-fr.mp4",
+        "poster": "media/shows-fr.jpg"
+      },
+      "en": {
+        "title": "Unforgettable evenings",
+        "file": "media/shows-fr.mp4",
+        "poster": "media/shows-fr.jpg"
+      }
+    },
+    {
+      "he": {
         "title": "חוויה שמחכה לכם",
         "file": "media/included.mp4",
         "poster": "media/included.jpg"
@@ -292,20 +274,38 @@
     },
     {
       "he": {
-        "title": "מהמטבח באהבה",
-        "file": "media/pizza.mp4",
-        "poster": "media/pizza.jpg"
+        "title": "כמו אבא ואמא",
+        "file": "media/guests.mp4",
+        "poster": "media/guests.jpg"
       },
       "fr": {
-        "title": "De notre cuisine, avec amour",
-        "file": "media/pizza-fr.mp4",
-        "poster": "media/pizza-fr.jpg"
+        "title": "Comme papa et maman",
+        "file": "media/guests-fr.mp4",
+        "poster": "media/guests-fr.jpg"
       },
       "en": {
-        "title": "From our kitchen, with love",
-        "file": "media/pizza-fr.mp4",
-        "poster": "media/pizza-fr.jpg"
+        "title": "Like mum and dad",
+        "file": "media/guests-fr.mp4",
+        "poster": "media/guests-fr.jpg"
       }
+    },
+    {
+      "he": {
+        "title": "מה מיוחד אצלנו",
+        "file": "media/special.mp4",
+        "poster": "media/special.jpg"
+      },
+      "fr": {
+        "title": "Ce qui nous rend uniques",
+        "file": "media/special-fr.mp4",
+        "poster": "media/special-fr.jpg"
+      },
+      "en": {
+        "title": "What makes us special",
+        "file": "media/special-fr.mp4",
+        "poster": "media/special-fr.jpg"
+      },
+      "hidden": true
     },
     {
       "he": {
