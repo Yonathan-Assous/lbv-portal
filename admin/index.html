@@ -20,6 +20,7 @@
     <img src="../media/logo-letters.png" alt="La Belle Vie" width="114" height="80">
     <h1>ניהול האתר</h1>
     <p>La Belle Vie</p>
+    <label>שם משתמש<input name="username" autocomplete="username" dir="ltr" placeholder="הבעלים: להשאיר ריק"></label>
     <label>סיסמה<input type="password" name="password" autocomplete="current-password" required></label>
     <p class="msg msg--err" id="loginErr" hidden></p>
     <button class="btn btn--gold btn--block" type="submit">כניסה</button>
@@ -35,6 +36,7 @@
         <input type="search" id="gq" placeholder="חיפוש: טקסט באתר, שם של פונה, טלפון…" autocomplete="off" aria-label="חיפוש">
         <div class="hb__res" id="gqRes" hidden></div>
       </div>
+      <span class="hb__me" id="me"></span>
       <a class="hb__link" href="../" target="_blank" rel="noopener">↗ לאתר</a>
       <button class="hb__link" type="button" id="logoutBtn">יציאה</button>
     </div>

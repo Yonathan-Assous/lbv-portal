@@ -62,6 +62,18 @@ a { color: inherit; }
 .hb__res button:hover, .hb__res button:focus-visible { background: var(--bg); }
 .hb__res small { color: var(--ink-3); font-size: .8rem; }
 .hb__res p { margin: 8px 12px; color: var(--ink-3); }
+.hb__me { flex: none; display: grid; text-align: end; line-height: 1.2; font-size: .85rem; color: #fff; font-weight: 700; }
+.hb__me small { color: var(--gold); font-weight: 600; font-size: .74rem; }
+@media (max-width: 860px) { .hb__me { display: none; } }
+.users { display: grid; gap: 10px; }
+.user { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.user__ava { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--night); color: var(--gold); font: 700 1.1rem "Frank Ruhl Libre", serif; }
+.user b { display: block; }
+.user small { color: var(--ink-3); }
+.roles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 6px 0 16px; }
+.roles div { padding: 12px; border-radius: 10px; background: var(--bg); font-size: .86rem; color: var(--ink-2); }
+.roles b { display: block; color: var(--ink); margin-bottom: 2px; }
+@media (max-width: 860px) { .roles { grid-template-columns: 1fr 1fr; } .user { grid-template-columns: auto 1fr; } .user .row-tools { grid-column: 1 / -1; } }
 .hb__link { flex: none; padding: 8px 12px; border: 0; border-radius: 9px; background: none; color: #C7D3E4; font: 700 .9rem inherit; font-family: inherit; text-decoration: none; cursor: pointer; white-space: nowrap; }
 .hb__link:hover { background: rgba(255,255,255,.08); color: #fff; }
 .hb__groups { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-bottom: 8px; }

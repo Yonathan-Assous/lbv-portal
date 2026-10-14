@@ -32,20 +32,52 @@ export function passwordMatches(given) {
   return crypto.timingSafeEqual(a, b);
 }
 
-export function sessionCookie() {
-  const exp = String(Date.now() + SESSION_HOURS * 3600 * 1000);
-  return `${COOKIE}=${exp}.${sign(exp)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_HOURS * 3600}`;
+// Roles: what each kind of manager may do.
+//   owner  – everything, including adding and removing managers (logs in with ADMIN_PASSWORD)
+//   admin  – everything except managing managers
+//   editor – the site's content only (texts, videos, photos)
+//   sales  – requests, sign-ups and mailings only
+export const ROLES = ['owner', 'admin', 'editor', 'sales'];
+const PERMS = {
+  content: ['owner', 'admin', 'editor'],
+  leads: ['owner', 'admin', 'sales'],
+  mail: ['owner', 'admin', 'sales'],
+  users: ['owner'],
+};
+export const can = (s, perm) => !!s && (PERMS[perm] || []).includes(s.r);
+
+/** A signed session: who is logged in and with which role. */
+export function sessionCookie(user = { id: 'owner', n: 'הבעלים', r: 'owner' }) {
+  const payload = Buffer.from(JSON.stringify({ ...user, exp: Date.now() + SESSION_HOURS * 3600 * 1000 })).toString('base64url');
+  return `${COOKIE}=${payload}.${sign(payload)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_HOURS * 3600}`;
 }
 
 export const clearCookie = `${COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
 
+/** The logged-in manager ({ id, n: name, r: role }), or null. */
 export function isAuthed(req) {
   const raw = (req.headers.cookie || '').split(/;\s*/).find(c => c.startsWith(COOKIE + '='));
-  if (!raw || !process.env.ADMIN_PASSWORD) return false;
-  const [exp, mac] = raw.slice(COOKIE.length + 1).split('.');
-  if (!exp || !mac || Number(exp) < Date.now()) return false;
-  const good = sign(exp);
-  return good.length === mac.length && crypto.timingSafeEqual(Buffer.from(good), Buffer.from(mac));
+  if (!raw || !process.env.ADMIN_PASSWORD) return null;
+  const [payload, mac] = raw.slice(COOKIE.length + 1).split('.');
+  if (!payload || !mac) return null;
+  const good = sign(payload);
+  if (good.length !== mac.length || !crypto.timingSafeEqual(Buffer.from(good), Buffer.from(mac))) return null;
+  try {
+    const s = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return s && s.exp > Date.now() && ROLES.includes(s.r) ? s : null;
+  } catch (e) { return null; }
+}
+
+/** Password hashing for managers (scrypt, with a random salt per password). */
+export function hashPassword(pw) {
+  const salt = crypto.randomBytes(16).toString('base64url');
+  return `${salt}:${crypto.scryptSync(String(pw), salt, 32).toString('base64url')}`;
+}
+export function checkPassword(pw, stored) {
+  const [salt, hash] = String(stored || '').split(':');
+  if (!salt || !hash) return false;
+  const a = crypto.scryptSync(String(pw), salt, 32), b = Buffer.from(hash, 'base64url');
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
 /** Minimal shape check so a broken save can never blank the public site. */

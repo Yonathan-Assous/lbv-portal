@@ -10,6 +10,7 @@ const LNAME = { he: 'עברית', fr: 'צרפתית', en: 'אנגלית' };
 const DIR = { he: 'rtl', fr: 'ltr', en: 'ltr' };
 const E = window.LBVEdit;
 
+let me = null; // the logged-in manager: { name, role }
 let state = null, saved = '', storage = 'none', lang = 'he', page = 'dashboard', scopeId = 'top', leads = [], leadsReady = false;
 const docs = {};      // the site's own pages (he/fr/en), scanned: the originals of every text
 let maps = {};
@@ -196,20 +197,30 @@ const GROUPS = () => [
   { id: 'settings', name: 'הגדרות', pages: [
     { id: 'contact', title: 'פרטי קשר וקישורים', sub: 'טלפונים, וואטסאפ, מייל ורשתות חברתיות, בכל האתר בבת אחת' },
     { id: 'banners', title: 'תמונות רקע', sub: 'התמונה הגדולה מאחורי הכותרת של כל חלון' },
-    { id: 'stats', title: 'סטטיסטיקה', sub: 'כמה פונים, כמה נרשמים, וכמה מבקרים באתר' }] },
+    { id: 'stats', title: 'סטטיסטיקה', sub: 'כמה פונים, כמה נרשמים, וכמה מבקרים באתר' },
+    { id: 'users', title: 'מנהלים והרשאות', sub: 'להוסיף מנהלים, לקבוע מה כל אחד רשאי לעשות, ולהסיר' }] },
   { id: 'help', name: 'עזרה', pages: [
     { id: 'guide', title: 'הדרכה', sub: 'איך עושים כל דבר, צעד אחר צעד' },
     { id: 'support', title: 'תמיכה טכנית', sub: 'בדיקה שהכול מחובר, ומה עושים כשמשהו לא עובד' }] },
 ];
-const allPages = () => GROUPS().flatMap(g => g.pages.map(p => ({ ...p, group: g.id })));
+/** Only the areas this manager may use. */
+const myGroups = () => GROUPS().map(g => ({ ...g, pages: g.pages.filter(p => pageAllowed(p.id)) })).filter(g => g.pages.length);
+function pageAllowed(id) {
+  if (['inbox', 'mail'].includes(id)) return canDo('leads');
+  if (id === 'users') return canDo('users');
+  if (id === 'dashboard') return canDo('leads');
+  if (['guide', 'support', 'stats'].includes(id)) return true;
+  return canDo('content');
+}
+const allPages = () => myGroups().flatMap(g => g.pages.map(p => ({ ...p, group: g.id })));
 function drawNav() {
   const open = leads.filter(l => !l.handled).length;
   const cur = allPages().find(p => p.id === page) || allPages()[0];
-  $('#groups').innerHTML = GROUPS().map(g => `<button type="button" class="grp" data-group="${g.id}" ${g.id === cur.group ? 'aria-current="true"' : ''}>
+  $('#groups').innerHTML = myGroups().map(g => `<button type="button" class="grp" data-group="${g.id}" ${g.id === cur.group ? 'aria-current="true"' : ''}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${ICON[g.id]}"/></svg>${g.name}${g.badge && open ? `<span class="n">${open}</span>` : ''}</button>`).join('');
-  const grp = GROUPS().find(g => g.id === cur.group);
+  const grp = myGroups().find(g => g.id === cur.group);
   $('#tabs').innerHTML = grp.pages.map(p => `<button type="button" class="tab" role="tab" data-page="${p.id}" aria-selected="${p.id === page}">${esc(p.title)}${p.badge && open ? `<span class="n">${open}</span>` : ''}</button>`).join('');
-  $$('[data-group]', $('#groups')).forEach(b => b.addEventListener('click', () => go(GROUPS().find(g => g.id === b.dataset.group).pages[0].id)));
+  $$('[data-group]', $('#groups')).forEach(b => b.addEventListener('click', () => go(myGroups().find(g => g.id === b.dataset.group).pages[0].id)));
   $$('[data-page]', $('#tabs')).forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
   $('#tabs [aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
@@ -229,7 +240,7 @@ function render() {
   const pg = $('#page');
   pg.innerHTML = '';
   if (page.startsWith('w-') || page.startsWith('trip-')) return windowPage(pg, page);
-  ({ dashboard, inbox, mail, team, contact, banners, stats, guide, support })[page](pg);
+  ({ dashboard, inbox, mail, team, contact, banners, stats, guide, support, users })[page](pg);
 }
 $$('#langPick button').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang;
@@ -944,6 +955,58 @@ function tour(force) {
   requestAnimationFrame(show);
 }
 
+/* ---------- 12. managers and permissions (owner only) ---------- */
+const ROLE = {
+  owner: ['בעלים', 'הכול, כולל הוספת מנהלים והרשאות'],
+  admin: ['מנהל', 'הכול חוץ ממנהלים והרשאות'],
+  editor: ['עורך תוכן', 'רק תוכן האתר: טקסטים, סרטונים ותמונות'],
+  sales: ['פניות בלבד', 'רק פניות, נרשמים ומיילים'],
+};
+const CAN = { content: ['owner', 'admin', 'editor'], leads: ['owner', 'admin', 'sales'], mail: ['owner', 'admin', 'sales'], users: ['owner'] };
+const canDo = perm => CAN[perm].includes(me?.role || 'owner');
+async function users(pg) {
+  const c = card('מנהלים והרשאות', 'כל מנהל נכנס עם שם משתמש וסיסמה משלו, ורואה רק את מה שמותר לו');
+  c.append(html(`<div class="roles">${Object.entries(ROLE).map(([k, [n, d]]) => `<div><b>${n}</b>${d}</div>`).join('')}</div>`));
+  const list = html('<div class="users"><p class="hint">טוען…</p></div>');
+  c.append(list);
+  const add = card('הוספת מנהל', 'שם המשתמש באותיות באנגלית או מספרים (למשל: maayan). הסיסמה לפחות 8 תווים. מוסרים אותה למנהל בעל פה או בהודעה.');
+  const form = html(`<form class="grid2">
+    <label class="field"><span>שם (כמו שיופיע)</span><input name="name" required placeholder="למשל: מעיין"></label>
+    <label class="field"><span>שם משתמש לכניסה</span><input name="username" required dir="ltr" placeholder="maayan" pattern="[a-zA-Z0-9._-]{3,30}"></label>
+    <label class="field"><span>סיסמה</span><input name="password" required dir="ltr" minlength="8" autocomplete="new-password"></label>
+    <label class="field"><span>הרשאה</span><select name="role"><option value="editor">עורך תוכן</option><option value="sales">פניות בלבד</option><option value="admin">מנהל</option></select></label>
+    <div><button class="btn btn--gold" type="submit">+ הוספת מנהל</button></div></form>`);
+  add.append(form);
+  pg.append(c, add);
+  const load = async () => {
+    const r = await fetch('/api/users', { cache: 'no-store' });
+    if (!r.ok) { list.innerHTML = `<p class="hint">${r.status === 503 ? 'האחסון הפרטי עוד לא מחובר.' : 'לא הצלחנו לטעון.'}</p>`; return; }
+    const arr = await r.json();
+    list.innerHTML = '';
+    list.append(html(`<div class="user"><span class="user__ava">★</span><div><b>הבעלים</b><small>נכנסים בלי שם משתמש, עם הסיסמה הראשית · ${ROLE.owner[0]}</small></div><span></span></div>`));
+    if (!arr.length) list.append(html('<p class="hint">עוד אין מנהלים נוספים.</p>'));
+    arr.forEach(u => {
+      const row = html(`<div class="user"><span class="user__ava">${esc((u.name || '?').charAt(0))}</span>
+        <div><b>${esc(u.name)}</b><small dir="auto">${esc(u.username)} · ${u.last ? 'נכנס לאחרונה ' + date(u.last) : 'עוד לא נכנס'}</small></div>
+        <div class="row-tools"><select aria-label="הרשאה">${['admin', 'editor', 'sales'].map(k => `<option value="${k}" ${u.role === k ? 'selected' : ''}>${ROLE[k][0]}</option>`).join('')}</select>
+          <button type="button" class="btn btn--line btn--sm" data-pw>סיסמה חדשה</button><button type="button" class="icon icon--del" data-del title="הסרה">✕</button></div></div>`);
+      const patch = async b => { const r2 = await fetch(`/api/users?id=${encodeURIComponent(u.id)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }); toast(r2.ok ? 'עודכן' : 'לא הצלחנו לעדכן', r2.ok ? 'ok' : 'err'); };
+      $('select', row).addEventListener('change', e => patch({ role: e.target.value }));
+      $('[data-pw]', row).addEventListener('click', () => { const pw = prompt(`סיסמה חדשה ל${u.name} (לפחות 8 תווים):`); if (pw && pw.length >= 8) patch({ password: pw }); else if (pw) toast('הסיסמה קצרה מדי', 'err'); });
+      $('[data-del]', row).addEventListener('click', async () => { if (!confirm(`להסיר את ${u.name}? הוא לא יוכל להיכנס יותר.`)) return; const r2 = await fetch(`/api/users?id=${encodeURIComponent(u.id)}`, { method: 'DELETE' }); if (r2.ok) { toast('הוסר'); load(); } else toast('לא הצלחנו להסיר', 'err'); });
+      list.append(row);
+    });
+  };
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const b = Object.fromEntries(new FormData(form));
+    const r = await fetch('/api/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) });
+    if (r.ok) { form.reset(); toast(`נוסף. מוסרים ל${b.name}: שם משתמש ${b.username.toLowerCase()} והסיסמה שבחרתם`); load(); }
+    else toast(r.status === 409 ? 'שם המשתמש הזה כבר קיים' : 'בדקו: שם, שם משתמש באנגלית, וסיסמה של 8 תווים לפחות', 'err');
+  });
+  load();
+}
+
 /* ---------- load / save / auth ---------- */
 async function loadContent() {
   for (const url of ['/api/content', '../content.json']) {
@@ -962,7 +1025,9 @@ async function openApp() {
   const start = location.hash.slice(1);
   go(allPages().some(p => p.id === start) ? start : 'dashboard');
   setTimeout(() => tour(false), 600);
-  loadLeads().then(() => { if (['dashboard', 'inbox', 'stats', 'mail'].includes(page)) render(); });
+  $('#me').innerHTML = me ? `${esc(me.name)}<small>${ROLE[me.role]?.[0] || ''}</small>` : '';
+  if (canDo('leads')) loadLeads().then(() => { if (['dashboard', 'inbox', 'stats', 'mail'].includes(page)) render(); });
+  else { leadsReady = true; }
 }
 $('#saveBtn').addEventListener('click', async () => {
   const btn = $('#saveBtn');
@@ -986,8 +1051,10 @@ $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const err = $('#loginErr');
   err.hidden = true;
-  const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: e.target.password.value }) });
+  const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: e.target.username.value.trim(), password: e.target.password.value }) });
   if (!r.ok) { err.textContent = r.status === 503 ? 'עוד לא הוגדרה סיסמה לניהול.' : 'הסיסמה לא נכונה. נסו שוב.'; err.hidden = false; return; }
+  const j = await r.json().catch(() => ({}));
+  me = j.user || null;
   e.target.reset();
   openApp().catch(() => toast('לא הצלחנו לטעון את התוכן', 'err'));
 });
@@ -1001,6 +1068,7 @@ addEventListener('beforeunload', e => { if (state && changed()) { e.preventDefau
   try {
     const cfg = await (await fetch('/api/config', { cache: 'no-store' })).json();
     storage = cfg.storage;
+    me = cfg.user || null;
     if (cfg.authed) await openApp(); else showLogin();
   } catch (e) { showLogin(); }
 })();

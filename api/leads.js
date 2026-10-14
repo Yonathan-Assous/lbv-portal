@@ -1,4 +1,4 @@
-import { isAuthed, storageReady, readBody } from './_lib.js';
+import { isAuthed, can, storageReady, readBody } from './_lib.js';
 import { LEADS, leadsReady, saveLead, deleteLead, updateLead, loadLeads } from './_leads.js';
 
 // People who left details on the site, kept in the PRIVATE store:
@@ -40,7 +40,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  if (!isAuthed(req)) return res.status(401).json({ error: 'login' });
+  const s = isAuthed(req);
+  if (!s) return res.status(401).json({ error: 'login' });
+  if (!can(s, 'leads')) return res.status(403).json({ error: 'forbidden' });
 
   if (req.method === 'GET') return res.status(200).json(await loadLeads());
 
@@ -50,7 +52,7 @@ export default async function handler(req, res) {
   if (req.method === 'PATCH') {
     let b;
     try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
-    const ok = await updateLead(id, { handled: b.handled === true, handledAt: b.handled === true ? new Date().toISOString() : '' });
+    const ok = await updateLead(id, { handled: b.handled === true, handledAt: b.handled === true ? new Date().toISOString() : '', handledBy: b.handled === true ? s.n : '' });
     return ok ? res.status(200).json({ ok: true }) : res.status(404).json({ error: 'not-found' });
   }
   if (req.method === 'DELETE') {

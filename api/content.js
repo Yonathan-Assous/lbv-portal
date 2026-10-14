@@ -1,5 +1,5 @@
 import { put, list } from '@vercel/blob';
-import { CONTENT_KEY, isAuthed, storageReady, validContent, readBody } from './_lib.js';
+import { CONTENT_KEY, isAuthed, can, storageReady, validContent, readBody } from './_lib.js';
 
 // GET  → the published content (public; the site falls back to the bundled content.json on 404).
 // PUT  → save new content (admin session required).
@@ -19,12 +19,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'PUT') {
-    if (!isAuthed(req)) return res.status(401).json({ error: 'login' });
+    const s = isAuthed(req);
+    if (!s) return res.status(401).json({ error: 'login' });
+    if (!can(s, 'content')) return res.status(403).json({ error: 'forbidden' });
     if (!storageReady()) return res.status(503).json({ error: 'not-configured' });
     let body;
     try { body = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
     if (!validContent(body)) return res.status(400).json({ error: 'bad-shape' });
-    const text = JSON.stringify({ ...body, savedAt: new Date().toISOString() }, null, 2);
+    const text = JSON.stringify({ ...body, savedAt: new Date().toISOString(), savedBy: s.n }, null, 2);
     if (text.length > 1_500_000) return res.status(413).json({ error: 'too-big' });
     await put(CONTENT_KEY, text, {
       access: 'public', contentType: 'application/json',

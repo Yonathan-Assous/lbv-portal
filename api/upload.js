@@ -1,5 +1,5 @@
 import { handleUpload } from '@vercel/blob/client';
-import { isAuthed, storageReady, readBody } from './_lib.js';
+import { isAuthed, can, storageReady, readBody } from './_lib.js';
 
 // Photos and videos go straight from the admin's browser to Blob storage; this route only
 // hands out a short-lived upload token to a logged-in admin (so large videos never pass
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       body,
       request: req,
       onBeforeGenerateToken: async () => {
-        if (!isAuthed(req)) throw new Error('login');
+        if (!can(isAuthed(req), 'content')) throw new Error('login');
         return {
           allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'],
           maximumSizeInBytes: 300 * 1024 * 1024,

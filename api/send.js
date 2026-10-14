@@ -1,4 +1,4 @@
-import { isAuthed, storageReady, readBody } from './_lib.js';
+import { isAuthed, can, storageReady, readBody } from './_lib.js';
 import { loadLeads, unsubToken, leadsReady } from './_leads.js';
 
 // Mailing to the sign-ups, through the same email service the gala system already uses
@@ -34,7 +34,9 @@ function emailHtml({ origin, subject, message, buttonText, buttonUrl, lang, unsu
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
-  if (!isAuthed(req)) return res.status(401).json({ error: 'login' });
+  const s = isAuthed(req);
+  if (!s) return res.status(401).json({ error: 'login' });
+  if (!can(s, 'mail')) return res.status(403).json({ error: 'forbidden' });
   if (!storageReady() || !leadsReady()) return res.status(503).json({ error: 'not-configured' });
   const key = process.env.RESEND_API_KEY;
   if (!key) return res.status(503).json({ error: 'email-not-configured' });
