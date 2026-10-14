@@ -916,6 +916,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gn__doors.is-open .gn__light { opacity: 1; }
 .gn__doors.is-open .gn__plate { opacity: 1; transform: none; }
 .gn__doors { perspective: 900px; }
+.gn__custom { margin: -8px 0 12px; text-align: center; font-size: .82rem; color: #d4af6a; opacity: .85; }
 /* Lock plate on the seam, and the gold key that turns in it before the doors open. */
 .gn__lock { position: absolute; z-index: 3; left: 50%; top: 50%; width: 22px; height: 44px; translate: -50% -50%; border-radius: 11px; background: linear-gradient(180deg, #f7e6c0, #d4af6a 45%, #8a6a32); box-shadow: 0 0 0 2px #04080f, 0 6px 16px rgba(0,0,0,.5); transition: opacity .4s ease, box-shadow .4s ease; }
 .gn__lock::before { content: ""; position: absolute; left: 50%; top: 12px; width: 7px; height: 7px; translate: -50% 0; border-radius: 50%; background: #1d1405; }

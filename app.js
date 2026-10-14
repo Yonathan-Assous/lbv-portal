@@ -326,7 +326,6 @@
     gBoard.prepend(li);
     while (gBoard.children.length > 10) gBoard.lastChild.remove();
     if (reveal) {
-      const n = Math.max(1, Math.floor(amount / PER_CHILD));
       // Every donation: the doors close (if open), a gold key turns in the lock, then they swing open.
       doorTimers.forEach(clearTimeout);
       const wasOpen = gDoors.classList.contains('is-open');
@@ -336,9 +335,7 @@
       doorTimers = [];
       at(closeWait, () => {
         $('#gName').textContent = name;
-        $('#gAmount').textContent = ils(amount) + ' ₪';
-        $('#gChild').textContent = n === 1 ? UI.childOne : fill(UI.childMany, { n: ils(n) });
-        void gDoors.offsetWidth;
+        $('#gAmount').textContent = ils(amount) + ' ₪';        void gDoors.offsetWidth;
         gDoors.classList.add('is-locking');
       });
       at(closeWait + keyTime, () => gDoors.classList.add('is-open'));
@@ -346,7 +343,11 @@
     }
     renderTotals();
   };
-  $('#dAdd').addEventListener('click', () => donate(pick(gifts)));
+  $('#dAdd').addEventListener('click', () => {
+    // After passing the goal the demo quietly starts a new evening.
+    if (total >= GOAL * 1.06) { total = 132000; gBoard.innerHTML = ''; }
+    donate(pick(gifts));
+  });
   renderTotals();
 
   /* ---------- Phone simulations (call centre, ticket purchase): loop through their screens ---------- */
@@ -371,13 +372,12 @@
     if (donateTimer) return;
     if (total === 0) {
       total = 132000;
-      [1800, 500, 3600, 1000, 770, 2600, 5000, 1000, 1800].forEach(a => donate(a, false));
-      donate(1800);
+      [1800, 500, 3600, 1000, 770, 2600, 5000, 1000, 1800, 1800].forEach(a => donate(a, false));
     }
-    // After passing the goal the demo quietly starts a new evening, so the totals always move.
-    donateTimer = setInterval(() => { if (total >= GOAL * 1.06) { total = 132000; gBoard.innerHTML = ''; } donate(pick(gifts)); }, 5200);
+    // Nothing runs by itself: a donation appears only when the visitor presses the button.
+    donateTimer = true;
   };
-  const stopDonations = () => { clearInterval(donateTimer); donateTimer = null; };
+  const stopDonations = () => { doorTimers.forEach(clearTimeout); gDoors.classList.remove('is-open', 'is-locking'); donateTimer = null; };
   addEventListener('sheet:change', e => (e.detail === 'gala' ? startDonations : stopDonations)());
   if ($('#gala.is-open')) { startDonations(); simStart(); }
 
