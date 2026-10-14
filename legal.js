@@ -26,13 +26,13 @@
           'לכל בקשת ביטול או שאלה על החזר, פנו אלינו בוואטסאפ או במייל ונחזור אליכם.',
         ]],
         ['privacy', 'מדיניות פרטיות', [
-          'מה אנחנו אוספים: כשאתם נרשמים לעדכונים או מבקשים הצעת מחיר, אתם מוסרים שם, טלפון ו/או מייל ואת סוג השירות שמעניין אתכם. זה הכול. אנחנו לא אוספים מידע אחר עליכם.',
+          'מה אנחנו אוספים: כשאתם נרשמים לעדכונים או מבקשים הצעת מחיר, אתם מוסרים שם, טלפון ו/או מייל, את סוג השירות שמעניין אתכם, ובבקשת הצעת מחיר גם את פרטי האירוע שכתבתם. מעבר לזה אנחנו לא אוספים עליכם מידע.',
           'למה: כדי לחזור אליכם ולשלוח לכם עדכונים שביקשתם. אנחנו לא מוכרים ולא מעבירים את הפרטים לאף אחד.',
           'איפה זה נשמר: באחסון פרטי ונעול, שרק מנהלי האתר יכולים לפתוח אחרי כניסה עם סיסמה. הפרטים לא נשמרים בקוד האתר.',
           'הסרה: בכל מייל שנשלח יש קישור להסרה מרשימת התפוצה. אפשר גם לבקש מאיתנו למחוק את הפרטים שלכם לגמרי, בוואטסאפ או במייל.',
         ]],
         ['cookies', 'מדיניות עוגיות', [
-          'האתר לא משתמש בעוגיות פרסום או מעקב, ולא בכלי ניתוח תנועה.',
+          'האתר לא משתמש בעוגיות פרסום או מעקב. אנחנו סופרים ביקורים באופן אנונימי, בלי עוגיות ובלי פרטים אישיים, כדי לדעת כמה אנשים נכנסים ואילו חלקים מעניינים אותם.',
           'הדפדפן שלכם שומר רק את השפה שבחרתם, כדי שהאתר ייפתח בה בפעם הבאה. מנהלי האתר מקבלים עוגייה אחת לכניסה למערכת הניהול.',
           'הגופנים באתר נטענים משירות הגופנים של גוגל.',
         ]],
@@ -63,13 +63,13 @@
           'Pour toute demande d’annulation ou de remboursement, écrivez-nous sur WhatsApp ou par e-mail.',
         ]],
         ['privacy', 'Politique de confidentialité', [
-          'Ce que nous collectons : lorsque vous vous inscrivez aux nouvelles ou demandez un devis, vous nous donnez un nom, un téléphone et/ou un e-mail, et le service qui vous intéresse. Rien d’autre.',
+          'Ce que nous collectons : lorsque vous vous inscrivez aux nouvelles ou demandez un devis, vous nous donnez un nom, un téléphone et/ou un e-mail, le service qui vous intéresse et, pour un devis, les détails de l’événement que vous avez écrits. Rien d’autre.',
           'Pourquoi : pour vous recontacter et vous envoyer les nouvelles demandées. Nous ne vendons ni ne transmettons vos données à personne.',
           'Où : dans un stockage privé et verrouillé, accessible uniquement aux administrateurs du site après connexion par mot de passe. Vos données ne figurent pas dans le code du site.',
           'Retrait : chaque e-mail contient un lien de désinscription. Vous pouvez aussi nous demander d’effacer entièrement vos données, sur WhatsApp ou par e-mail.',
         ]],
         ['cookies', 'Politique de cookies', [
-          'Le site n’utilise ni cookies publicitaires, ni traceurs, ni outil de mesure d’audience.',
+          'Le site n’utilise ni cookies publicitaires ni traceurs. Nous comptons les visites de façon anonyme, sans cookies ni données personnelles, pour savoir combien de personnes viennent et ce qui les intéresse.',
           'Votre navigateur garde seulement la langue choisie, pour rouvrir le site dans cette langue. Les administrateurs reçoivent un seul cookie pour se connecter à l’espace de gestion.',
           'Les polices du site sont chargées depuis le service de polices de Google.',
         ]],
@@ -100,13 +100,13 @@
           'For any cancellation or refund request, write to us on WhatsApp or by email.',
         ]],
         ['privacy', 'Privacy policy', [
-          'What we collect: when you sign up for updates or ask for a quote, you give us a name, a phone number and/or an email, and the service you are interested in. Nothing else.',
+          'What we collect: when you sign up for updates or ask for a quote, you give us a name, a phone number and/or an email, the service you are interested in and, for a quote, the event details you wrote. Nothing else.',
           'Why: to get back to you and send the updates you asked for. We never sell or pass your details to anyone.',
           'Where: in private, locked storage that only the site’s administrators can open after signing in with a password. Your details are not kept in the site’s code.',
           'Removal: every email has an unsubscribe link. You can also ask us to delete your details completely, on WhatsApp or by email.',
         ]],
         ['cookies', 'Cookie policy', [
-          'The site uses no advertising or tracking cookies and no analytics tools.',
+          'The site uses no advertising or tracking cookies. We count visits anonymously, without cookies or personal data, to know how many people come and what interests them.',
           'Your browser only keeps the language you chose, so the site opens in it next time. Administrators get a single cookie to sign in to the admin area.',
           'The site’s fonts are loaded from Google’s font service.',
         ]],

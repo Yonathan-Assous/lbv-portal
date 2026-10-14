@@ -41,14 +41,26 @@ async function api(req, res, p) {
     if (req.method === 'POST') {
       const b = JSON.parse((await body(req)).toString() || '{}');
       if (b.website) return json(res, 200, { ok: true });
-      if (!b.name || !b.consent || (String(b.phone || '').replace(/\D/g, '').length < 9 && !b.email)) return json(res, 400, { error: 'invalid' });
+      const at = new Date().toISOString(), id = 'leads/local-' + Date.now();
       fs.mkdirSync(path.dirname(file), { recursive: true });
-      all.push({ name: b.name, phone: b.phone || '', email: b.email || '', interest: b.interest || '', lang: b.lang || '', consent: true, at: new Date().toISOString(), id: 'leads/local-' + Date.now() });
+      if (b.type === 'quote') {
+        if (!b.name || String(b.phone || '').replace(/\D/g, '').length < 9) return json(res, 400, { error: 'invalid' });
+        all.push({ type: 'quote', name: b.name, phone: b.phone, service: b.service || '', date: b.date || '', guests: b.guests || '', notes: b.notes || '', lang: b.lang || '', consent: false, at, id });
+      } else {
+        if (!b.name || !b.consent || (String(b.phone || '').replace(/\D/g, '').length < 9 && !b.email)) return json(res, 400, { error: 'invalid' });
+        all.push({ type: 'signup', name: b.name, phone: b.phone || '', email: b.email || '', interest: b.interest || '', lang: b.lang || '', consent: true, at, id });
+      }
       fs.writeFileSync(file, JSON.stringify(all, null, 2));
       return json(res, 200, { ok: true });
     }
     if (!authed(req)) return json(res, 401, { error: 'login' });
     if (req.method === 'GET') return json(res, 200, [...all].reverse());
+    if (req.method === 'PATCH') {
+      const id = new URL(req.url, 'http://x').searchParams.get('id');
+      const b = JSON.parse((await body(req)).toString() || '{}');
+      fs.writeFileSync(file, JSON.stringify(all.map(l => (l.id || l.url) === id ? { ...l, handled: b.handled === true } : l), null, 2));
+      return json(res, 200, { ok: true });
+    }
     if (req.method === 'DELETE') {
       const id = new URL(req.url, 'http://x').searchParams.get('id');
       fs.writeFileSync(file, JSON.stringify(all.filter(l => (l.id || l.url) !== id), null, 2));

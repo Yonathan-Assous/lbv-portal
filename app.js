@@ -3,7 +3,7 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pick = a => a[Math.floor(Math.random() * a.length)];
-  const WA = '972585182655';
+  let WA = '972585182655'; // the admin can change it (contact details)
 
   // The same script serves the Hebrew page (/) and the French page (/fr/).
   const root = document.documentElement;
@@ -115,6 +115,103 @@
         return `<button class="vthumb" data-src="${esc(asset(x.file))}" data-poster="${esc(asset(x.poster))}" data-title="${esc(x.title)}"><img src="${esc(asset(x.poster))}" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(x.title)}</span></button>`;
       }).join('');
     }
+    // Every text, list and question edited in the admin (see edit-map.js).
+    if (window.LBVEdit && LBVEdit.map) LBVEdit.apply(LBVEdit.map, c, L);
+    applyContact(c.contact);
+    applyGallery(c.gallery, tr);
+    applyHeroes(c.heroes);
+    applyTripPages(trips, tr);
+  }
+
+  /* ---------- Contact details and links (admin "פרטי קשר") ---------- */
+  const CONTACT0 = {
+    whatsapp: '972585182655', phone: '+972585182655', phone2: '+972585551826', email: 'LBV0585551826@gmail.com',
+    instagram: 'instagram.com/la_belle_vie_lbv', tiktok: 'tiktok.com/@la.belle.vie.event', facebook: 'facebook.com/share/1JXfFgiY9Y', youtube: 'youtube.com/@lbv-la_belle_vie',
+  };
+  function applyContact(ct) {
+    if (!ct) return;
+    const digits = s => String(s || '').replace(/[^\d+]/g, '');
+    const intl = s => { let d = digits(s).replace(/^\+/, ''); if (d.startsWith('0')) d = '972' + d.slice(1); return d; };
+    $$('a[href]').forEach(a => {
+      const h = a.getAttribute('href');
+      if (ct.whatsapp && h.includes('wa.me/' + CONTACT0.whatsapp)) a.href = h.replace(CONTACT0.whatsapp, intl(ct.whatsapp));
+      else if (ct.phone && h === 'tel:' + CONTACT0.phone) a.href = 'tel:+' + intl(ct.phone);
+      else if (ct.phone2 && h === 'tel:' + CONTACT0.phone2) a.href = 'tel:+' + intl(ct.phone2);
+      else if (ct.email && h === 'mailto:' + CONTACT0.email) a.href = 'mailto:' + ct.email;
+      else for (const k of ['instagram', 'tiktok', 'facebook', 'youtube']) if (ct[k] && h.includes(CONTACT0[k])) a.href = ct[k];
+    });
+    if (ct.whatsapp) WA = intl(ct.whatsapp);
+  }
+
+  /* ---------- Gallery and window banners (admin "תמונות") ---------- */
+  function applyGallery(g, tr) {
+    const grid = $('.gallery__grid');
+    if (!grid || !Array.isArray(g)) return;
+    grid.innerHTML = g.filter(p => !p.hidden && p.img).map(p => {
+      const cap = esc(tr(p).cap || '');
+      return `<li><button type="button" class="gallery__item" data-full="${esc(asset(p.img))}"><img src="${esc(asset(p.img))}" alt="${cap}" loading="lazy" width="1080" height="1350"><span>${cap}</span></button></li>`;
+    }).join('');
+  }
+  function applyHeroes(h) {
+    if (!h) return;
+    Object.entries(h).forEach(([id, src]) => {
+      const s = document.getElementById(id), media = s && s.querySelector('.sheet-hero > img, .sheet-hero > video');
+      if (!src || !media) return;
+      const url = asset(src);
+      if (/\.mp4($|\?)/.test(url) === (media.tagName === 'VIDEO')) media.src = url;
+      else media.outerHTML = /\.mp4($|\?)/.test(url) ? `<video src="${esc(url)}" autoplay muted loop playsinline aria-hidden="true"></video>` : `<img src="${esc(url)}" alt="">`;
+    });
+  }
+
+  /* ---------- Holiday pages built in the admin (Pesach, or any new holiday) ---------- */
+  const TP = { he: { book: 'להזמנה', signup: 'לעדכון ראשון', rooms: 'לראות את החדרים' }, fr: { book: 'Réserver', signup: 'Être informé en premier', rooms: 'Voir les chambres' }, en: { book: 'Book now', signup: 'Hear first', rooms: 'See the rooms' } }[LANG];
+  function applyTripPages(trips, tr) {
+    let made = false;
+    trips.filter(t => t.page && t.page.on).forEach(t => {
+      const p = tr(t.page), name = tr(t).name || '';
+      const book = t.bookingUrl && (t.bookingUrl[LANG] || t.bookingUrl.fr || t.bookingUrl.he);
+      const title = p.title || name;
+      const points = (p.points || []).filter(x => x && (x.lead || x.text));
+      const vid = t.page.video && asset(t.page.video), img = t.page.image && asset(t.page.image);
+      const media = vid
+        ? `<figure class="split__media feature-video"><button class="vthumb vthumb--big" data-src="${esc(vid)}" data-poster="${esc(img || '')}" data-title="${esc(title)}">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : ''}<span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(title)}</span></button></figure>`
+        : img ? `<figure class="split__media trip-page__img"><img src="${esc(img)}" alt="" loading="lazy"></figure>` : '';
+      const html = `<div class="wrap split trip-page">
+        <div class="split__text">
+          <h3 class="h2" data-hero-title>${esc(title)}</h3>
+          ${p.lead ? `<p class="lead">${esc(p.lead)}</p>` : ''}
+          ${points.length ? `<ul class="ticks">${points.map(x => `<li>${x.lead ? `<b>${esc(x.lead)}</b> ` : ''}${esc(x.text || '')}</li>`).join('')}</ul>` : ''}
+          ${p.note ? `<p>${esc(p.note)}</p>` : ''}
+          <div class="actions">
+            ${book && t.status === 'open' ? `<a class="btn btn--lake" href="${esc(book)}" target="_blank" rel="noopener">${TP.book}</a>` : ''}
+            <button class="btn ${book && t.status === 'open' ? 'btn--line' : 'btn--sun'}" type="button" data-signup="${esc(t.id)}" data-signup-name="${esc(name)}">${TP.signup}</button>
+          </div>
+        </div>${media}
+      </div>`;
+      let s = document.getElementById(t.id);
+      if (!s) {
+        s = document.createElement('section');
+        s.className = 'holidays sheet';
+        s.id = t.id;
+        s.dataset.parent = 'holidays';
+        s.dataset.hero = t.page.banner || t.image || 'hero.jpg';
+        s.dataset.title = title;
+        s.innerHTML = html;
+        $('main').append(s);
+        initSheet(s);
+        made = true;
+      } else {
+        // An existing window (e.g. Pesach): its content is replaced, its gold bar and banner stay.
+        [...s.children].forEach(ch => { if (!ch.matches('.sheet__bar, .sheet-hero')) ch.remove(); });
+        s.insertAdjacentHTML('beforeend', html);
+        s.dataset.title = title;
+        const barT = s.querySelector('.sheet__bar strong'), heroT = s.querySelector('.sheet-hero h2');
+        if (barT) barT.innerHTML = brand(esc(title));
+        if (heroT) heroT.innerHTML = brand(esc(title));
+        if (t.page.banner) applyHeroes({ [t.id]: t.page.banner });
+      }
+    });
+    if (made && location.hash) route();
   }
   loadContent().then(renderContent);
 
@@ -149,14 +246,16 @@
   // The company name never breaks across two lines in a title.
   const brand = s => s.replace(/La Belle Vie/g, '<span class="nw">La Belle Vie</span>');
   const closeLabel = { fr: 'Retour à l’accueil', en: 'Back to home' }[LANG] || 'חזרה לדף הראשי';
-  sheets.forEach(s => {
+  sheets.forEach(initSheet);
+  // Also used for holiday pages the admin creates (they are added after the content loads).
+  function initSheet(s) {
     const barEl = document.createElement('div');
     barEl.className = 'sheet__bar';
     barEl.innerHTML = `<button class="sheet__close" type="button">${RTL ? '&#8594;' : '&#8592;'} ${closeLabel}</button><strong>${brand(s.dataset.title || '')}</strong>`;
     s.prepend(barEl);
     // Windows with a data-hero image get the dark theme and a cinematic banner carrying their title.
     if (s.dataset.hero) {
-      const src = MEDIA + s.dataset.hero;
+      const src = /^(https?:|\/)/.test(s.dataset.hero) ? s.dataset.hero : MEDIA + s.dataset.hero;
       const media = /\.mp4$/.test(src)
         ? `<video src="${src}" autoplay muted loop playsinline aria-hidden="true"></video>`
         : `<img src="${src}" alt="" loading="lazy">`;
@@ -167,7 +266,7 @@
       s.classList.add('sheet--dark', 'has-hero');
     }
     barEl.querySelector('button').addEventListener('click', () => goBack());
-  });
+  }
   // A window opened from inside another window goes back to that one (and to the same spot), not to the main page.
   const backTo = { he: 'חזרה ל', fr: 'Retour : ', en: 'Back to ' }[LANG];
   const arrow = RTL ? '&#8594;' : '&#8592;';
@@ -234,8 +333,9 @@
   if (heroVideo && matchMedia('(max-width: 760px)').matches) heroVideo.poster = MEDIA + 'hero-mobile.jpg';
 
   /* ---------- Photo gallery: a tap opens the photo large; arrows / swipe move through them ---------- */
-  const gItems = $$('.gallery__item');
-  if (gItems.length) {
+  // The admin can rebuild the gallery, so the list of photos is read when one is opened.
+  let gItems = [];
+  if ($('.gallery__grid')) {
     const box = document.createElement('dialog');
     box.className = 'lightbox';
     box.innerHTML = `<button class="lightbox__close" type="button" aria-label="${{ fr: 'Fermer', en: 'Close' }[LANG] || 'סגירה'}">&times;</button>
@@ -253,7 +353,13 @@
     };
     // In Hebrew "next" is to the left.
     const step = d => show(at + (RTL ? -d : d));
-    gItems.forEach((b, i) => b.addEventListener('click', () => { show(i); box.showModal(); }));
+    document.addEventListener('click', e => {
+      const b = e.target.closest('.gallery__item');
+      if (!b) return;
+      gItems = $$('.gallery__item');
+      show(gItems.indexOf(b));
+      box.showModal();
+    });
     $('.lightbox__close', box).addEventListener('click', () => box.close());
     $('.lightbox__nav--prev', box).addEventListener('click', () => step(-1));
     $('.lightbox__nav--next', box).addEventListener('click', () => step(1));
@@ -734,6 +840,15 @@
   });
   // The Pesach buttons open the sign-up instead of the quote form.
   $$('[data-service="pesach"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); e.stopImmediatePropagation(); openSignup('pesach'); }, true));
+  // Holiday pages built from the admin use data-signup="<holiday>" (works for buttons added later too).
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-signup]');
+    if (!b) return;
+    e.preventDefault();
+    const v = b.dataset.signup;
+    if (v && !$(`option[value="${CSS.escape(v)}"]`, suForm)) suForm.interest.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(b.dataset.signupName || v)}</option>`);
+    openSignup(v || 'all');
+  });
   // A general "get updates" strip just above the footer.
   const foot = $('.foot');
   if (foot) {
@@ -775,6 +890,12 @@
       d.get('guests') && m[5] + d.get('guests'),
       d.get('notes') && m[6] + d.get('notes'),
     ].filter(Boolean);
+    // The request is also kept in the admin ("פניות"), so nothing gets lost in WhatsApp.
+    fetch('/api/leads', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+      body: JSON.stringify({ type: 'quote', service: fService.options[fService.selectedIndex].text, name: d.get('name'), phone: d.get('phone'),
+        date: d.get('date') || '', guests: d.get('guests') || '', notes: d.get('notes') || '', website: d.get('website') || '', lang: LANG }),
+    }).catch(() => {});
     window.open(`https://wa.me/${WA}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
   });
 })();

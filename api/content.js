@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     try { body = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
     if (!validContent(body)) return res.status(400).json({ error: 'bad-shape' });
     const text = JSON.stringify({ ...body, savedAt: new Date().toISOString() }, null, 2);
-    if (text.length > 300_000) return res.status(413).json({ error: 'too-big' });
+    if (text.length > 1_500_000) return res.status(413).json({ error: 'too-big' });
     await put(CONTENT_KEY, text, {
       access: 'public', contentType: 'application/json',
       addRandomSuffix: false, allowOverwrite: true, cacheControlMaxAge: 60,

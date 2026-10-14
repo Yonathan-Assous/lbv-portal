@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="../media/icon-gold.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -17,176 +17,51 @@
 <!-- Login -->
 <main class="login" id="login" hidden>
   <form class="login__card" id="loginForm">
-    <img src="../media/logo-white.png" alt="La Belle Vie" width="140" height="134">
+    <img src="../media/logo-letters.png" alt="La Belle Vie" width="114" height="80">
     <h1>ניהול האתר</h1>
+    <p>La Belle Vie</p>
     <label>סיסמה<input type="password" name="password" autocomplete="current-password" required></label>
     <p class="msg msg--err" id="loginErr" hidden></p>
-    <button class="btn btn--gold" type="submit">כניסה</button>
+    <button class="btn btn--gold btn--block" type="submit">כניסה</button>
   </form>
 </main>
 
-<!-- Editor -->
+<!-- App -->
 <div class="app" id="app" hidden>
-  <header class="top">
-    <div class="top__brand"><img src="../media/logo-letters.png" alt="" width="44" height="31"><b>ניהול האתר</b></div>
-    <nav class="top__nav" aria-label="חלקי הניהול">
-      <a href="#ceo">דבר המנכ״ל</a>
-      <a href="#team">הצוות</a>
-      <a href="#trips">נופשים</a>
-      <a href="#videos">סרטונים</a>
-      <a href="#leads">נרשמים לעדכונים</a>
-    </nav>
-    <div class="top__actions">
-      <a class="btn btn--line" href="../" target="_blank" rel="noopener">לצפייה באתר</a>
-      <button class="btn btn--gold" id="saveBtn" type="button">שמירה ופרסום</button>
-      <button class="btn btn--text" id="logoutBtn" type="button">יציאה</button>
+  <aside class="side" id="side">
+    <div class="side__brand"><img src="../media/logo-letters.png" alt="" width="46" height="32"><span><b>ניהול האתר</b><small>La Belle Vie</small></span></div>
+    <nav class="side__nav" id="sideNav" aria-label="חלקי הניהול"></nav>
+    <div class="side__foot">
+      <a class="side__link" href="../" target="_blank" rel="noopener">↗ צפייה באתר</a>
+      <button class="side__link" type="button" id="logoutBtn">יציאה</button>
     </div>
-  </header>
+  </aside>
 
-  <p class="banner" id="storageWarn" hidden>האחסון עוד לא מחובר באתר החי, ולכן אי אפשר לשמור. צריך לחבר ב-Vercel אחסון (Blob) ולהגדיר סיסמה. פרטים בקובץ ההסבר.</p>
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar__menu" type="button" id="menuBtn" aria-label="תפריט" aria-expanded="false"><span></span><span></span><span></span></button>
+      <div class="topbar__titles"><h1 id="pageTitle"></h1><p id="pageSub"></p></div>
+      <div class="langpick" id="langPick" role="tablist" aria-label="שפת העריכה" hidden>
+        <span class="langpick__label">שפת העריכה:</span>
+        <button type="button" role="tab" data-lang="he">עברית</button>
+        <button type="button" role="tab" data-lang="fr">Français</button>
+        <button type="button" role="tab" data-lang="en">English</button>
+      </div>
+    </header>
+    <p class="banner" id="storageWarn" hidden>האחסון עוד לא מחובר, ולכן אי אפשר לשמור או להעלות קבצים.</p>
+    <main class="page" id="page"></main>
+  </div>
+
+  <div class="savebar" id="saveBar" hidden>
+    <span class="savebar__dot" aria-hidden="true"></span>
+    <span class="savebar__text">יש שינויים שעוד לא פורסמו באתר</span>
+    <button class="btn btn--ghost" type="button" id="undoBtn">ביטול השינויים</button>
+    <button class="btn btn--gold" type="button" id="saveBtn">שמירה ופרסום</button>
+  </div>
   <p class="toast" id="toast" role="status" hidden></p>
-
-  <main class="panes">
-    <section class="pane" id="ceo">
-      <h2>דבר המנכ״ל</h2>
-      <p class="hint">כל פסקה בשורה נפרדת, עם שורה ריקה ביניהן.</p>
-      <div class="photo-row" data-bind="ceo.photo"></div>
-      <div class="langs">
-        <fieldset><legend>עברית</legend>
-          <label>כותרת<input data-bind="ceo.he.title"></label>
-          <label>הטקסט<textarea rows="10" data-bind="ceo.he.paragraphs" data-type="paras"></textarea></label>
-          <div class="two"><label>שם<input data-bind="ceo.he.name"></label><label>תפקיד<input data-bind="ceo.he.role"></label></div>
-        </fieldset>
-        <fieldset lang="fr" dir="ltr"><legend>Français</legend>
-          <label>Titre<input data-bind="ceo.fr.title"></label>
-          <label>Texte<textarea rows="10" data-bind="ceo.fr.paragraphs" data-type="paras"></textarea></label>
-          <div class="two"><label>Nom<input data-bind="ceo.fr.name"></label><label>Fonction<input data-bind="ceo.fr.role"></label></div>
-        </fieldset>
-        <fieldset lang="en" dir="ltr"><legend>English</legend>
-          <label>Title<input data-bind="ceo.en.title"></label>
-          <label>Text<textarea rows="10" data-bind="ceo.en.paragraphs" data-type="paras"></textarea></label>
-          <div class="two"><label>Name<input data-bind="ceo.en.name"></label><label>Role<input data-bind="ceo.en.role"></label></div>
-        </fieldset>
-      </div>
-    </section>
-
-    <section class="pane" id="team">
-      <div class="pane__head"><h2>הצוות</h2><button class="btn btn--line" type="button" data-add="team">הוספת איש צוות</button></div>
-      <ol class="cards" data-list="team"></ol>
-    </section>
-
-    <section class="pane" id="trips">
-      <div class="pane__head"><h2>נופשים</h2><button class="btn btn--line" type="button" data-add="trips">הוספת נופש</button></div>
-      <p class="hint">״פתוח להרשמה״ מציג תווית זהב, ״בקרוב״ תווית רכה, ו״מוסתר״ לא מופיע באתר.</p>
-      <ol class="cards" data-list="trips"></ol>
-    </section>
-
-    <section class="pane" id="videos">
-      <div class="pane__head"><h2>סרטונים מהנופש</h2><button class="btn btn--line" type="button" data-add="videos">הוספת סרטון</button></div>
-      <p class="hint">לכל סרטון אפשר להעלות גרסה בעברית, בצרפתית ובאנגלית. אם אין גרסה באנגלית, באתר האנגלי תוצג הגרסה הצרפתית.</p>
-      <ol class="cards" data-list="videos"></ol>
-    </section>
-    <section class="pane" id="leads">
-      <div class="pane__head"><h2>נרשמים לעדכונים</h2>
-        <div class="leads__tools">
-          <button class="btn btn--line btn--sm" type="button" id="leadsCsv">ייצוא לאקסל</button>
-          <button class="btn btn--line btn--sm" type="button" id="leadsEmails">העתקת כל המיילים</button>
-          <button class="btn btn--line btn--sm" type="button" id="leadsReload">רענון</button>
-        </div>
-      </div>
-      <p class="hint">כל מי שנרשם באתר לעדכונים (למשל ״לעדכון ראשון על פסח״). אפשר לשלוח לכל אחד הודעה בוואטסאפ, או להעתיק את כל המיילים ולשלוח מהמייל שלכם.</p>
-      <div class="leads__filter"><label>סינון<select id="leadsFilter"><option value="">הכול</option><option value="pesach">פסח</option><option value="sukkot">סוכות</option><option value="all">כל הנופשים והאירועים</option></select></label><span id="leadsCount"></span></div>
-      <div class="leads__wrap"><table class="leads"><thead><tr><th>שם</th><th>טלפון</th><th>מייל</th><th>מעניין אותו</th><th>שפה</th><th>תאריך</th><th></th></tr></thead><tbody id="leadsBody"></tbody></table></div>
-
-      <div class="compose">
-        <h3>שליחת מייל לנרשמים</h3>
-        <p class="hint">המייל נשלח מהכתובת של החברה (noreply@lbv-event.com), לכל נרשם בנפרד, עם קישור להסרה מהרשימה. התשובות מגיעות למייל של LBV.</p>
-        <div class="two">
-          <label>למי לשלוח<select id="mailTo"><option value="">כל הנרשמים עם מייל</option><option value="pesach">מי שנרשם לפסח</option><option value="sukkot">מי שנרשם לסוכות</option></select></label>
-          <label>נושא המייל<input id="mailSubject" placeholder="למשל: ההרשמה לפסח נפתחה!"></label>
-        </div>
-        <label>תוכן המייל<textarea id="mailBody" rows="7" placeholder="שורה ריקה בין פסקאות"></textarea></label>
-        <div class="two">
-          <label>טקסט לכפתור (רשות)<input id="mailBtn" placeholder="להרשמה"></label>
-          <label>קישור לכפתור (רשות)<input id="mailUrl" dir="ltr" placeholder="https://"></label>
-        </div>
-        <div class="compose__send">
-          <label>שליחת בדיקה למייל שלכם<input id="mailTest" type="email" dir="ltr" placeholder="you@example.com"></label>
-          <button class="btn btn--line" type="button" id="mailTestBtn">שליחת בדיקה</button>
-          <button class="btn btn--gold" type="button" id="mailSendBtn">שליחה לכל הנרשמים</button>
-        </div>
-        <p class="compose__status" id="mailStatus" role="status" hidden></p>
-      </div>
-    </section>
-  </main>
 </div>
 
-<template id="tpl-team">
-  <li class="card">
-    <div class="card__bar"><b class="card__title"></b><span class="card__tools"></span></div>
-    <div class="photo-row" data-field="photo"></div>
-    <div class="langs">
-      <fieldset><legend>עברית</legend><label>שם<input data-field="he.name"></label><label>תפקיד<input data-field="he.role"></label></fieldset>
-      <fieldset lang="fr" dir="ltr"><legend>Français</legend><label>Nom<input data-field="fr.name"></label><label>Fonction<input data-field="fr.role"></label></fieldset>
-      <fieldset lang="en" dir="ltr"><legend>English</legend><label>Name<input data-field="en.name"></label><label>Role<input data-field="en.role"></label></fieldset>
-    </div>
-  </li>
-</template>
-
-<template id="tpl-trips">
-  <li class="card">
-    <div class="card__bar"><b class="card__title"></b><span class="card__tools"></span></div>
-    <div class="two">
-      <label>מצב<select data-field="status"><option value="open">פתוח להרשמה</option><option value="soon">בקרוב</option><option value="hidden">מוסתר</option></select></label>
-      <label>קישור בכרטיס<input data-field="link" placeholder="#sukkot או כתובת אתר" dir="ltr"></label>
-    </div>
-    <div class="photo-row" data-field="image"></div>
-    <div class="langs">
-      <fieldset><legend>עברית</legend>
-        <label>שם הנופש<input data-field="he.name"></label>
-        <label>מקום / שורה קטנה<input data-field="he.place"></label>
-        <label>שורה בכרטיס הראשי<input data-field="he.subline" placeholder="למשל: במלון נוף כנרת"></label>
-        <label>קישור להזמנה<input data-field="bookingUrl.he" dir="ltr" placeholder="https://"></label>
-      </fieldset>
-      <fieldset lang="fr" dir="ltr"><legend>Français</legend>
-        <label>Nom du séjour<input data-field="fr.name"></label>
-        <label>Lieu / petite ligne<input data-field="fr.place"></label>
-        <label>Ligne sur la carte principale<input data-field="fr.subline"></label>
-        <label>Lien de réservation<input data-field="bookingUrl.fr" placeholder="https://"></label>
-      </fieldset>
-      <fieldset lang="en" dir="ltr"><legend>English</legend>
-        <label>Holiday name<input data-field="en.name"></label>
-        <label>Place / small line<input data-field="en.place"></label>
-        <label>Line on the main card<input data-field="en.subline"></label>
-        <label>Booking link<input data-field="bookingUrl.en" placeholder="https://"></label>
-      </fieldset>
-    </div>
-  </li>
-</template>
-
-<template id="tpl-videos">
-  <li class="card">
-    <div class="card__bar"><b class="card__title"></b><span class="card__tools"></span></div>
-    <div class="langs">
-      <fieldset><legend>עברית</legend>
-        <label>כותרת<input data-field="he.title"></label>
-        <div class="media-row"><span>סרטון</span><div data-field="he.file" data-kind="video"></div></div>
-        <div class="photo-row" data-field="he.poster"></div>
-      </fieldset>
-      <fieldset lang="fr" dir="ltr"><legend>Français</legend>
-        <label>Titre<input data-field="fr.title"></label>
-        <div class="media-row"><span>Vidéo</span><div data-field="fr.file" data-kind="video"></div></div>
-        <div class="photo-row" data-field="fr.poster"></div>
-      </fieldset>
-      <fieldset lang="en" dir="ltr"><legend>English</legend>
-        <label>Title<input data-field="en.title"></label>
-        <div class="media-row"><span>Video (optional, otherwise the French one)</span><div data-field="en.file" data-kind="video"></div></div>
-        <div class="photo-row" data-field="en.poster"></div>
-      </fieldset>
-    </div>
-  </li>
-</template>
-
+<script src="../edit-map.js"></script>
 <script type="module" src="admin.js"></script>
 </body>
 </html>

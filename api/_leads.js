@@ -34,6 +34,14 @@ export async function saveLead(lead) {
   await put(`${LEADS}${lead.at.slice(0, 10)}.json`, JSON.stringify(lead), opts({ access: 'private', contentType: 'application/json', addRandomSuffix: true }));
 }
 
+/** Marks a sign-up or request (e.g. "handled"), keeping the same private file. */
+export async function updateLead(pathname, patch) {
+  const lead = await readJson(pathname);
+  if (!lead) return false;
+  await put(pathname, JSON.stringify({ ...lead, ...patch }), opts({ access: 'private', contentType: 'application/json', addRandomSuffix: false, allowOverwrite: true }));
+  return true;
+}
+
 export async function deleteLead(pathname) {
   await del(pathname, opts());
 }
