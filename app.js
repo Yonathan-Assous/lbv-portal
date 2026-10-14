@@ -163,12 +163,29 @@
       barEl.after(hero);
       s.classList.add('sheet--dark', 'has-hero');
     }
-    barEl.querySelector('button').addEventListener('click', () => closeSheet(true));
+    barEl.querySelector('button').addEventListener('click', () => goBack());
   });
+  // A window opened from inside another window goes back to that one (and to the same spot), not to the main page.
+  const backTo = { he: 'חזרה ל', fr: 'Retour : ', en: 'Back to ' }[LANG];
+  const arrow = RTL ? '&#8594;' : '&#8592;';
+  function setBack(sheet, from) {
+    sheet._from = from || null;
+    sheet.querySelector('.sheet__close').innerHTML = from ? `${arrow} ${backTo}${from.sheet.dataset.title || ''}` : `${arrow} ${closeLabel}`;
+  }
+  function goBack() {
+    const from = openSheetEl && openSheetEl._from;
+    if (!from) return closeSheet(true);
+    const leaving = openSheetEl;
+    history.replaceState(null, '', '#' + from.sheet.id);
+    openSheet(from.sheet);
+    setBack(leaving, null);
+    from.sheet.scrollTop = from.top;
+  }
   let openSheetEl = null, pageY = 0;
   function openSheet(sheet, target) {
     if (openSheetEl !== sheet) {
-      if (!openSheetEl) pageY = scrollY;
+      if (!openSheetEl) { pageY = scrollY; setBack(sheet, null); }
+      else if (openSheetEl._from?.sheet !== sheet) setBack(sheet, { sheet: openSheetEl, top: openSheetEl.scrollTop });
       if (openSheetEl) openSheetEl.classList.remove('is-open');
       sheet.classList.add('is-open');
       document.body.classList.add('has-sheet');
@@ -201,7 +218,7 @@
     else if (openSheetEl) { closeSheet(false); if (target) target.scrollIntoView({ behavior: 'instant' }); }
   }
   addEventListener('hashchange', route);
-  addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) closeSheet(true); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) goBack(); });
   route();
 
   /* ---------- Line drawings sketch in when visible ---------- */

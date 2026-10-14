@@ -826,6 +826,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .shot figcaption { margin-top: 10px; font-size: var(--step--1); color: #8597B4; text-align: center; }
 .wedding .shot figcaption { color: var(--ink-soft); }
 .shot--light { margin-top: 32px; }
+.shot--link a { display: block; border-radius: 16px; transition: transform .35s var(--ease); }
+.shot--link a:hover { transform: translateY(-4px); }
+.shot--link a:hover img { box-shadow: 0 0 0 1.5px var(--sun), 0 30px 70px -30px rgba(0,0,0,.7); }
 .shot--light img { box-shadow: 0 0 0 1px var(--line), 0 30px 60px -36px rgba(11,20,48,.45); }
 
 /* ---------- Phoning (call centre) + animated simulation in the real system's look ---------- */
