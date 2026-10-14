@@ -873,9 +873,11 @@ function guide(pg) {
     box.append(d);
   });
   c.append(box);
-  const t = card('סיור קצר במערכת', 'שתי דקות שמראות איפה כל דבר נמצא', '<button class="btn btn--gold" data-tour>להתחיל את הסיור</button>');
+  const v = card('סרטון הדרכה', 'דקה אחת: כל מה שצריך לדעת על המערכת');
+  v.append(html('<video class="guide__video" src="guide.mp4" poster="guide.jpg" controls playsinline preload="metadata"></video>'));
+  const t = card('סיור קצר במערכת', 'מראה על המסך עצמו איפה כל דבר נמצא', '<button class="btn btn--gold" data-tour>להתחיל את הסיור</button>');
   $('[data-tour]', t).addEventListener('click', () => tour(true));
-  pg.append(t, c);
+  pg.append(v, t, c);
 }
 
 async function support(pg) {
@@ -1025,7 +1027,7 @@ async function openApp() {
   const start = location.hash.slice(1);
   go(allPages().some(p => p.id === start) ? start : 'dashboard');
   setTimeout(() => tour(false), 600);
-  $('#me').innerHTML = me ? `${esc(me.name)}<small>${ROLE[me.role]?.[0] || ''}</small>` : '';
+  $('#me').innerHTML = !me ? '' : me.role === 'owner' ? '<span>הבעלים</span><small>כל ההרשאות</small>' : `${esc(me.name)}<small>${ROLE[me.role]?.[0] || ''}</small>`;
   if (canDo('leads')) loadLeads().then(() => { if (['dashboard', 'inbox', 'stats', 'mail'].includes(page)) render(); });
   else { leadsReady = true; }
 }

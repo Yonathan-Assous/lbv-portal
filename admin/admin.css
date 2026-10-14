@@ -116,6 +116,7 @@ a { color: inherit; }
 .tour__dots i { width: 7px; height: 7px; border-radius: 50%; background: #D5DCE7; }
 .tour__dots i.on { background: var(--gold); }
 .guide { display: grid; gap: 12px; }
+.guide__video { display: block; width: 100%; max-width: 900px; border-radius: 12px; background: var(--night); box-shadow: var(--shadow); }
 .guide details { border-radius: 12px; border: 1px solid var(--line); background: #fff; }
 .guide summary { display: flex; align-items: center; gap: 12px; padding: 16px 18px; font-weight: 800; font-size: 1.02rem; cursor: pointer; list-style: none; }
 .guide summary::-webkit-details-marker { display: none; }
