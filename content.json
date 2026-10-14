@@ -274,17 +274,17 @@
     },
     {
       "he": {
-        "title": "מה מקבלים",
+        "title": "חוויה שמחכה לכם",
         "file": "media/included.mp4",
         "poster": "media/included.jpg"
       },
       "fr": {
-        "title": "Ce qui est inclus",
+        "title": "Une expérience qui vous attend",
         "file": "media/included-fr.mp4",
         "poster": "media/included-fr.jpg"
       },
       "en": {
-        "title": "What is included",
+        "title": "An experience waiting for you",
         "file": "media/included-fr.mp4",
         "poster": "media/included-fr.jpg"
       }
