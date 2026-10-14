@@ -108,8 +108,9 @@
       }).join('');
     }
     const rail = $('#rail');
-    if (rail && Array.isArray(c.videos) && c.videos.length) {
-      rail.innerHTML = c.videos.map(v => {
+    const shown = Array.isArray(c.videos) ? c.videos.filter(v => !v.hidden) : [];
+    if (rail && shown.length) {
+      rail.innerHTML = shown.map(v => {
         const x = tr(v);
         return `<button class="vthumb" data-src="${esc(asset(x.file))}" data-poster="${esc(asset(x.poster))}" data-title="${esc(x.title)}"><img src="${esc(asset(x.poster))}" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(x.title)}</span></button>`;
       }).join('');

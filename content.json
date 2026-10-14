@@ -321,7 +321,8 @@
         "title": "The children",
         "file": "media/guests-kids-fr.mp4",
         "poster": "media/guests-kids-fr.jpg"
-      }
+      },
+      "hidden": true
     },
     {
       "he": {
@@ -338,7 +339,8 @@
         "title": "A holiday with soul",
         "file": "media/guests-soul-fr.mp4",
         "poster": "media/guests-soul-fr.jpg"
-      }
+      },
+      "hidden": true
     }
   ]
 }

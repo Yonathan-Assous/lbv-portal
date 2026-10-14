@@ -11,7 +11,7 @@ const DEFAULTS = {
 const TITLE = {
   team: m => m.he.name || 'איש צוות חדש',
   trips: t => `${t.he.name || 'נופש'} · ${({ open: 'פתוח להרשמה', soon: 'בקרוב', hidden: 'מוסתר' })[t.status] || ''}`,
-  videos: v => v.he.title || 'סרטון',
+  videos: v => (v.he.title || 'סרטון') + (v.hidden ? ' · מוסתר באתר' : ''),
 };
 
 let state = null, storage = 'none', dirty = false;
@@ -108,7 +108,10 @@ function renderList(name) {
       else if (el.tagName === 'SELECT') { el.value = read() || 'soon'; el.addEventListener('change', () => { write(el.value); markDirty(); }); }
       else bindField(el, read, write);
     });
-    $('.card__tools', node).innerHTML = `
+    // Videos can be hidden from the site without deleting them, and shown again later.
+    node.classList.toggle('is-hidden', Boolean(item.hidden));
+    $('.card__tools', node).innerHTML = (name === 'videos'
+      ? `<button type="button" class="btn btn--line btn--sm" data-hide>${item.hidden ? 'להחזיר לאתר' : 'להסתיר מהאתר'}</button>` : '') + `
       <button type="button" class="icon" data-move="-1" aria-label="למעלה" ${i === 0 ? 'disabled' : ''}>↑</button>
       <button type="button" class="icon" data-move="1" aria-label="למטה" ${i === items.length - 1 ? 'disabled' : ''}>↓</button>
       <button type="button" class="icon icon--del" data-del aria-label="מחיקה">✕</button>`;
@@ -117,6 +120,10 @@ function renderList(name) {
       [items[i], items[j]] = [items[j], items[i]];
       markDirty(); renderList(name);
     }));
+    $('[data-hide]', node)?.addEventListener('click', () => {
+      if (item.hidden) delete item.hidden; else item.hidden = true;
+      markDirty(); renderList(name);
+    });
     $('[data-del]', node).addEventListener('click', () => {
       if (!confirm(`למחוק את ״${TITLE[name](item)}״?`)) return;
       items.splice(i, 1); markDirty(); renderList(name);
