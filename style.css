@@ -134,6 +134,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__inner { width: min(100% - 2 * var(--gutter), var(--max)); margin: 0 auto; padding-top: 120px; }
 .hero__title { font: 900 var(--step-4)/1.02 var(--display); margin: 0 0 .35em; letter-spacing: -.015em; }
 .hero__line { display: block; }
+.hero__line--gold { color: #F0D48E; margin-top: .1em; }
 .hero__line--soft { font-weight: 300; color: #DCE7F5; font-size: .62em; margin-top: .25em; letter-spacing: 0; }
 .hero__lead { font-size: var(--step-1); font-weight: 300; max-width: 36ch; color: #D6E1EF; margin: 0 0 1.6em; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
