@@ -495,6 +495,83 @@
     setTimeout(() => p.classList.remove('is-bought'), 600);
   }));
 
+  /* ---------- Wedding app: three screens (WhatsApp invite → guest confirms → seating) ---------- */
+  const W = {
+    he: { tabs: ['ההזמנה בוואטסאפ', 'אישור הגעה', 'סידור שולחנות'], couple: 'נועה ואריאל', online: 'מקוון', cardTop: 'בשמחה ובהתרגשות', cardMid: 'מתכבדים להזמינכם לחתונתם', date: 'יום חמישי · 11.3.2027 · 19:00', venue: 'אולמי הגן, ירושלים', msg: 'שלום משפחת כהן! נשמח מאוד לראותכם איתנו. לאישור הגעה לחצו כאן:', open: 'לאישור הגעה', hello: 'שלום משפחת כהן', q: 'תגיעו לשמחה?', yes: 'כן, נגיע', no: 'לא נוכל', how: 'כמה תהיו?', food: 'העדפות אוכל', foods: ['רגיל', 'צמחוני', 'טבעוני', 'ללא גלוטן'], send: 'שליחת אישור', thanks: 'תודה! נתראה בשמחה', thanksNo: 'תודה שעדכנתם', got: 'האישור הגיע ישר לנועה ולאריאל', see: 'לראות את זה אצל הזוג', try: 'נסו בעצמכם' },
+    fr: { tabs: ['L’invitation WhatsApp', 'Confirmation', 'Plan de table'], couple: 'Noa et Ariel', online: 'en ligne', cardTop: 'Avec joie et émotion', cardMid: 'ont le plaisir de vous convier à leur mariage', date: 'Jeudi · 11.3.2027 · 19h00', venue: 'Salles HaGan, Jérusalem', msg: 'Bonjour famille Cohen ! Nous serions si heureux de vous avoir avec nous. Pour confirmer votre venue :', open: 'Confirmer ma venue', hello: 'Bonjour famille Cohen', q: 'Serez-vous des nôtres ?', yes: 'Oui, nous venons', no: 'Nous ne pourrons pas', how: 'Combien serez-vous ?', food: 'Préférences de repas', foods: ['Standard', 'Végétarien', 'Végan', 'Sans gluten'], send: 'Envoyer ma réponse', thanks: 'Merci ! À très bientôt', thanksNo: 'Merci de nous avoir prévenus', got: 'La réponse arrive directement chez Noa et Ariel', see: 'Voir côté mariés', try: 'Essayez vous-même' },
+    en: { tabs: ['WhatsApp invite', 'Guest RSVP', 'Seating plan'], couple: 'Noa & Ariel', online: 'online', cardTop: 'With joy and love', cardMid: 'invite you to celebrate their wedding', date: 'Thursday · 11.3.2027 · 7 pm', venue: 'HaGan Halls, Jerusalem', msg: 'Hello Cohen family! We would love to have you with us. To confirm, tap here:', open: 'RSVP now', hello: 'Hello Cohen family', q: 'Will you join us?', yes: 'Yes, we’ll be there', no: 'We can’t make it', how: 'How many of you?', food: 'Meal preferences', foods: ['Regular', 'Vegetarian', 'Vegan', 'Gluten-free'], send: 'Send my answer', thanks: 'Thank you! See you there', thanksNo: 'Thanks for letting us know', got: 'The answer goes straight to Noa and Ariel', see: 'See it on the couple’s side', try: 'Try it yourself' },
+  }[LANG];
+  const screen = $('#wedding .phone__screen');
+  if (screen) {
+    const tablesView = document.createElement('div');
+    tablesView.className = 'av'; tablesView.dataset.v = 'tables';
+    tablesView.append(...screen.children);
+    screen.innerHTML = `
+      <div class="av av--wa" data-v="invite">
+        <div class="wa__bar"><span class="wa__ava">${esc(W.couple.slice(0, 1))}</span><span><b>${esc(W.couple)}</b><small>${esc(W.online)}</small></span></div>
+        <div class="wa__chat">
+          <div class="wa__msg">
+            <div class="wa__card"><small>${esc(W.cardTop)}</small><b>${esc(W.couple)}</b><span>${esc(W.cardMid)}</span><i></i><em>${esc(W.date)}</em><em>${esc(W.venue)}</em></div>
+            <p>${esc(W.msg)}</p>
+            <a class="wa__link" href="#" data-go="rsvp">simha.lbv-event.com/i/K8C2</a>
+            <time>10:42 <span class="wa__ticks">✓✓</span></time>
+          </div>
+          <button class="wa__btn" type="button" data-go="rsvp">${esc(W.open)}</button>
+        </div>
+      </div>
+      <div class="av av--rsvp" data-v="rsvp">
+        <form class="gr" novalidate>
+          <div class="gr__head"><small>${esc(W.cardTop)}</small><b>${esc(W.couple)}</b><span>${esc(W.date)}</span></div>
+          <p class="gr__hello">${esc(W.hello)}</p>
+          <fieldset class="gr__q"><legend>${esc(W.q)}</legend>
+            <div class="gr__yn"><button type="button" class="is-on" data-yn="yes">${esc(W.yes)}</button><button type="button" data-yn="no">${esc(W.no)}</button></div></fieldset>
+          <fieldset class="gr__q" data-only-yes><legend>${esc(W.how)}</legend>
+            <div class="gr__step"><button type="button" data-step="-1" aria-label="-">−</button><output>2</output><button type="button" data-step="1" aria-label="+">+</button></div></fieldset>
+          <fieldset class="gr__q" data-only-yes><legend>${esc(W.food)}</legend>
+            <div class="gr__chips">${W.foods.map((f, i) => `<button type="button" class="${i ? '' : 'is-on'}">${esc(f)}</button>`).join('')}</div></fieldset>
+          <button class="btn btn--sun btn--block" type="submit">${esc(W.send)}</button>
+        </form>
+        <div class="gr__done" hidden><span class="gr__check"></span><b></b><p>${esc(W.got)}</p><button class="btn btn--lake btn--block" type="button" data-go="tables">${esc(W.see)}</button></div>
+      </div>`;
+    screen.append(tablesView);
+    const phone = screen.closest('.phone');
+    phone.insertAdjacentHTML('beforebegin', `<div class="apptabs" role="tablist">${W.tabs.map((t, i) => `<button type="button" role="tab" data-go="${['invite', 'rsvp', 'tables'][i]}"><span>${i + 1}</span>${esc(t)}</button>`).join('')}</div>`);
+    const tabsEl = phone.previousElementSibling;
+    const go = v => {
+      $$('.av', screen).forEach(a => a.classList.toggle('is-on', a.dataset.v === v));
+      $$('button', tabsEl).forEach(b => b.setAttribute('aria-selected', String(b.dataset.go === v)));
+    };
+    phone.parentElement.addEventListener('click', e => {
+      const b = e.target.closest('[data-go]');
+      if (!b) return;
+      e.preventDefault();
+      go(b.dataset.go);
+    });
+    go('invite');
+
+    // The guest's form: really clickable, and the answer lands in the couple's counters.
+    const form = $('.gr', screen), done = $('.gr__done', screen);
+    let coming = true, people = 2, answered = false;
+    form.addEventListener('click', e => {
+      const yn = e.target.closest('[data-yn]'), st = e.target.closest('[data-step]'), chip = e.target.closest('.gr__chips button');
+      if (yn) { coming = yn.dataset.yn === 'yes'; $$('[data-yn]', form).forEach(b => b.classList.toggle('is-on', b === yn)); $$('[data-only-yes]', form).forEach(f => f.disabled = !coming); }
+      if (st) { people = Math.min(12, Math.max(1, people + Number(st.dataset.step))); $('.gr__step output', form).textContent = people; }
+      if (chip) chip.classList.toggle('is-on');
+    });
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      $('b', done).textContent = coming ? W.thanks : W.thanksNo;
+      form.hidden = true; done.hidden = false;
+      if (!answered) {
+        answered = true;
+        const bump = (id, d) => { const o = $(id); o.textContent = Number(o.textContent) + d; o.parentElement.classList.remove('is-bump'); void o.offsetWidth; o.parentElement.classList.add('is-bump'); };
+        bump(coming ? '#aYes' : '#aNo', people);
+        bump('#aWait', -people);
+      }
+      setTimeout(() => { form.hidden = false; done.hidden = true; }, 9000);
+    });
+  }
+
   /* ---------- Wedding seating demo ---------- */
   const hall = $('#hall');
   const TABLES = 9, SEATS = 10;
