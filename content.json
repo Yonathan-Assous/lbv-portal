@@ -202,7 +202,8 @@
         "title": "What makes us special",
         "file": "media/special-fr.mp4",
         "poster": "media/special-fr.jpg"
-      }
+      },
+      "hidden": true
     },
     {
       "he": {
