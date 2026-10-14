@@ -223,17 +223,17 @@
     },
     {
       "he": {
-        "title": "ערבי מופעים",
+        "title": "ערבים בלתי נשכחים",
         "file": "media/shows.mp4",
         "poster": "media/shows.jpg"
       },
       "fr": {
-        "title": "Les soirées spectacles",
+        "title": "Des soirées inoubliables",
         "file": "media/shows-fr.mp4",
         "poster": "media/shows-fr.jpg"
       },
       "en": {
-        "title": "Show nights",
+        "title": "Unforgettable evenings",
         "file": "media/shows-fr.mp4",
         "poster": "media/shows-fr.jpg"
       }
