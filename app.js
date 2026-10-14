@@ -79,8 +79,8 @@
         `<p class="letter__sign">${esc(ceo.name)}<small>${esc(ceo.role)}</small></p>`;
       if (c.ceo.photo) $('.letter__photo img').src = asset(c.ceo.photo);
     }
-    const team = $('.team');
-    if (team && Array.isArray(c.team)) {
+    // The team appears on the homepage and in the "About us" window; both follow the admin.
+    if (Array.isArray(c.team)) $$('.team').forEach(team => {
       // A member without a photo yet gets a monogram tile until one is uploaded from the admin.
       team.innerHTML = c.team.map(m => {
         const pic = m.photo
@@ -88,7 +88,7 @@
           : `<span class="team__mono" aria-hidden="true"><svg viewBox="0 0 212 212" aria-hidden="true"><path fill="#fff" d="M106 50a35 35 0 1 1 0 70 35 35 0 0 1 0-70zm0 82c38 0 68 19 74 46a106 106 0 0 1-148 0c6-27 36-46 74-46z"/></svg></span>`;
         return `<li>${pic}<b>${esc(tr(m).name)}</b><span>${esc(tr(m).role)}</span></li>`;
       }).join('');
-    }
+    });
     const trips = (c.trips || []).filter(t => t.status !== 'hidden');
     const OPEN = { he: 'ההרשמה פתוחה', fr: 'Réservations ouvertes', en: 'Booking open' }, SOON = { he: 'בקרוב', fr: 'Bientôt', en: 'Coming soon' };
     const badge = t => t.status === 'open'
