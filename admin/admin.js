@@ -983,9 +983,20 @@ async function users(pg) {
   const load = async () => {
     const r = await fetch('/api/users', { cache: 'no-store' });
     if (!r.ok) { list.innerHTML = `<p class="hint">${r.status === 503 ? 'האחסון הפרטי עוד לא מחובר.' : 'לא הצלחנו לטעון.'}</p>`; return; }
-    const arr = await r.json();
+    const data = await r.json();
+    const arr = data.users || [], own = data.owner || { username: 'owner' };
     list.innerHTML = '';
-    list.append(html(`<div class="user"><span class="user__ava">★</span><div><b>הבעלים</b><small>נכנסים בלי שם משתמש, עם הסיסמה הראשית · ${ROLE.owner[0]}</small></div><span></span></div>`));
+    // The owner: a username of their choice, with the main password.
+    const o = html(`<div class="user"><span class="user__ava">★</span>
+      <div><b>הבעלים (אתם)</b><small>נכנסים עם שם המשתמש הזה והסיסמה הראשית${own.last ? ' · נכנס לאחרונה ' + date(own.last) : ''}</small></div>
+      <div class="row-tools"><input aria-label="שם המשתמש של הבעלים" dir="ltr" value="${esc(own.username)}" style="width:150px"><button type="button" class="btn btn--dark btn--sm">שמירת שם המשתמש</button></div></div>`);
+    $('button', o).addEventListener('click', async () => {
+      const v = $('input', o).value.trim().toLowerCase();
+      if (!/^[a-z0-9._-]{3,30}$/.test(v)) return toast('שם משתמש: 3 תווים לפחות, באנגלית או מספרים', 'err');
+      const r2 = await fetch('/api/users?id=owner', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: v }) });
+      toast(r2.ok ? `נשמר. מעכשיו נכנסים עם שם המשתמש "${v}"` : r2.status === 409 ? 'שם המשתמש תפוס' : 'לא נשמר', r2.ok ? 'ok' : 'err');
+    });
+    list.append(o);
     if (!arr.length) list.append(html('<p class="hint">עוד אין מנהלים נוספים.</p>'));
     arr.forEach(u => {
       const row = html(`<div class="user"><span class="user__ava">${esc((u.name || '?').charAt(0))}</span>

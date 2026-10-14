@@ -1,10 +1,11 @@
 import { passwordMatches, checkPassword, sessionCookie, clearCookie, storageReady, readBody } from './_lib.js';
 import { leadsReady } from './_leads.js';
-import { loadUsers, saveUsers } from './_users.js';
+import { loadUsers, saveUsers, loadOwner, saveOwner } from './_users.js';
 
 // POST { username, password }:
-//   no username + the main password → the owner
-//   username + password             → a manager added by the owner (role from the list)
+//   the owner's username (default "owner") + the main password → the owner
+//   a manager's username + their password                      → that manager (role from the list)
+// (An empty username with the main password still works, as a backup for the owner.)
 export default async function handler(req, res) {
   if (req.method === 'DELETE') {
     res.setHeader('Set-Cookie', clearCookie);
@@ -16,8 +17,11 @@ export default async function handler(req, res) {
   const { username, password } = await readBody(req).catch(() => ({}));
   const name = String(username || '').trim().toLowerCase();
   let user = null;
-  if (!name && passwordMatches(password)) user = { id: 'owner', n: 'הבעלים', r: 'owner' };
-  else if (name && leadsReady()) {
+  const owner = leadsReady() ? await loadOwner() : { username: 'owner' };
+  if ((!name || name === owner.username) && passwordMatches(password)) {
+    user = { id: 'owner', n: 'הבעלים', r: 'owner' };
+    if (leadsReady()) saveOwner({ ...owner, last: new Date().toISOString() }).catch(() => {});
+  } else if (name && leadsReady()) {
     const list = await loadUsers();
     const u = list.find(x => x.username === name);
     if (u && checkPassword(password, u.hash)) {

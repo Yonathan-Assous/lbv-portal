@@ -22,6 +22,9 @@ const usersFile = () => path.join(root, 'data', 'users.local.json');
 const loadUsers = () => fs.existsSync(usersFile()) ? JSON.parse(fs.readFileSync(usersFile(), 'utf8')) : [];
 const saveUsers = l => { fs.mkdirSync(path.dirname(usersFile()), { recursive: true }); fs.writeFileSync(usersFile(), JSON.stringify(l, null, 2)); };
 const hash = pw => { const salt = crypto.randomBytes(16).toString('base64url'); return salt + ':' + crypto.scryptSync(pw, salt, 32).toString('base64url'); };
+const ownerFile = () => path.join(root, 'data', 'owner.local.json');
+const loadOwner = () => ({ username: 'owner', ...(fs.existsSync(ownerFile()) ? JSON.parse(fs.readFileSync(ownerFile(), 'utf8')) : {}) });
+const saveOwner = o => { fs.mkdirSync(path.dirname(ownerFile()), { recursive: true }); fs.writeFileSync(ownerFile(), JSON.stringify(o)); };
 const check = (pw, h) => { const [salt, v] = String(h).split(':'); return !!salt && crypto.scryptSync(String(pw), salt, 32).toString('base64url') === v; };
 const body = req => new Promise((ok, bad) => { const b = []; req.on('data', d => b.push(d)); req.on('end', () => ok(Buffer.concat(b))); req.on('error', bad); });
 
@@ -32,7 +35,7 @@ async function api(req, res, p) {
     const { username, password } = JSON.parse((await body(req)).toString() || '{}');
     const uname = String(username || '').trim().toLowerCase();
     let user = null;
-    if (!uname && PASSWORD && password === PASSWORD) user = { n: 'הבעלים', r: 'owner' };
+    if ((!uname || uname === loadOwner().username) && PASSWORD && password === PASSWORD) user = { n: 'הבעלים', r: 'owner' };
     else if (uname) { const u = loadUsers().find(x => x.username === uname); if (u && check(password, u.hash)) user = { n: u.name, r: u.role }; }
     if (!user) return json(res, 401, { error: 'wrong-password' });
     const id = crypto.randomUUID(); sessions.set(id, user);
@@ -95,7 +98,7 @@ async function api(req, res, p) {
     if (!me) return json(res, 401, { error: 'login' });
     if (!can(me, 'users')) return json(res, 403, { error: 'forbidden' });
     const list = loadUsers();
-    if (req.method === 'GET') return json(res, 200, list.map(({ hash: _, ...u }) => u));
+    if (req.method === 'GET') return json(res, 200, { owner: loadOwner(), users: list.map(({ hash: _, ...u }) => u) });
     const b = req.method === 'DELETE' ? {} : JSON.parse((await body(req)).toString() || '{}');
     const role = ['admin', 'editor', 'sales'].includes(b.role) ? b.role : null;
     const username = String(b.username || '').trim().toLowerCase();
@@ -106,6 +109,7 @@ async function api(req, res, p) {
       saveUsers(list); return json(res, 200, { ok: true });
     }
     const id = new URL(req.url, 'http://x').searchParams.get('id');
+    if (id === 'owner' && req.method === 'PATCH') { if (!/^[a-z0-9._-]{3,30}$/.test(username)) return json(res, 400, { error: 'invalid' }); saveOwner({ ...loadOwner(), username }); return json(res, 200, { ok: true }); }
     const u = list.find(x => x.id === id);
     if (!u) return json(res, 404, { error: 'not-found' });
     if (req.method === 'PATCH') { if (b.name) u.name = b.name; if (role) u.role = role; if (b.password) u.hash = hash(b.password); saveUsers(list); return json(res, 200, { ok: true }); }
