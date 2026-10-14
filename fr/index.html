@@ -207,7 +207,7 @@
         <li><b>Le matériel et le spirituel</b>Un vrai confort, avec la Torah, la téfila et la joie.</li>
         <li><b>Comme une famille</b>Nos invités reviennent année après année.</li>
       </ul>
-      <a class="btn btn--line au__teambtn" href="#about-team">Découvrir l’équipe <span aria-hidden="true">↓</span></a>
+      <button class="btn btn--line au__teambtn" type="button" aria-expanded="false" aria-controls="about-team" data-open="Découvrir l’équipe" data-close="Masquer l’équipe">Découvrir l’équipe <span aria-hidden="true">↓</span></button>
     </div>
     <figure class="au__video">
       <button class="vthumb vthumb--big" data-video="special" data-title="Ce qui nous rend uniques">
@@ -218,7 +218,8 @@
     </figure>
   </div>
   <div class="wrap">
-    <h3 class="h3" id="about-team">Notre équipe</h3>
+    <div class="au__team" id="about-team" hidden>
+    <h3 class="h3">Notre équipe</h3>
     <p class="lead">Les personnes que vous rencontrerez à l’hôtel et dans la salle.</p>
     <ul class="team">
       <li>
@@ -238,6 +239,7 @@
         <b>Yishai</b><span>Chef d’équipe</span>
       </li>
     </ul>
+    </div>
     <h3 class="h3">En bref</h3>
     <ul class="au__facts"><li><b>15</b><span>ans d’expérience en séjours et événements</span></li><li><b>2</b><span>langues : français et hébreu</span></li><li><b>2</b><span>fêtes par an à l’hôtel : Souccot et Pessah</span></li></ul>
     <h3 class="h3">Ce que nous faisons</h3>
