@@ -189,6 +189,13 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
 .switch input:checked { background: var(--ok); }
 .switch input:checked::after { inset-inline-start: 23px; }
 
+/* Holiday page editor */
+.tp { display: grid; gap: 14px; margin-top: 14px; }
+.tp__tpl { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0; }
+.tp__sec { padding: 16px; border-radius: 12px; border: 1px solid var(--line); background: #FBFCFE; }
+.tp__sec > h3 { font-size: 1.05rem; margin-bottom: 4px; }
+.tp__sec h4 { margin: 0; font-size: .95rem; }
+
 /* Mail */
 .compose__status { margin: 14px 0 0; padding: 10px 14px; border-radius: 10px; font-weight: 700; }
 .compose__status--ok { background: var(--ok-bg); color: var(--ok); } .compose__status--err { background: var(--err-bg); color: var(--err); } .compose__status--info { background: var(--info-bg); color: var(--ink); }

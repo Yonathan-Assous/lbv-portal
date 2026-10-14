@@ -564,35 +564,110 @@ function tripCard(t, i) {
     $('input', sw).addEventListener('change', e => { (t.page ??= {}).on = e.target.checked; t.link = t.page.on || STATIC_WIN(t.id) ? '#' + t.id : ''; touch(); render(); });
     inner.append(sw);
     if (STATIC_WIN(t.id)) inner.append(html(`<p class="hint" style="margin-top:10px">${pg0.on ? 'הדף שבונים כאן מחליף את החלון הקיים של ' + esc(t.he?.name) + '.' : 'כרגע מוצג החלון הקיים של ' + esc(t.he?.name) + ' (אפשר לערוך אותו ב"טקסטים בדפים"). כשמפעילים, הדף שתבנו כאן יחליף אותו.'}</p>`));
-    if (pg0.on) {
-      const p = t.page[lang] || {}, P = () => (t.page[lang] ??= {});
-      const ph = t.page.he || {};
-      inner.append(html('<div style="height:12px"></div>'),
-        field(`כותרת הדף (${LNAME[lang]})`, p.title || '', v => { P().title = v; touch(); }, { placeholder: lang !== 'he' ? ph.title : 'למשל: פסח במלון נוף כנרת' }),
-        field('פסקת פתיחה', p.lead || '', v => { P().lead = v; touch(); }, { multi: true, placeholder: lang !== 'he' ? ph.lead : 'כמה משפטים שמזמינים להגיע' }));
-      // Highlights
-      const pts = p.points || [];
-      const ptsBox = html(`<div><div class="subhead"><h3>נקודות חשובות</h3><button type="button" class="btn btn--dark btn--sm">+ נקודה</button></div><div class="items"></div></div>`);
-      const drawPts = () => {
-        const L = $('.items', ptsBox); L.innerHTML = '';
-        if (!pts.length) L.innerHTML = '<p class="hint">למשל: "פנסיון מלא" – "ארוחות עשירות בכשרות מהדרין".</p>';
-        pts.forEach((x, k) => {
-          const row = html('<div class="item"><div class="item__fields"></div></div>');
-          $('.item__fields', row).append(field('מודגש', x.lead || '', v => { x.lead = v; touch(); }), field('המשך', x.text || '', v => { x.text = v; touch(); }));
-          row.append(tools(pts, k, drawPts, { hide: false }));
-          L.append(row);
-        });
-      };
-      $('button', ptsBox).addEventListener('click', () => { P().points = pts; pts.push({ lead: '', text: '' }); touch(); drawPts(); });
-      drawPts();
-      inner.append(ptsBox, field('הערה בסוף (רשות)', p.note || '', v => { P().note = v; touch(); }, { multi: true }));
-      const media = html('<div class="grid3" style="margin-top:12px"></div>');
-      media.append(slot('תמונה בדף', () => t.page.image, v => { t.page.image = v; }), slot('סרטון בדף (רשות)', () => t.page.video, v => { t.page.video = v; }, 'video'), slot('תמונת רקע לכותרת', () => t.page.banner, v => { t.page.banner = v; }));
-      inner.append(media, html(`<p class="hint">בדף יופיע כפתור "לעדכון ראשון" שרושם לעדכונים${t.status === 'open' ? ', וכפתור "להזמנה" לקישור ההזמנה' : '. כשהמצב יהיה "ההרשמה פתוחה", יופיע גם כפתור "להזמנה"'}.</p>`));
-    }
+    if (pg0.on) inner.append(tripPageEditor(t));
   }
   body.append(det);
   return el;
+}
+
+/** The full page of a holiday: the same parts as the Sukkot window, each shown only when filled. */
+function tripPageEditor(t) {
+  const page = t.page;
+  const p = page[lang] || {}, ph = page.he || {}, P = () => (page[lang] ??= {});
+  const ph_ = k => (lang !== 'he' ? ph[k] || '' : '');
+  const box = html('<div class="tp"></div>');
+  const sec = (title, hint) => { const s = html(`<section class="tp__sec"><h3>${title}</h3>${hint ? `<p class="hint">${hint}</p>` : ''}</section>`); box.append(s); return s; };
+
+  // Start from the Sukkot window (texts only), so the new page has the same shape right away.
+  const tpl = html(`<div class="hint hint--box tp__tpl"><span>רוצים להתחיל מהר? אפשר למלא את הדף בטקסטים של חלון סוכות (בשלוש השפות), ואז לשנות רק מה שצריך.</span><button type="button" class="btn btn--line btn--sm">מילוי מהתבנית של סוכות</button></div>`);
+  $('button', tpl).addEventListener('click', () => {
+    if ((ph.title || ph.points?.length) && !confirm('זה יחליף את הטקסטים שכבר כתבתם בדף. להמשיך?')) return;
+    fillFromSukkot(page); touch(); render();
+  });
+  box.append(tpl);
+
+  const s1 = sec('פתיחה', `כותרת, פסקת פתיחה ונקודות חשובות (${LNAME[lang]}).`);
+  s1.append(field('כותרת הדף', p.title || '', v => { P().title = v; touch(); }, { placeholder: ph_('title') || 'למשל: פסח במלון נוף כנרת' }),
+    field('פסקת פתיחה', p.lead || '', v => { P().lead = v; touch(); }, { multi: true, placeholder: ph_('lead') || 'כמה משפטים שמזמינים להגיע' }));
+  s1.append(pairList('נקודות חשובות', page, 'points', ['מודגש', 'המשך'], 'למשל: "פנסיון מלא" – "ארוחות עשירות בכשרות מהדרין".'));
+  s1.append(field('הערה בסוף (רשות)', p.note || '', v => { P().note = v; touch(); }, { multi: true, placeholder: ph_('note') }));
+
+  const s2 = sec('כפתורים', 'כפתור "בדיקת זמינות והזמנה" מופיע כשהמצב הוא "ההרשמה פתוחה" ויש קישור להזמנה (בשדות שלמעלה). אחרת מופיע "לעדכון ראשון".');
+  s2.append(field(`קישור "לראות את החדרים" (${LNAME[lang]}, רשות)`, t.roomsUrl?.[lang] || '', v => { (t.roomsUrl ??= {})[lang] = v.trim(); touch(); }, { dir: 'ltr', placeholder: 'https://' }));
+
+  const s3 = sec('סרטון ראשי', 'הסרטון הגדול ליד הפתיחה, כמו "למה La Belle Vie" בסוכות.');
+  const g3 = html('<div class="grid2"></div>');
+  g3.append(slot('הסרטון', () => page.video, v => { page.video = v; }, 'video'), slot('תמונת פתיחה לסרטון (או תמונה במקום סרטון)', () => page.image, v => { page.image = v; }));
+  const g3b = html('<div class="grid2"></div>');
+  g3b.append(field('שם הסרטון', p.videoTitle || '', v => { P().videoTitle = v; touch(); }, { placeholder: ph_('videoTitle') || 'למשל: למה פסח איתנו' }),
+    field('שורה קטנה מתחת (רשות)', p.videoSub || '', v => { P().videoSub = v; touch(); }, { placeholder: ph_('videoSub') || 'למשל: חצי דקה' }));
+  s3.append(g3, g3b);
+
+  const s4 = sec('יום אחד אצלנו', 'לוח זמנים של יום בנופש. נשאר ריק? החלק לא יופיע.');
+  s4.append(field('כותרת', p.dayTitle || '', v => { P().dayTitle = v; touch(); }, { placeholder: ph_('dayTitle') || 'יום אחד אצלנו' }),
+    pairList('שעות ופעילויות', page, 'day', ['שעה', 'מה עושים'], 'למשל: "09:00" – "ארוחת בוקר".'));
+
+  const s5 = sec('סרטונים של הנופש', 'הפס של הסרטונים, עם סרטונים של הנופש הזה בלבד (למשל סקי או פסח).');
+  s5.append(field('כותרת הפס', p.videosTitle || '', v => { P().videosTitle = v; touch(); }, { placeholder: ph_('videosTitle') || 'רואים בעיניים' }));
+  s5.append(videoCards(page.videos || [], () => (page.videos ??= [])));
+
+  const s6 = sec('גלריה', 'תמונות מהנופש, עם כיתוב קטן לכל תמונה.');
+  s6.append(field('כותרת הגלריה', p.galleryTitle || '', v => { P().galleryTitle = v; touch(); }, { placeholder: ph_('galleryTitle') || 'רגעים מהנופש' }));
+  s6.append(galleryGrid(page.gallery || [], () => (page.gallery ??= [])));
+
+  const s7 = sec('ציטוט של אורח', 'משפט של אורח בסוף הדף. נשאר ריק? לא יופיע.');
+  s7.append(field('הציטוט', p.quote || '', v => { P().quote = v; touch(); }, { multi: true, placeholder: ph_('quote') }),
+    field('מי אמר', p.cite || '', v => { P().cite = v; touch(); }, { placeholder: ph_('cite') || 'למשל: אורח בנופש פסח' }));
+
+  const s8 = sec('תמונת רקע לכותרת', 'התמונה הגדולה בראש הדף.');
+  s8.append(slot('תמונת רקע', () => page.banner, v => { page.banner = v; }));
+  return box;
+}
+
+/** A list of {lead, text} pairs, kept per language (an empty translation shows the Hebrew one). */
+function pairList(title, page, key, labels, hint) {
+  const wrap = html(`<div><div class="subhead"><h4>${title}</h4><div class="row-tools"></div></div><div class="items"></div></div>`);
+  const own = () => ((page[lang] ??= {})[key] ??= []);
+  const list = (page[lang] && page[lang][key]) || [];
+  const tools_ = $('.row-tools', wrap);
+  if (lang !== 'he' && !list.length && page.he?.[key]?.length) {
+    const cp = html('<button type="button" class="btn btn--line btn--sm">להעתיק מהעברית ולתרגם</button>');
+    cp.addEventListener('click', () => { page[lang] ??= {}; page[lang][key] = clone(page.he[key]); touch(); render(); });
+    tools_.append(cp);
+  }
+  const add = html('<button type="button" class="btn btn--dark btn--sm">+ הוספה</button>');
+  add.addEventListener('click', () => { own().push({ lead: '', text: '' }); touch(); render(); });
+  tools_.append(add);
+  const L = $('.items', wrap);
+  if (!list.length) L.append(html(`<p class="hint">${lang !== 'he' && page.he?.[key]?.length ? `עדיין לא תורגם: באתר ב${LNAME[lang]} יופיע כמו בעברית.` : hint}</p>`));
+  list.forEach((x, k) => {
+    const row = html('<div class="item"><div class="item__fields"></div></div>');
+    $('.item__fields', row).append(field(labels[0], x.lead || '', v => { x.lead = v; touch(); }, { placeholder: lang !== 'he' ? page.he?.[key]?.[k]?.lead : '' }),
+      field(labels[1], x.text || '', v => { x.text = v; touch(); }, { placeholder: lang !== 'he' ? page.he?.[key]?.[k]?.text : '' }));
+    row.append(tools(list, k, render, { hide: false }));
+    L.append(row);
+  });
+  return wrap;
+}
+
+/** Fills a holiday page with the texts of the Sukkot window (as they are on the site now). */
+function fillFromSukkot(page) {
+  for (const l of LANGS) {
+    const sc = scopeOf(l, 'sukkot');
+    const val = b => { const v = textVal(l, b.key); return [v?.lead, v?.text].filter(Boolean).join(' '); };
+    const by = sel => sc.blocks.find(b => sel(b));
+    const items = key => (state.lists?.[key]?.items?.map(it => it[l] || it.he) || sc.lists.find(x => x.key === key)?.items || []).map(x => ({ lead: x.lead || '', text: x.text || '' }));
+    const q = by(b => b.tag === 'P' && b.el.closest('blockquote')), c = by(b => b.tag === 'CITE');
+    page[l] = {
+      ...(page[l] || {}),
+      title: val(by(b => b.tag === 'H3' && /h2/.test(b.cls)) || {}) || '',
+      lead: val(by(b => /lead/.test(b.cls)) || {}) || '',
+      points: items('sukkot:L0'),
+      dayTitle: val(by(b => b.tag === 'H3' && b.el.closest('.day')) || {}) || '',
+      day: items('sukkot:L1'),
+      quote: q ? val(q) : '', cite: c ? val(c) : '',
+    };
+  }
 }
 
 /* ---------- 6. team and the CEO letter ---------- */
@@ -622,20 +697,26 @@ function team(pg) {
 }
 
 /* ---------- 7. videos ---------- */
-function videos(pg) {
-  const c = card('הסרטונים בחלון סוכות', 'בסדר שבו הם מופיעים באתר. סרטון בלי גרסה באנגלית יוצג באנגלית בגרסה הצרפתית.', '<button class="btn btn--gold" data-add>+ סרטון</button>');
-  const list = html('<div class="cards"></div>');
-  state.videos.forEach((v, i) => {
-    const tr = v[lang] || {}, W = () => (v[lang] ??= {});
+/** Video cards for any list of videos (the Sukkot strip, or a holiday page). own() returns the saved array. */
+function videoCards(items, own) {
+  const box = html('<div><div class="cards"></div><div style="margin-top:12px"><button type="button" class="btn btn--gold">+ סרטון</button></div></div>');
+  const list = $('.cards', box);
+  if (!items.length) list.append(html('<p class="hint">עוד אין סרטונים. לוחצים "+ סרטון", מעלים את הקובץ ותמונת פתיחה.</p>'));
+  items.forEach((v, i) => {
+    const tr = v[lang] || {}, W = () => (own()[i][lang] ??= {});
     const el = html(`<article class="ecard ${v.hidden ? 'is-hidden' : ''}"><div class="ecard__bar"><span class="ecard__title">${esc(v.he?.title || 'סרטון')} ${v.hidden ? '<span class="tag tag--muted">מוסתר</span>' : ''}</span></div><div class="ecard__body"></div></article>`);
-    $('.ecard__bar', el).append(tools(state.videos, i, render, { confirm: `למחוק את "${v.he?.title || ''}"?` }));
+    $('.ecard__bar', el).append(tools(items, i, () => { own(); touch(); render(); }, { confirm: `למחוק את "${v.he?.title || 'הסרטון'}"?` }));
     const g = html('<div class="grid2"></div>');
-    g.append(slot(`הסרטון (${LNAME[lang]})`, () => tr.file, x => { W().file = x; }, 'video'), slot('תמונת פתיחה', () => tr.poster, x => { W().poster = x; }));
+    g.append(slot(`הסרטון (${LNAME[lang]}${lang !== 'he' ? ', רשות' : ''})`, () => tr.file, x => { W().file = x; }, 'video'), slot('תמונת פתיחה', () => tr.poster, x => { W().poster = x; }));
     $('.ecard__body', el).append(field(`שם הסרטון (${LNAME[lang]})`, tr.title || '', x => { W().title = x; touch(); }, { placeholder: lang !== 'he' ? v.he?.title : '' }), g);
     list.append(el);
   });
-  $('[data-add]', c).addEventListener('click', () => { state.videos.push({ he: { title: 'סרטון חדש', file: '', poster: '' }, fr: {}, en: {} }); touch(); render(); });
-  c.append(list);
+  $('button.btn--gold', box).addEventListener('click', () => { own().push({ he: { title: 'סרטון חדש', file: '', poster: '' } }); touch(); render(); });
+  return box;
+}
+function videos(pg) {
+  const c = card('הסרטונים בחלון סוכות', 'בסדר שבו הם מופיעים באתר. סרטון שאין לו גרסה בשפה מסוימת יוצג בגרסה הצרפתית או העברית. לסרטונים של נופש אחר: "נופשים ודפי נופש" ← הנופש ← "סרטונים של הנופש".');
+  c.append(videoCards(state.videos, () => state.videos));
   pg.append(c);
 }
 
@@ -646,19 +727,18 @@ function galleryDefault() {
   const fr = caps('fr'), en = caps('en');
   return he.map((b, i) => ({ img: (b.dataset.full || '').replace(/^(\.\.\/)?/, ''), he: { cap: b.querySelector('span')?.textContent || '' }, fr: { cap: fr[i] || '' }, en: { cap: en[i] || '' } }));
 }
-function gallery(pg) {
-  const own = () => (state.gallery ??= galleryDefault());
-  const items = state.gallery || galleryDefault();
-  const c = card('גלריה "רגעים מהנופש"', `בחלון סוכות. כיתובים ב${LNAME[lang]}.`, '<label class="btn btn--gold">+ הוספת תמונות<input type="file" accept="image/jpeg,image/png,image/webp" multiple hidden></label>');
-  const grid = html('<div class="gal"></div>');
+/** A photo grid with captions and an upload button. own() returns the saved array. */
+function galleryGrid(items, own) {
+  const box = html('<div><div style="margin-bottom:12px"><label class="btn btn--gold">+ הוספת תמונות<input type="file" accept="image/jpeg,image/png,image/webp" multiple hidden></label></div><div class="gal"></div></div>');
+  const grid = $('.gal', box);
+  if (!items.length) grid.append(html('<p class="hint">עוד אין תמונות. אפשר לבחור כמה תמונות בבת אחת.</p>'));
   items.forEach((p, i) => {
-    const el = html(`<div class="gal__item ${p.hidden ? 'is-hidden' : ''}"><div class="gal__img"><img src="${esc(preview(p.img))}" alt=""></div></div>`);
-    el.append(field('כיתוב', p[lang]?.cap || '', v => { const arr = own(); (arr[i][lang] ??= {}).cap = v; touch(); }, { placeholder: lang !== 'he' ? p.he?.cap : '' }));
-    const t = tools(items, i, () => { state.gallery ??= items; touch(); render(); }, { confirm: 'למחוק את התמונה מהגלריה?' });
-    el.append(t);
+    const el = html(`<div class="gal__item ${p.hidden ? 'is-hidden' : ''}"><div class="gal__img"><img src="${esc(preview(p.img))}" alt="" loading="lazy"></div></div>`);
+    el.append(field('כיתוב', p[lang]?.cap || '', v => { (own()[i][lang] ??= {}).cap = v; touch(); }, { placeholder: lang !== 'he' ? p.he?.cap : '' }));
+    el.append(tools(items, i, () => { own(); touch(); render(); }, { confirm: 'למחוק את התמונה?' }));
     grid.append(el);
   });
-  $('input', c).addEventListener('change', async e => {
+  $('input', box).addEventListener('change', async e => {
     const files = [...e.target.files];
     if (!files.length) return;
     toast(`מעלה ${files.length} תמונות…`, 'info');
@@ -667,7 +747,13 @@ function gallery(pg) {
       touch(); render(); toast('התמונות נוספו. לא לשכוח "שמירה ופרסום"');
     } catch (err) { toast(err.message === 'no-storage' ? 'האחסון עוד לא מחובר' : 'ההעלאה נכשלה', 'err'); }
   });
-  c.append(grid);
+  return box;
+}
+function gallery(pg) {
+  const items = state.gallery || galleryDefault();
+  const c = card('גלריה "רגעים מהנופש"', `בחלון סוכות. כיתובים ב${LNAME[lang]}. לגלריה של נופש אחר: "נופשים ודפי נופש" ← הנופש ← "גלריה".`);
+  // The Sukkot gallery starts from the photos already on the site; the first change saves its own copy.
+  c.append(galleryGrid(items, () => (state.gallery ??= items)));
   const h = card('תמונות רקע של החלונות', 'התמונה הגדולה שמופיעה מאחורי הכותרת בכל חלון');
   const hg = html('<div class="grid2"></div>');
   [...docs.he.querySelectorAll('main > section.sheet[data-hero]')].forEach(s => {

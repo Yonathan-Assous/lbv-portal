@@ -164,30 +164,60 @@
   }
 
   /* ---------- Holiday pages built in the admin (Pesach, or any new holiday) ---------- */
-  const TP = { he: { book: 'להזמנה', signup: 'לעדכון ראשון', rooms: 'לראות את החדרים' }, fr: { book: 'Réserver', signup: 'Être informé en premier', rooms: 'Voir les chambres' }, en: { book: 'Book now', signup: 'Hear first', rooms: 'See the rooms' } }[LANG];
+  const TP = {
+    he: { book: 'בדיקת זמינות והזמנה', signup: 'לעדכון ראשון', rooms: 'לראות את החדרים', day: 'יום אחד אצלנו', videos: 'רואים בעיניים', gallery: 'רגעים מהנופש', prev: 'הקודם', next: 'הבא' },
+    fr: { book: 'Disponibilités et réservation', signup: 'Être informé en premier', rooms: 'Voir les chambres', day: 'Une journée avec nous', videos: 'En images', gallery: 'Moments du séjour', prev: 'Précédent', next: 'Suivant' },
+    en: { book: 'Check availability and book', signup: 'Hear first', rooms: 'See the rooms', day: 'A day with us', videos: 'See it for yourself', gallery: 'Moments from the stay', prev: 'Previous', next: 'Next' },
+  }[LANG];
+  // A holiday page has the same parts as the Sukkot window; every part shows only when it has content.
+  function tripPageHtml(t, tr) {
+    const pg = t.page;
+    const has = v => Array.isArray(v) ? v.length : String(v || '').trim();
+    // Each field in the visitor's language, or Hebrew while it isn't translated yet.
+    const f = k => { const v = pg[LANG] && pg[LANG][k]; return has(v) ? v : pg.he && pg.he[k]; };
+    const name = tr(t).name || '';
+    const title = f('title') || name;
+    const book = t.bookingUrl && (t.bookingUrl[LANG] || t.bookingUrl.fr || t.bookingUrl.he);
+    const rooms = t.roomsUrl && (t.roomsUrl[LANG] || t.roomsUrl.fr || t.roomsUrl.he);
+    const points = (f('points') || []).filter(x => x && (x.lead || x.text));
+    const day = (f('day') || []).filter(x => x && (x.lead || x.text));
+    const vids = (pg.videos || []).filter(v => !v.hidden).map(v => ({ ...tr(v), file: (v[LANG] && v[LANG].file) || (v.fr && v.fr.file) || (v.he && v.he.file), poster: (v[LANG] && v[LANG].poster) || (v.he && v.he.poster) }))
+      .map(v => ({ ...v, title: (v.title || '').trim() || ((pg.videos.find(x => x.he) || {}).he || {}).title || '' })).filter(v => v.file);
+    const gal = (pg.gallery || []).filter(p => !p.hidden && p.img);
+    const vid = pg.video && asset(pg.video), img = pg.image && asset(pg.image);
+    const open = t.status === 'open';
+    const thumb = (src, poster, label, big, sub) => `<button class="vthumb${big ? ' vthumb--big' : ''}" data-src="${esc(asset(src))}" data-poster="${esc(asset(poster || ''))}" data-title="${esc(label)}">${poster ? `<img src="${esc(asset(poster))}" alt="" loading="lazy">` : ''}<span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(label)}${sub ? `<small>${esc(sub)}</small>` : ''}</span></button>`;
+    const media = vid
+      ? `<figure class="split__media feature-video">${thumb(pg.video, pg.image, f('videoTitle') || title, true, f('videoSub'))}</figure>`
+      : img ? `<figure class="split__media trip-page__img"><img src="${esc(img)}" alt="" loading="lazy"></figure>` : '';
+    return `<div class="wrap split trip-page">
+        <div class="split__text">
+          <h3 class="h2" data-hero-title>${esc(title)}</h3>
+          ${has(f('lead')) ? `<p class="lead">${esc(f('lead'))}</p>` : ''}
+          ${points.length ? `<ul class="ticks">${points.map(x => `<li>${x.lead ? `<b>${esc(x.lead)}</b> ` : ''}${esc(x.text || '')}</li>`).join('')}</ul>` : ''}
+          ${has(f('note')) ? `<p>${esc(f('note'))}</p>` : ''}
+          <div class="actions">
+            ${book && open ? `<a class="btn btn--lake" href="${esc(book)}" target="_blank" rel="noopener">${TP.book}</a>` : ''}
+            ${rooms ? `<a class="btn btn--line" href="${esc(rooms)}" target="_blank" rel="noopener">${TP.rooms}</a>` : ''}
+            ${book && open ? '' : `<button class="btn btn--sun" type="button" data-signup="${esc(t.id)}" data-signup-name="${esc(name)}">${TP.signup}</button>`}
+          </div>
+        </div>${media}
+      </div>
+      ${day.length ? `<div class="day wrap"><h3 class="h3">${esc(f('dayTitle') || TP.day)}</h3><ol class="timeline">${day.map(x => `<li><time>${esc(x.lead || '')}</time>${esc(x.text || '')}</li>`).join('')}</ol></div>` : ''}
+      ${vids.length ? `<div class="rail-wrap"><div class="wrap rail-head"><h3 class="h3">${esc(f('videosTitle') || TP.videos)}</h3>
+          <div class="rail-nav"><button class="round" data-rail="-1" aria-label="${TP.prev}">${RTL ? '&#8594;' : '&#8592;'}</button><button class="round" data-rail="1" aria-label="${TP.next}">${RTL ? '&#8592;' : '&#8594;'}</button></div></div>
+          <div class="rail" tabindex="0">${vids.map(v => thumb(v.file, v.poster, v.title)).join('')}</div></div>` : ''}
+      ${gal.length ? `<div class="gallery wrap"><h3 class="h3">${esc(f('galleryTitle') || TP.gallery)}</h3><ul class="gallery__grid">${gal.map(p => {
+        const cap = esc(tr(p).cap || (p.he && p.he.cap) || '');
+        return `<li><button type="button" class="gallery__item" data-full="${esc(asset(p.img))}"><img src="${esc(asset(p.img))}" alt="${cap}" loading="lazy" width="1080" height="1350"><span>${cap}</span></button></li>`;
+      }).join('')}</ul></div>` : ''}
+      ${has(f('quote')) ? `<blockquote class="quote wrap"><p>${esc(f('quote'))}</p>${has(f('cite')) ? `<cite>${esc(f('cite'))}</cite>` : ''}</blockquote>` : ''}`;
+  }
   function applyTripPages(trips, tr) {
     let made = false;
     trips.filter(t => t.page && t.page.on).forEach(t => {
-      const p = tr(t.page), name = tr(t).name || '';
-      const book = t.bookingUrl && (t.bookingUrl[LANG] || t.bookingUrl.fr || t.bookingUrl.he);
-      const title = p.title || name;
-      const points = (p.points || []).filter(x => x && (x.lead || x.text));
-      const vid = t.page.video && asset(t.page.video), img = t.page.image && asset(t.page.image);
-      const media = vid
-        ? `<figure class="split__media feature-video"><button class="vthumb vthumb--big" data-src="${esc(vid)}" data-poster="${esc(img || '')}" data-title="${esc(title)}">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : ''}<span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">${esc(title)}</span></button></figure>`
-        : img ? `<figure class="split__media trip-page__img"><img src="${esc(img)}" alt="" loading="lazy"></figure>` : '';
-      const html = `<div class="wrap split trip-page">
-        <div class="split__text">
-          <h3 class="h2" data-hero-title>${esc(title)}</h3>
-          ${p.lead ? `<p class="lead">${esc(p.lead)}</p>` : ''}
-          ${points.length ? `<ul class="ticks">${points.map(x => `<li>${x.lead ? `<b>${esc(x.lead)}</b> ` : ''}${esc(x.text || '')}</li>`).join('')}</ul>` : ''}
-          ${p.note ? `<p>${esc(p.note)}</p>` : ''}
-          <div class="actions">
-            ${book && t.status === 'open' ? `<a class="btn btn--lake" href="${esc(book)}" target="_blank" rel="noopener">${TP.book}</a>` : ''}
-            <button class="btn ${book && t.status === 'open' ? 'btn--line' : 'btn--sun'}" type="button" data-signup="${esc(t.id)}" data-signup-name="${esc(name)}">${TP.signup}</button>
-          </div>
-        </div>${media}
-      </div>`;
+      const html = tripPageHtml(t, tr);
+      const title = (t.page[LANG] && t.page[LANG].title) || (t.page.he && t.page.he.title) || tr(t).name || '';
       let s = document.getElementById(t.id);
       if (!s) {
         s = document.createElement('section');
@@ -391,12 +421,15 @@
   }
 
   /* ---------- Video rail + player ---------- */
-  const rail = $('#rail');
-  $$('[data-rail]').forEach(b => b.addEventListener('click', () => {
+  // Delegated: holiday pages built from the admin have their own video strip.
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-rail]');
+    const rail = b && b.closest('.rail-wrap')?.querySelector('.rail');
+    if (!rail) return;
     // "Next" moves toward the reading direction: left in Hebrew, right in French.
     const dir = RTL ? -1 : 1;
     rail.scrollBy({ left: dir * Number(b.dataset.rail) * rail.clientWidth * 0.8, behavior: reduced ? 'auto' : 'smooth' });
-  }));
+  });
 
   const player = $('#player'), pv = $('#playerVideo');
   // Delegated, so video cards rendered later from content.json work too.
