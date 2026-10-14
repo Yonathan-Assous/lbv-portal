@@ -1,5 +1,5 @@
 import { isAuthed, storageReady, readBody } from './_lib.js';
-import { loadLeads, unsubToken } from './_leads.js';
+import { loadLeads, unsubToken, leadsReady } from './_leads.js';
 
 // Mailing to the sign-ups, through the same email service the gala system already uses
 // (Resend, verified domain lbv-event.com). Needs RESEND_API_KEY in this project's settings.
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   if (!isAuthed(req)) return res.status(401).json({ error: 'login' });
-  if (!storageReady()) return res.status(503).json({ error: 'not-configured' });
+  if (!storageReady() || !leadsReady()) return res.status(503).json({ error: 'not-configured' });
   const key = process.env.RESEND_API_KEY;
   if (!key) return res.status(503).json({ error: 'email-not-configured' });
 

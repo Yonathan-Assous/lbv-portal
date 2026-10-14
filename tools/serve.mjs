@@ -43,15 +43,15 @@ async function api(req, res, p) {
       if (b.website) return json(res, 200, { ok: true });
       if (!b.name || !b.consent || (String(b.phone || '').replace(/\D/g, '').length < 9 && !b.email)) return json(res, 400, { error: 'invalid' });
       fs.mkdirSync(path.dirname(file), { recursive: true });
-      all.push({ name: b.name, phone: b.phone || '', email: b.email || '', interest: b.interest || '', lang: b.lang || '', consent: true, at: new Date().toISOString(), url: 'local-' + Date.now() });
+      all.push({ name: b.name, phone: b.phone || '', email: b.email || '', interest: b.interest || '', lang: b.lang || '', consent: true, at: new Date().toISOString(), id: 'leads/local-' + Date.now() });
       fs.writeFileSync(file, JSON.stringify(all, null, 2));
       return json(res, 200, { ok: true });
     }
     if (!authed(req)) return json(res, 401, { error: 'login' });
     if (req.method === 'GET') return json(res, 200, [...all].reverse());
     if (req.method === 'DELETE') {
-      const url = new URL(req.url, 'http://x').searchParams.get('url');
-      fs.writeFileSync(file, JSON.stringify(all.filter(l => l.url !== url), null, 2));
+      const id = new URL(req.url, 'http://x').searchParams.get('id');
+      fs.writeFileSync(file, JSON.stringify(all.filter(l => (l.id || l.url) !== id), null, 2));
       return json(res, 200, { ok: true });
     }
   }

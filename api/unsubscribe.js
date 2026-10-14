@@ -1,5 +1,5 @@
 import { storageReady } from './_lib.js';
-import { unsubToken, markUnsubscribed } from './_leads.js';
+import { unsubToken, markUnsubscribed, leadsReady } from './_leads.js';
 
 // The "remove me" link at the bottom of every mailing. Signed per address, so nobody can
 // unsubscribe someone else.
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   const email = (q.get('e') || '').trim().toLowerCase();
   const lang = ['he', 'fr', 'en'].includes(q.get('l')) ? q.get('l') : 'he';
   let ok = false;
-  if (email && storageReady() && q.get('t') === unsubToken(email)) {
+  if (email && storageReady() && leadsReady() && q.get('t') === unsubToken(email)) {
     await markUnsubscribed(email);
     ok = true;
   }

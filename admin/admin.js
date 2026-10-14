@@ -160,7 +160,7 @@ function renderLeads() {
   $$('[data-lead]').forEach(b => b.addEventListener('click', async () => {
     const l = list[Number(b.dataset.lead)];
     if (!confirm(`למחוק את ${l.name} מהרשימה?`)) return;
-    const r = await fetch(`/api/leads?url=${encodeURIComponent(l.url)}`, { method: 'DELETE' });
+    const r = await fetch(`/api/leads?id=${encodeURIComponent(l.id)}`, { method: 'DELETE' });
     if (r.ok) { leads = leads.filter(x => x !== l); renderLeads(); toast('נמחק'); } else toast('המחיקה נכשלה', 'err');
   }));
 }
