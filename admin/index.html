@@ -28,26 +28,30 @@
 
 <!-- App -->
 <div class="app" id="app" hidden>
-  <aside class="side" id="side">
-    <div class="side__brand"><img src="../media/logo-letters.png" alt="" width="46" height="32"><span><b>ניהול האתר</b><small>La Belle Vie</small></span></div>
-    <nav class="side__nav" id="sideNav" aria-label="חלקי הניהול"></nav>
-    <div class="side__foot">
-      <a class="side__link" href="../" target="_blank" rel="noopener">↗ צפייה באתר</a>
-      <button class="side__link" type="button" id="logoutBtn">יציאה</button>
+  <header class="hb">
+    <div class="hb__row wrap">
+      <a class="hb__brand" href="#dashboard"><img src="../media/logo-letters.png" alt="" width="40" height="28"><span><b>ניהול האתר</b><small>La Belle Vie</small></span></a>
+      <div class="hb__search" role="search">
+        <input type="search" id="gq" placeholder="חיפוש: טקסט באתר, שם של פונה, טלפון…" autocomplete="off" aria-label="חיפוש">
+        <div class="hb__res" id="gqRes" hidden></div>
+      </div>
+      <a class="hb__link" href="../" target="_blank" rel="noopener">↗ לאתר</a>
+      <button class="hb__link" type="button" id="logoutBtn">יציאה</button>
     </div>
-  </aside>
+    <nav class="hb__groups wrap" id="groups" aria-label="תחומים"></nav>
+    <nav class="hb__tabs" aria-label="דפים"><div class="wrap" id="tabs"></div></nav>
+  </header>
 
-  <div class="main">
-    <header class="topbar">
-      <button class="topbar__menu" type="button" id="menuBtn" aria-label="תפריט" aria-expanded="false"><span></span><span></span><span></span></button>
-      <div class="topbar__titles"><h1 id="pageTitle"></h1><p id="pageSub"></p></div>
+  <div class="main wrap">
+    <div class="pagehead">
+      <div><h1 id="pageTitle"></h1><p id="pageSub"></p></div>
       <div class="langpick" id="langPick" role="tablist" aria-label="שפת העריכה" hidden>
         <span class="langpick__label">שפת העריכה:</span>
         <button type="button" role="tab" data-lang="he">עברית</button>
         <button type="button" role="tab" data-lang="fr">Français</button>
         <button type="button" role="tab" data-lang="en">English</button>
       </div>
-    </header>
+    </div>
     <p class="banner" id="storageWarn" hidden>האחסון עוד לא מחובר, ולכן אי אפשר לשמור או להעלות קבצים.</p>
     <main class="page" id="page"></main>
   </div>

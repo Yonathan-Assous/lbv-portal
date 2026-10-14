@@ -164,73 +164,167 @@ function listOwn(key, faq) {
   return L[key].items;
 }
 
-/* ---------- navigation ---------- */
+/* ---------- navigation: area (top row) → page (second row), like a store admin ---------- */
 const ICON = {
-  dashboard: 'M3 13h8V3H3zm10 8h8V11h-8zM3 21h8v-6H3zm10-18v6h8V3z',
+  home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   inbox: 'M4 4h16v12H15l-3 3-3-3H4zM8 9h8M8 12h5',
-  mail: 'M3 5h18v14H3zM3 7l9 6 9-6',
-  texts: 'M4 5h16M4 10h16M4 15h10M4 20h7',
-  faq: 'M12 18h.01M9.2 9a3 3 0 1 1 4.1 2.8c-.8.4-1.3 1-1.3 1.9V14M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
-  why: 'M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6L12 16.7 6.7 19.5l1.1-6L3.4 9.3l6-.8z',
-  trips: 'M3 20h18M5 20V9l7-5 7 5v11M10 20v-6h4v6',
-  team: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 12 0v1M16 3.5a4 4 0 0 1 0 7.5M22 21v-1a6 6 0 0 0-4-5.6',
-  videos: 'M4 5h12v14H4zM16 10l5-3v10l-5-3',
-  gallery: 'M3 5h18v14H3zM3 15l5-5 4 4 3-3 6 6M16 9.5a1.5 1.5 0 1 1 0-.01',
-  contact: 'M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z',
-  stats: 'M4 20V10M10 20V4M16 20v-8M22 20H2',
+  site: 'M3 5h18v14H3zM3 9h18M7 7h.01M10 7h.01',
+  people: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 12 0v1M16 3.5a4 4 0 0 1 0 7.5M22 21v-1a6 6 0 0 0-4-5.6',
+  settings: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 13.7H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.6 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10.3 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z',
+  help: 'M12 18h.01M9.2 9a3 3 0 1 1 4.1 2.8c-.8.4-1.3 1-1.3 1.9V14M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z',
 };
-const PAGES = [
-  { group: 'ראשי' },
-  { id: 'dashboard', title: 'לוח בקרה', sub: 'תמונת מצב: פניות, נרשמים וקיצורי דרך' },
-  { group: 'פניות' },
-  { id: 'inbox', title: 'פניות ונרשמים', sub: 'כל מי שהשאיר פרטים באתר: בקשות להצעת מחיר והרשמות לעדכונים', badge: true },
-  { id: 'mail', title: 'שליחת מייל לנרשמים', sub: 'עדכון לכל מי שנרשם, מהמייל של החברה' },
-  { group: 'תוכן האתר' },
-  { id: 'texts', title: 'טקסטים בדפים', sub: 'כל כותרת, משפט וכפתור באתר. לשנות, להסתיר או להחזיר למקור', lang: true },
-  { id: 'faq', title: 'שאלות נפוצות', sub: 'להוסיף, לשנות, להסתיר ולסדר שאלות', lang: true },
-  { id: 'why', title: 'למה דווקא La Belle Vie', sub: 'מה מייחד אתכם ולמי החוויה מתאימה', lang: true },
-  { id: 'trips', title: 'נופשים ודפי נופש', sub: 'כרטיסי הנופשים, ודף מלא לכל נופש (כמו פסח, או נופש חדש)', lang: true },
-  { id: 'team', title: 'צוות ודבר המנכ״ל', sub: 'תמונות, שמות ותפקידים, והמכתב של אילן', lang: true },
-  { id: 'videos', title: 'סרטונים', sub: 'הסרטונים בחלון סוכות: להוסיף, להסתיר ולסדר', lang: true },
-  { id: 'gallery', title: 'תמונות וגלריה', sub: 'הגלריה "רגעים מהנופש" ותמונות הרקע של החלונות', lang: true },
-  { id: 'contact', title: 'פרטי קשר וקישורים', sub: 'טלפונים, וואטסאפ, מייל ורשתות חברתיות, בכל האתר בבת אחת' },
-  { group: 'נתונים' },
-  { id: 'stats', title: 'סטטיסטיקה', sub: 'כמה פונים, כמה נרשמים, וכמה מבקרים באתר' },
+/** The parts of the site, in the order they appear; each becomes one tab with everything about it. */
+function windows() {
+  const list = [
+    ['w-home', 'דף הראשי', 'פתיחה, השירותים, מי אנחנו ודבר המנכ״ל'],
+    ['w-about-us', 'מי אנחנו', 'החלון "מי אנחנו" והצוות'],
+    ['w-holidays', 'נופשים', 'כרטיסי הנופשים, ולהוסיף נופש חדש'],
+  ];
+  for (const t of state.trips || []) list.push([`trip-${t.id}`, t.he?.name || 'נופש', t.id === 'sukkot' ? 'כל מה שבחלון סוכות: טקסטים, סרטונים וגלריה' : 'הדף של הנופש באתר']);
+  list.push(['w-events', 'הפקת אירועים', 'החלון של חתונות, בר מצוות וערבי גאלה'], ['w-gala', 'מערכת הגאלה', 'הטקסטים בחלון מערכת הגאלה'],
+    ['w-wedding', 'אפליקציה לחתונה', 'החלון של אפליקציית החתונה'], ['w-why', 'למה דווקא La Belle Vie', 'מה מייחד אתכם ולמי החוויה מתאימה'],
+    ['w-faq', 'שאלות נפוצות', 'להוסיף, לשנות, להסתיר ולסדר שאלות'], ['w-contact', 'בקשת הצעת מחיר', 'החלון עם הטופס'], ['w-menu', 'תפריט ותחתית', 'התפריט העליון ותחתית הדף']);
+  return list.map(([id, title, sub]) => ({ id, title, sub, lang: true }));
+}
+const GROUPS = () => [
+  { id: 'home', name: 'ראשי', pages: [{ id: 'dashboard', title: 'לוח בקרה', sub: 'תמונת מצב: פניות, נרשמים וקיצורי דרך' }] },
+  { id: 'inbox', name: 'פניות', badge: true, pages: [
+    { id: 'inbox', title: 'פניות ונרשמים', sub: 'כל מי שהשאיר פרטים באתר: בקשות להצעת מחיר והרשמות לעדכונים', badge: true },
+    { id: 'mail', title: 'מייל לנרשמים', sub: 'עדכון לכל מי שנרשם, מהמייל של החברה' }] },
+  { id: 'site', name: 'עמודי האתר', pages: windows() },
+  { id: 'people', name: 'צוות', pages: [{ id: 'team', title: 'צוות ודבר המנכ״ל', sub: 'תמונות, שמות ותפקידים, והמכתב של אילן', lang: true }] },
+  { id: 'settings', name: 'הגדרות', pages: [
+    { id: 'contact', title: 'פרטי קשר וקישורים', sub: 'טלפונים, וואטסאפ, מייל ורשתות חברתיות, בכל האתר בבת אחת' },
+    { id: 'banners', title: 'תמונות רקע', sub: 'התמונה הגדולה מאחורי הכותרת של כל חלון' },
+    { id: 'stats', title: 'סטטיסטיקה', sub: 'כמה פונים, כמה נרשמים, וכמה מבקרים באתר' }] },
+  { id: 'help', name: 'עזרה', pages: [
+    { id: 'guide', title: 'הדרכה', sub: 'איך עושים כל דבר, צעד אחר צעד' },
+    { id: 'support', title: 'תמיכה טכנית', sub: 'בדיקה שהכול מחובר, ומה עושים כשמשהו לא עובד' }] },
 ];
+const allPages = () => GROUPS().flatMap(g => g.pages.map(p => ({ ...p, group: g.id })));
 function drawNav() {
   const open = leads.filter(l => !l.handled).length;
-  $('#sideNav').innerHTML = PAGES.map(p => p.group ? `<div class="side__group">${p.group}</div>`
-    : `<button type="button" class="side__item" data-page="${p.id}" ${p.id === page ? 'aria-current="page"' : ''}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${ICON[p.id]}"/></svg>${p.title}
-        ${p.badge && open ? `<span class="side__badge">${open}</span>` : ''}</button>`).join('');
-  $$('[data-page]', $('#sideNav')).forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
+  const cur = allPages().find(p => p.id === page) || allPages()[0];
+  $('#groups').innerHTML = GROUPS().map(g => `<button type="button" class="grp" data-group="${g.id}" ${g.id === cur.group ? 'aria-current="true"' : ''}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${ICON[g.id]}"/></svg>${g.name}${g.badge && open ? `<span class="n">${open}</span>` : ''}</button>`).join('');
+  const grp = GROUPS().find(g => g.id === cur.group);
+  $('#tabs').innerHTML = grp.pages.map(p => `<button type="button" class="tab" role="tab" data-page="${p.id}" aria-selected="${p.id === page}">${esc(p.title)}${p.badge && open ? `<span class="n">${open}</span>` : ''}</button>`).join('');
+  $$('[data-group]', $('#groups')).forEach(b => b.addEventListener('click', () => go(GROUPS().find(g => g.id === b.dataset.group).pages[0].id)));
+  $$('[data-page]', $('#tabs')).forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
+  $('#tabs [aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
 function go(p, opts = {}) {
-  page = p;
-  if (opts.scope) scopeId = opts.scope;
-  const info = PAGES.find(x => x.id === p);
+  const info = allPages().find(x => x.id === p) || allPages()[0];
+  page = info.id;
   $('#pageTitle').textContent = info.title;
   $('#pageSub').textContent = info.sub;
   $('#langPick').hidden = !info.lang;
-  $('#app').classList.remove('is-menu');
-  history.replaceState(null, '', '#' + p);
+  history.replaceState(null, '', '#' + page);
   drawNav();
   render();
   scrollTo({ top: 0 });
+  if (opts.anchor) setTimeout(() => $(opts.anchor)?.scrollIntoView({ block: 'center' }), 80);
 }
 function render() {
   const pg = $('#page');
   pg.innerHTML = '';
-  ({ dashboard, inbox, mail, texts, faq, why, trips, team, videos, gallery, contact, stats })[page](pg);
+  if (page.startsWith('w-') || page.startsWith('trip-')) return windowPage(pg, page);
+  ({ dashboard, inbox, mail, team, contact, banners, stats, guide, support })[page](pg);
 }
 $$('#langPick button').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang;
   $$('#langPick button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
   render();
 }));
-$('#menuBtn').addEventListener('click', e => { e.stopPropagation(); $('#app').classList.toggle('is-menu'); });
-// On a phone, a tap outside the menu closes it.
-document.addEventListener('click', e => { if ($('#app').classList.contains('is-menu') && !e.target.closest('#side')) $('#app').classList.remove('is-menu'); });
+
+/* ---------- one tab per part of the site: everything about it, in the site's order ---------- */
+const WIN_SCOPES = { 'w-home': ['top', 'services', 'about', 'team'], 'w-menu': ['header', 'footer'] };
+function windowPage(pg, id) {
+  const trip = id.startsWith('trip-') ? state.trips.find(t => 'trip-' + t.id === id) : null;
+  const sid = trip ? trip.id : id.slice(2);
+  const parts = [];   // [anchor id, label, element]
+  const add = (label, el) => { const a = 'part-' + parts.length; el.id = a; el.classList.add('section-anchor'); parts.push([a, label, el]); };
+  const siteLink = `../${lang === 'he' ? '' : lang + '/'}${sid === 'home' || sid === 'menu' ? '' : '#' + sid}`;
+  if (trip) {
+    // A holiday: its card + (Sukkot) the fixed window with its videos and gallery, or (others) its own page.
+    add('הכרטיס', tripCard(trip, state.trips.indexOf(trip), true));
+    if (trip.id === 'sukkot') {
+      add('הטקסטים בחלון', scopeEditor('sukkot', { title: 'הטקסטים בחלון סוכות' }));
+      const v = card('הסרטונים', 'הפס "רואים בעיניים" בחלון סוכות');
+      v.append(videoCards(state.videos, () => state.videos));
+      add('הסרטונים', v);
+      const items = state.gallery || galleryDefault();
+      const g = card('הגלריה', 'רגעים מהנופש');
+      g.append(galleryGrid(items, () => (state.gallery ??= items)));
+      add('הגלריה', g);
+    } else if (trip.page?.on) {
+      const c = card('דף הנופש', 'כל חלק מופיע באתר רק כשיש בו תוכן');
+      c.append(tripPageEditor(trip));
+      add('דף הנופש', c);
+    } else if (STATIC_WIN(trip.id)) {
+      add('הטקסטים בחלון', scopeEditor(trip.id, { title: 'החלון הקיים של ' + (trip.he?.name || '') }));
+    }
+  } else if (sid === 'holidays') {
+    add('הטקסטים', scopeEditor('holidays'));
+    const c = card('הנופשים', 'כל נופש הוא כרטיס בחלון "נופשים". את הדף של כל נופש עורכים בלשונית שלו למעלה.', '<button class="btn btn--gold" data-add>+ נופש חדש</button>');
+    const list = html('<div class="cards"></div>');
+    state.trips.forEach((t, i) => list.append(tripCard(t, i, false)));
+    $('[data-add]', c).addEventListener('click', addTrip);
+    c.append(list);
+    add('הנופשים', c);
+  } else {
+    (WIN_SCOPES[id] || [sid]).forEach(s => { if (scopeOf('he', s)) add(SCOPE_NAME[s] || s, scopeEditor(s, s === 'why' ? { listTitles: ['מה מייחד אותנו', 'למי החוויה שלנו מתאימה'] } : {})); });
+    if (sid === 'home') add('דבר המנכ״ל', ceoCard());
+    if (sid === 'about-us') add('הצוות', teamCard());
+  }
+  const bannerSec = docs.he.getElementById(sid);
+  if (bannerSec?.dataset.hero && !(trip && trip.page?.on)) {
+    const b = card('תמונת רקע לכותרת', 'התמונה הגדולה בראש החלון');
+    b.append(heroSlot(bannerSec));
+    add('תמונת רקע', b);
+  }
+  const head = html(`<div class="jump"><a href="${siteLink}" target="_blank" rel="noopener">↗ לראות באתר</a></div>`);
+  if (parts.length > 1) parts.forEach(([a, label]) => head.append(html(`<a href="#${a}">${esc(label)}</a>`)));
+  $$('a[href^="#part-"]', head).forEach(a => a.addEventListener('click', e => { e.preventDefault(); $(a.getAttribute('href'))?.scrollIntoView({ block: 'start', behavior: 'smooth' }); }));
+  pg.append(head, ...parts.map(p => p[2]));
+}
+function addTrip() {
+  const id = 'trip-' + Date.now().toString(36);
+  state.trips.push({ id, status: 'soon', image: '', link: '#' + id, bookingUrl: { he: '', fr: '', en: '' },
+    he: { name: 'נופש חדש', place: '', subline: '' }, page: { on: true, he: { title: '', lead: '', points: [] } } });
+  touch();
+  go('trip-' + id);
+  toast('נוסף נופש חדש. ממלאים שם, ואז את הדף שלו', 'info');
+}
+
+/* ---------- global search: any text on the site, or any person who left details ---------- */
+(function search() {
+  const inp = $('#gq'), res = $('#gqRes');
+  const close = () => { res.hidden = true; };
+  inp.addEventListener('input', () => {
+    const q = inp.value.trim().toLowerCase();
+    res.innerHTML = '';
+    if (q.length < 2) return close();
+    const out = [];
+    leads.filter(l => [l.name, l.phone, l.email].join(' ').toLowerCase().includes(q)).slice(0, 5).forEach(l =>
+      out.push([`<b>${esc(l.name)}</b><small>${l.type === 'quote' ? 'בקשת הצעת מחיר' : 'נרשם לעדכונים'} · ${esc(l.phone || l.email || '')}</small>`, () => { inboxTab = 'all'; inboxQ = l.name; go('inbox'); }]));
+    const where = s => { const w = windows().find(x => x.id === 'w-' + s || x.id === 'trip-' + s) || windows().find(x => (WIN_SCOPES[x.id] || []).includes(s)); return w; };
+    maps.he.forEach(s => s.blocks.forEach(b => {
+      if (out.length > 14) return;
+      const v = textVal('he', b.key) || {};
+      const str = [v.lead, v.text].filter(Boolean).join(' ');
+      if (!str.toLowerCase().includes(q)) return;
+      const w = where(s.id);
+      if (!w) return;
+      out.push([`<span>${esc(str.slice(0, 90))}</span><small>${esc(w.title)} · ${KIND(b)}</small>`, () => go(w.id, { anchor: `[data-key="${CSS.escape(b.key)}"]` })]);
+    }));
+    if (!out.length) res.innerHTML = '<p>לא נמצא.</p>';
+    out.forEach(([h, fn]) => { const b = html(`<button type="button">${h}</button>`); b.addEventListener('click', () => { close(); inp.value = ''; fn(); }); res.append(b); });
+    res.hidden = false;
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.hb__search')) close(); });
+  inp.addEventListener('keydown', e => { if (e.key === 'Escape') { close(); inp.blur(); } });
+})();
 
 /* ---------- 1. dashboard ---------- */
 function dashboard(pg) {
@@ -250,12 +344,12 @@ function dashboard(pg) {
   recent.append(box);
   const quick = card('קיצורי דרך', '');
   quick.append(html(`<div class="quick" style="grid-template-columns:1fr 1fr">
-    <button data-go="texts"><b>לשנות טקסט באתר</b><span>כל כותרת ומשפט</span></button>
-    <button data-go="trips"><b>להוסיף נופש</b><span>עם דף משלו</span></button>
-    <button data-go="gallery"><b>להעלות תמונות</b><span>לגלריה ולחלונות</span></button>
+    <button data-go="w-home"><b>לשנות טקסט באתר</b><span>כל כותרת ומשפט</span></button>
+    <button data-go="w-holidays"><b>להוסיף נופש</b><span>עם דף משלו</span></button>
+    <button data-go="trip-sukkot"><b>סרטונים ותמונות</b><span>של סוכות</span></button>
     <button data-go="contact"><b>פרטי קשר</b><span>טלפון, וואטסאפ, קישורים</span></button>
-    <button data-go="faq"><b>שאלות נפוצות</b><span>להוסיף ולשנות</span></button>
-    <button data-go="mail"><b>מייל לנרשמים</b><span>עדכון לכולם</span></button></div>`));
+    <button data-go="w-faq"><b>שאלות נפוצות</b><span>להוסיף ולשנות</span></button>
+    <button data-go="guide"><b>הדרכה</b><span>איך עושים כל דבר</span></button></div>`));
   two.append(recent, quick);
   pg.append(two);
   $$('[data-go]', pg).forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
@@ -393,44 +487,6 @@ function mail(pg) {
 }
 
 /* ---------- 4. texts (every window), questions, "why" ---------- */
-let textQ = '';
-function texts(pg) {
-  const wrap = html('<div class="split"></div>');
-  const side = html('<nav class="card scopes" aria-label="חלונות"></nav>');
-  const scopes = maps.he.filter(s => s.blocks.length || s.lists.length);
-  if (!scopes.some(s => s.id === scopeId)) scopeId = scopes[0].id;
-  scopes.forEach(s => {
-    const n = s.blocks.filter(b => isChanged(b.key)).length + s.lists.filter(l => state.lists?.[l.key]).length;
-    const b = html(`<button type="button" ${s.id === scopeId && !textQ ? 'aria-current="true"' : ''}>${esc(SCOPE_NAME[s.id] || s.title)}${n ? `<span class="tag tag--gold">${n}</span>` : ''}</button>`);
-    b.addEventListener('click', () => { scopeId = s.id; textQ = ''; render(); });
-    side.append(b);
-  });
-  const main = html('<div></div>');
-  const search = card('חיפוש', 'כתבו מילה מהאתר כדי למצוא איפה היא מופיעה');
-  const inp = html(`<input type="search" placeholder="למשל: כשרות, סוכה, הופכים חלום…" value="${esc(textQ)}">`);
-  const results = html('<div class="search-results" style="margin-top:10px"></div>');
-  search.append(inp, results);
-  const doSearch = () => {
-    results.innerHTML = '';
-    if (textQ.trim().length < 2) return;
-    const q = textQ.trim().toLowerCase();
-    maps[lang].forEach(s => s.blocks.forEach(b => {
-      const v = textVal(lang, b.key);
-      const str = [v?.lead, v?.text].join(' ');
-      if (!str.toLowerCase().includes(q)) return;
-      const r = html(`<button type="button"><span>${esc(str.slice(0, 120))}</span><small>${esc(SCOPE_NAME[s.id] || s.id)} · ${KIND(b)}</small></button>`);
-      r.addEventListener('click', () => { scopeId = s.id; textQ = ''; render(); setTimeout(() => $(`[data-key="${CSS.escape(b.key)}"]`)?.scrollIntoView({ block: 'center' }), 50); });
-      results.append(r);
-    }));
-    if (!results.children.length) results.innerHTML = '<p class="hint">לא נמצא.</p>';
-  };
-  inp.addEventListener('input', () => { textQ = inp.value; doSearch(); });
-  main.append(search);
-  if (!textQ) main.append(scopeEditor(scopeId));
-  wrap.append(side, main);
-  pg.append(wrap);
-  doSearch();
-}
 function scopeEditor(id, opt = {}) {
   const sc = scopeOf(lang, id), scHe = scopeOf('he', id);
   const c = card(opt.title || SCOPE_NAME[id] || id, opt.sub || `עורכים כעת ב${LNAME[lang]}. שדה ששונה מסומן בזהב.`, `<a class="btn btn--line btn--sm" href="../${lang === 'he' ? '' : lang + '/'}#${id === 'top' || id === 'header' || id === 'footer' ? '' : id}" target="_blank" rel="noopener">לראות באתר ↗</a>`);
@@ -507,66 +563,42 @@ function faqEditor(key) {
   $('[data-reset]', box)?.addEventListener('click', () => { if (confirm('להחזיר את השאלות למה שהיה במקור?')) { delete state.lists[key]; touch(); render(); } });
   return box;
 }
-function faq(pg) {
-  pg.append(html(`<p class="hint hint--box">כאן מוסיפים, משנים, מסתירים ומסדרים את השאלות שבחלון "שאלות נפוצות". שאלה שלא תורגמה לצרפתית או לאנגלית תופיע שם בעברית.</p>`));
-  pg.append(scopeEditor('faq', { title: 'שאלות נפוצות' }));
-}
-function why(pg) {
-  pg.append(scopeEditor('why', { title: 'למה דווקא La Belle Vie', listTitles: ['מה מייחד אותנו', 'למי החוויה שלנו מתאימה'] }));
-}
-
 /* ---------- 5. holidays: cards + a full page for each ---------- */
 const STATIC_WIN = id => !!docs.he.getElementById(id)?.classList.contains('sheet');
-function trips(pg) {
-  pg.append(html(`<p class="hint hint--box">כל נופש מופיע ככרטיס בחלון "נופשים". אפשר לתת לכל נופש <b>דף משלו באתר</b>: כותרת, הסבר, נקודות חשובות, תמונה או סרטון, וכפתורי הזמנה והרשמה. ככה פותחים נופש חדש בכמה דקות.</p>`));
-  const c = card('הנופשים', '', '<button class="btn btn--gold" data-add>+ נופש חדש</button>');
-  const list = html('<div class="cards"></div>');
-  state.trips.forEach((t, i) => list.append(tripCard(t, i)));
-  $('[data-add]', c).addEventListener('click', () => {
-    const id = 'trip-' + Date.now().toString(36);
-    state.trips.push({ id, status: 'soon', image: '', link: '#' + id, bookingUrl: { he: '', fr: '', en: '' },
-      he: { name: 'נופש חדש', place: '', subline: '' }, fr: { name: '', place: '', subline: '' }, en: { name: '', place: '', subline: '' },
-      page: { on: true, he: { title: '', lead: '', points: [] } } });
-    touch(); render();
-    setTimeout(() => $('.cards .ecard:last-child')?.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
-  });
-  c.append(list);
-  pg.append(c);
-}
-function tripCard(t, i) {
+/** A holiday's card. In the "Holidays" list it is short with a button to its tab; in its own tab it also has the page switch. */
+function tripCard(t, i, inTab) {
   const ST = { open: ['ההרשמה פתוחה', 'tag--ok'], soon: ['בקרוב', 'tag--gold'], hidden: ['מוסתר', 'tag--muted'] };
   const tr = t[lang] || {}, W = () => (t[lang] ??= {});
   const el = html(`<article class="ecard ${t.status === 'hidden' ? 'is-hidden' : ''}"><div class="ecard__bar"><span class="ecard__title">${esc(t.he?.name || 'נופש')} <span class="tag ${ST[t.status]?.[1] || ''}">${ST[t.status]?.[0] || ''}</span></span></div><div class="ecard__body"></div></article>`);
   const bar = $('.ecard__bar', el);
-  const tl = tools(state.trips, i, render, { hide: false, confirm: `למחוק את הנופש "${t.he?.name || ''}"?` });
-  bar.append(tl);
+  if (!inTab) {
+    const b = html('<button type="button" class="btn btn--dark btn--sm">לעריכת הדף של הנופש ←</button>');
+    b.addEventListener('click', () => go('trip-' + t.id));
+    const tl = tools(state.trips, i, render, { hide: false, confirm: `למחוק את הנופש "${t.he?.name || ''}"?` });
+    tl.prepend(b);
+    bar.append(tl);
+  } else if (t.id !== 'sukkot') {
+    const del = html('<button type="button" class="btn btn--sm btn--danger">מחיקת הנופש</button>');
+    del.addEventListener('click', () => { if (!confirm(`למחוק את הנופש "${t.he?.name || ''}" ואת הדף שלו?`)) return; state.trips.splice(i, 1); touch(); go('w-holidays'); });
+    bar.append(del);
+  }
   const body = $('.ecard__body', el);
   const st = html(`<label class="field"><span>מצב</span><select><option value="open">ההרשמה פתוחה</option><option value="soon">בקרוב</option><option value="hidden">מוסתר מהאתר</option></select></label>`);
   $('select', st).value = t.status || 'soon';
   $('select', st).addEventListener('change', e => { t.status = e.target.value; touch(); render(); });
   const g = html('<div class="grid2"></div>');
-  g.append(field(`שם הנופש (${LNAME[lang]})`, tr.name || '', v => { W().name = v; touch(); }, { placeholder: lang !== 'he' ? t.he?.name : '' }),
+  g.append(field(`שם הנופש (${LNAME[lang]})`, tr.name || '', v => { W().name = v; touch(); drawNav(); }, { placeholder: lang !== 'he' ? t.he?.name : '' }),
     field(`מקום / שורה קטנה בכרטיס`, tr.place || '', v => { W().place = v; touch(); }, { placeholder: lang !== 'he' ? t.he?.place : '' }),
     field(`שורה בכרטיס בדף הראשי`, tr.subline || '', v => { W().subline = v; touch(); }, { placeholder: 'למשל: במלון נוף כנרת' }),
     field(`קישור להזמנה (${LNAME[lang]})`, t.bookingUrl?.[lang] || '', v => { (t.bookingUrl ??= {})[lang] = v.trim(); touch(); }, { dir: 'ltr', placeholder: 'https://' }));
   body.append(st, g, slot('תמונה לכרטיס', () => t.image, v => { t.image = v; }));
-  // The holiday's own page
-  const det = html(`<details ${t.page?.on ? 'open' : ''}><summary>דף הנופש באתר</summary><div></div></details>`);
-  const inner = $('div', det);
-  if (t.id === 'sukkot') {
-    inner.append(html(`<p class="hint">לסוכות יש כבר חלון מלא באתר. את הטקסטים שלו עורכים ב"טקסטים בדפים" ← "חלון סוכות", את הסרטונים ב"סרטונים" ואת התמונות ב"תמונות וגלריה".</p>`));
-    const b = html('<button type="button" class="btn btn--line btn--sm">לעריכת חלון סוכות</button>');
-    b.addEventListener('click', () => go('texts', { scope: 'sukkot' }));
-    inner.append(b);
-  } else {
+  if (inTab && t.id !== 'sukkot') {
     const pg0 = t.page || { on: false };
-    const sw = html(`<label class="switch"><input type="checkbox" ${pg0.on ? 'checked' : ''}> לנופש יש דף משלו באתר</label>`);
+    const sw = html(`<label class="switch" style="margin-top:6px"><input type="checkbox" ${pg0.on ? 'checked' : ''}> לנופש יש דף משלו באתר</label>`);
     $('input', sw).addEventListener('change', e => { (t.page ??= {}).on = e.target.checked; t.link = t.page.on || STATIC_WIN(t.id) ? '#' + t.id : ''; touch(); render(); });
-    inner.append(sw);
-    if (STATIC_WIN(t.id)) inner.append(html(`<p class="hint" style="margin-top:10px">${pg0.on ? 'הדף שבונים כאן מחליף את החלון הקיים של ' + esc(t.he?.name) + '.' : 'כרגע מוצג החלון הקיים של ' + esc(t.he?.name) + ' (אפשר לערוך אותו ב"טקסטים בדפים"). כשמפעילים, הדף שתבנו כאן יחליף אותו.'}</p>`));
-    if (pg0.on) inner.append(tripPageEditor(t));
+    body.append(sw);
+    if (STATIC_WIN(t.id)) body.append(html(`<p class="hint" style="margin-top:10px">${pg0.on ? 'הדף שבונים למטה מחליף באתר את החלון הקיים של ' + esc(t.he?.name) + '.' : 'כרגע מוצג באתר החלון הקיים של ' + esc(t.he?.name) + ' (אפשר לערוך אותו למטה). כשמפעילים, בונים דף מלא כמו בסוכות, והוא מחליף אותו.'}</p>`));
   }
-  body.append(det);
   return el;
 }
 
@@ -671,7 +703,7 @@ function fillFromSukkot(page) {
 }
 
 /* ---------- 6. team and the CEO letter ---------- */
-function team(pg) {
+function ceoCard() {
   const ceo = state.ceo, c = ceo[lang] || {}, C = () => (ceo[lang] ??= {});
   const k = card('דבר המנכ״ל', `המכתב של אילן בדף הראשי (${LNAME[lang]})`);
   k.append(slot('תמונה', () => ceo.photo, v => { ceo.photo = v; }));
@@ -680,6 +712,9 @@ function team(pg) {
   const g = html('<div class="grid2"></div>');
   g.append(field('חתימה (שם)', c.name || '', v => { C().name = v; touch(); }), field('תפקיד', c.role || '', v => { C().role = v; touch(); }));
   k.append(g);
+  return k;
+}
+function teamCard() {
   const t = card('הצוות', 'מופיע בדף הראשי ובחלון "מי אנחנו"', '<button class="btn btn--gold" data-add>+ איש צוות</button>');
   const list = html('<div class="cards"></div>');
   state.team.forEach((m, i) => {
@@ -691,10 +726,11 @@ function team(pg) {
     $('.ecard__body', el).append(slot('תמונה', () => m.photo, v => { m.photo = v; }), g2);
     list.append(el);
   });
-  $('[data-add]', t).addEventListener('click', () => { state.team.push({ photo: '', he: { name: '', role: '' }, fr: {}, en: {} }); touch(); render(); });
+  $('[data-add]', t).addEventListener('click', () => { state.team.push({ photo: '', he: { name: '', role: '' } }); touch(); render(); });
   t.append(list);
-  pg.append(k, t);
+  return t;
 }
+function team(pg) { pg.append(teamCard(), ceoCard()); }
 
 /* ---------- 7. videos ---------- */
 /** Video cards for any list of videos (the Sukkot strip, or a holiday page). own() returns the saved array. */
@@ -714,12 +750,6 @@ function videoCards(items, own) {
   $('button.btn--gold', box).addEventListener('click', () => { own().push({ he: { title: 'סרטון חדש', file: '', poster: '' } }); touch(); render(); });
   return box;
 }
-function videos(pg) {
-  const c = card('הסרטונים בחלון סוכות', 'בסדר שבו הם מופיעים באתר. סרטון שאין לו גרסה בשפה מסוימת יוצג בגרסה הצרפתית או העברית. לסרטונים של נופש אחר: "נופשים ודפי נופש" ← הנופש ← "סרטונים של הנופש".');
-  c.append(videoCards(state.videos, () => state.videos));
-  pg.append(c);
-}
-
 /* ---------- 8. gallery + window banners ---------- */
 function galleryDefault() {
   const caps = l => [...docs[l].querySelectorAll('.gallery__item')].map(b => b.querySelector('span')?.textContent || '');
@@ -749,22 +779,20 @@ function galleryGrid(items, own) {
   });
   return box;
 }
-function gallery(pg) {
-  const items = state.gallery || galleryDefault();
-  const c = card('גלריה "רגעים מהנופש"', `בחלון סוכות. כיתובים ב${LNAME[lang]}. לגלריה של נופש אחר: "נופשים ודפי נופש" ← הנופש ← "גלריה".`);
-  // The Sukkot gallery starts from the photos already on the site; the first change saves its own copy.
-  c.append(galleryGrid(items, () => (state.gallery ??= items)));
-  const h = card('תמונות רקע של החלונות', 'התמונה הגדולה שמופיעה מאחורי הכותרת בכל חלון');
+/** The big background of a window (saved only when it differs from the original). */
+function heroSlot(s) {
+  const def = s.dataset.hero;
+  return slot(SCOPE_NAME[s.id] || s.dataset.title, () => state.heroes?.[s.id] || 'media/' + def, v => {
+    (state.heroes ??= {});
+    if (!v || v === 'media/' + def) delete state.heroes[s.id]; else state.heroes[s.id] = v;
+  }, /\.mp4$/.test(def) ? 'video' : 'image');
+}
+function banners(pg) {
+  const h = card('תמונות רקע של החלונות', 'אפשר להחליף כל אחת גם מתוך הלשונית של החלון עצמו, ב"עמודי האתר".');
   const hg = html('<div class="grid2"></div>');
-  [...docs.he.querySelectorAll('main > section.sheet[data-hero]')].forEach(s => {
-    const def = s.dataset.hero;
-    hg.append(slot(SCOPE_NAME[s.id] || s.dataset.title, () => state.heroes?.[s.id] || 'media/' + def, v => {
-      (state.heroes ??= {});
-      if (!v || v === 'media/' + def) delete state.heroes[s.id]; else state.heroes[s.id] = v;
-    }, /\.mp4$/.test(def) ? 'video' : 'image'));
-  });
+  [...docs.he.querySelectorAll('main > section.sheet[data-hero]')].forEach(s => hg.append(heroSlot(s)));
   h.append(hg);
-  pg.append(c, h);
+  pg.append(h);
 }
 
 /* ---------- 9. contact details ---------- */
@@ -811,6 +839,111 @@ function stats(pg) {
   pg.append(c, two, v);
 }
 
+/* ---------- 11. guide, tech support and the first-visit tour ---------- */
+const HOWTO = [
+  ['לשנות טקסט באתר', ['כותבים מילה מהטקסט בחיפוש שלמעלה, ולוחצים על התוצאה.', 'או: "עמודי האתר" ← בוחרים את החלק (למשל "סוכות").', 'משנים את הטקסט בשדה. השדה נצבע בזהב כדי שתדעו מה שיניתם.', 'לוחצים "שמירה ופרסום" בפס שלמטה. תוך דקה זה באתר.'], 'w-home'],
+  ['לתרגם לצרפתית או לאנגלית', ['נכנסים לחלק שרוצים לתרגם.', 'למעלה בצד בוחרים "Français" או "English".', 'כל שדה מציג את העברית באפור, וכותבים מעליו את התרגום.', 'מה שלא תורגם יופיע באתר בעברית, אז אפשר לתרגם בהדרגה.'], 'w-home'],
+  ['להסתיר משהו מהאתר בלי למחוק', ['ליד כל טקסט, פריט, סרטון או תמונה יש כפתור "להסתיר".', 'הדבר נשאר בניהול, חיוור, ואפשר להחזיר אותו בלחיצה על "להציג באתר".'], 'w-home'],
+  ['לבנות דף לפסח, או לפתוח נופש חדש', ['"עמודי האתר" ← "נופשים" ← "+ נופש חדש" (או הלשונית "פסח").', 'כותבים שם ומצב ("בקרוב" או "ההרשמה פתוחה").', 'מסמנים "לנופש יש דף משלו באתר".', 'לוחצים "מילוי מהתבנית של סוכות" כדי להתחיל עם דף מלא, ומשנים מה שצריך.', 'מעלים סרטון ראשי, סרטונים לפס, תמונות לגלריה ותמונת רקע.', '"שמירה ופרסום". הנופש מופיע כרטיס בחלון "נופשים", עם דף משלו.'], 'w-holidays'],
+  ['להוסיף סרטונים או תמונות', ['סרטונים ותמונות של סוכות: "עמודי האתר" ← "סוכות".', 'של נופש אחר: בלשונית של אותו נופש.', 'לוחצים "+ סרטון" או "+ הוספת תמונות" ובוחרים קבצים מהמחשב או מהטלפון.', 'אפשר לסדר בחיצים ↑↓, להסתיר או למחוק.'], 'trip-sukkot'],
+  ['לטפל בפנייה', ['"פניות" ← "פניות ונרשמים". המספר הזהוב אומר כמה מחכות.', 'לוחצים "וואטסאפ" כדי לענות, או על מספר הטלפון כדי להתקשר.', 'כשסיימתם לוחצים "סימון כטופל". הפנייה עוברת ל"הכול".', '"ייצוא לאקסל" מוריד את כל הרשימה.'], 'inbox'],
+  ['לשלוח מייל לכל הנרשמים', ['"פניות" ← "מייל לנרשמים".', 'בוחרים למי, כותבים נושא ותוכן.', 'שולחים קודם "שליחת בדיקה" למייל שלכם ובודקים איך זה נראה.', 'רק אז "שליחה לכל הנרשמים".'], 'mail'],
+  ['להחליף טלפון, וואטסאפ או קישור', ['"הגדרות" ← "פרטי קשר וקישורים".', 'משנים את המספר או הכתובת. זה מתחלף בכל האתר בבת אחת.'], 'contact'],
+  ['טעיתי, איך מבטלים?', ['לפני "שמירה ופרסום": לוחצים "ביטול השינויים" בפס שלמטה.', 'אחרי שפורסם: ליד הטקסט לוחצים "להחזיר למקור".'], 'w-home'],
+];
+function guide(pg) {
+  const c = card('איך עושים…', 'לוחצים על נושא כדי לראות את הצעדים');
+  const box = html('<div class="guide"></div>');
+  HOWTO.forEach(([q, steps, to], i) => {
+    const d = html(`<details><summary><span>${i + 1}</span>${esc(q)}</summary><ol>${steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></details>`);
+    const b = html('<button type="button" class="btn btn--line btn--sm go">לשם ←</button>');
+    b.addEventListener('click', () => go(to));
+    d.append(b);
+    box.append(d);
+  });
+  c.append(box);
+  const t = card('סיור קצר במערכת', 'שתי דקות שמראות איפה כל דבר נמצא', '<button class="btn btn--gold" data-tour>להתחיל את הסיור</button>');
+  $('[data-tour]', t).addEventListener('click', () => tour(true));
+  pg.append(t, c);
+}
+
+async function support(pg) {
+  const c = card('בדיקה שהכול מחובר', 'אם משהו כאן אדום, זו הסיבה שמשהו לא עובד');
+  const list = html('<div class="checks"><p class="hint">בודק…</p></div>');
+  c.append(list);
+  const s = card('משהו לא עובד?', '');
+  s.append(html(`<div><ol class="hint" style="padding-inline-start:20px;display:grid;gap:6px">
+      <li>מרעננים את הדף (במחשב: F5, בטלפון: משיכה למטה).</li>
+      <li>אם שמרתם ועדיין לא רואים את השינוי באתר: מחכים דקה ומרעננים את האתר.</li>
+      <li>אם כתוב "פג תוקף הכניסה": נכנסים שוב עם הסיסמה. השינויים שלא נשמרו נשארים בדף עד שסוגרים אותו.</li>
+      <li>קובץ גדול (סרטון) יכול לקחת כמה דקות להעלות. לא סוגרים את הדף באמצע.</li>
+    </ol>
+    <p class="hint">עדיין לא עובד? שולחים צילום מסך עם הסבר קצר:</p>
+    <div class="row-tools"><a class="btn btn--dark" href="https://wa.me/972585182655?text=${encodeURIComponent('תקלה במערכת הניהול של האתר:')}" target="_blank" rel="noopener">דיווח בוואטסאפ</a>
+      <a class="btn btn--line" href="mailto:LBV0585551826@gmail.com?subject=${encodeURIComponent('תקלה במערכת הניהול')}">דיווח במייל</a></div></div>`));
+  pg.append(c, s);
+  const rows = [];
+  const add = (ok, title, text) => rows.push(`<div class="check"><i class="${ok === true ? 'ok' : ok === null ? 'warn' : 'err'}"></i><b>${title}</b><span>${text}</span></div>`);
+  add(true, 'כניסה לניהול', 'מחובר');
+  add(storage !== 'none', 'אחסון לתמונות, לסרטונים ולשמירה', storage === 'blob' ? 'מחובר' : storage === 'local' ? 'בדיקה במחשב' : 'לא מחובר: אי אפשר לשמור ולהעלות');
+  let leadsOk = false;
+  try { leadsOk = (await fetch('/api/leads', { cache: 'no-store' })).ok; } catch (e) {}
+  add(leadsOk, 'אחסון פרטי לפניות ולנרשמים', leadsOk ? 'מחובר' : 'לא מחובר: פניות לא נשמרות');
+  let mailOk = null;
+  try { const r = await fetch('/api/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }); const j = await r.json().catch(() => ({})); mailOk = j.error === 'email-not-configured' ? false : r.status === 400 ? true : null; } catch (e) {}
+  add(mailOk, 'שירות המיילים', mailOk ? 'מחובר' : mailOk === false ? 'עוד לא מחובר: צריך את המפתח של מערכת הגאלה (אבא)' : 'לא ידוע');
+  let site = false;
+  try { site = (await fetch('../', { cache: 'no-store' })).ok; } catch (e) {}
+  add(site, 'האתר עצמו', site ? 'עולה' : 'לא עולה');
+  add(null, 'ספירת מבקרים', 'מפעילים פעם אחת ב"הגדרות" ← "סטטיסטיקה"');
+  list.innerHTML = rows.join('');
+}
+
+/** A short tour that points at each part of the screen. Shown once on the first visit, and from "הדרכה". */
+function tour(force) {
+  try { if (!force && localStorage.getItem('lbv-admin-tour')) return; localStorage.setItem('lbv-admin-tour', '1'); } catch (e) {}
+  const steps = [
+    ['#groups', 'התחומים', 'בשורה הזאת בוחרים תחום: פניות, עמודי האתר, צוות, הגדרות ועזרה. המספר הזהוב = פניות שמחכות לכם.'],
+    ['#tabs', 'הדפים בתוך התחום', 'כאן בוחרים דף. ב"עמודי האתר" יש לשונית לכל חלק באתר (סוכות, פסח, אירועים…), ובה כל מה ששייך אליו.'],
+    ['#gq', 'חיפוש', 'כותבים מילה מהאתר או שם של לקוח, ומגיעים ישר למקום.'],
+    ['#page', 'אזור העריכה', 'משנים כאן טקסטים, מעלים סרטונים ותמונות, מסתירים או מוסיפים. שדה ששונה נצבע בזהב.'],
+    ['#langPick', 'שפות', 'עורכים בעברית. לחיצה על Français או English מציגה את אותו טקסט בשפה השנייה.'],
+    [null, 'שמירה ופרסום', 'כשיש שינוי, מופיע למטה פס כהה עם "שמירה ופרסום". לוחצים, ותוך דקה זה באתר. אפשר גם לבטל.'],
+    ['.grp[data-group="help"]', 'עזרה', 'בכל רגע: "עזרה" ← "הדרכה" (איך עושים כל דבר) או "תמיכה טכנית" (אם משהו לא עובד).'],
+  ];
+  if (page !== 'w-home' && $('#langPick').hidden) go('w-home');
+  const el = html(`<div class="tour" role="dialog" aria-modal="true" aria-label="סיור"><div class="tour__ring"></div><div class="tour__card"><h3></h3><p></p><div class="tour__foot"><div class="tour__dots">${steps.map(() => '<i></i>').join('')}</div><div class="row-tools"><button type="button" class="btn btn--line btn--sm" data-skip>דילוג</button><button type="button" class="btn btn--gold btn--sm" data-next>הבא</button></div></div></div></div>`);
+  document.body.append(el);
+  let k = 0;
+  const show = () => {
+    const [sel, title, text] = steps[k];
+    $('h3', el).textContent = title; $('p', el).textContent = text;
+    $$('.tour__dots i', el).forEach((d, j) => d.classList.toggle('on', j === k));
+    $('[data-next]', el).textContent = k === steps.length - 1 ? 'סיום' : 'הבא';
+    const ring = $('.tour__ring', el), cardEl = $('.tour__card', el);
+    const t = sel && $(sel);
+    if (t && !t.hidden && t.offsetParent !== null) {
+      t.scrollIntoView({ block: 'nearest' });
+      const r0 = t.getBoundingClientRect();
+      // Tall areas (the editing area) are framed only where they show on screen.
+      const top = Math.max(r0.top, $('.hb').getBoundingClientRect().bottom + 8), bottom = Math.min(r0.bottom, innerHeight - 12);
+      const r = { top, bottom, left: r0.left, width: r0.width, height: Math.max(40, bottom - top) };
+      Object.assign(ring.style, { display: 'block', top: r.top - 6 + 'px', left: r.left - 6 + 'px', width: r.width + 12 + 'px', height: r.height + 12 + 'px' });
+      const tall = r.height > innerHeight * .45;
+      const below = !tall && r.bottom + 220 < innerHeight;
+      cardEl.style.top = (tall ? r.top + 40 : below ? r.bottom + 18 : Math.max(12, r.top - 220)) + 'px';
+      cardEl.style.left = Math.max(12, Math.min(innerWidth - cardEl.offsetWidth - 12, r.left + r.width / 2 - 180)) + 'px';
+    } else {
+      ring.style.display = 'none';
+      cardEl.style.top = innerHeight / 2 - 110 + 'px';
+      cardEl.style.left = innerWidth / 2 - cardEl.offsetWidth / 2 + 'px';
+    }
+  };
+  $('[data-next]', el).addEventListener('click', () => { if (++k >= steps.length) el.remove(); else show(); });
+  $('[data-skip]', el).addEventListener('click', () => el.remove());
+  requestAnimationFrame(show);
+}
+
 /* ---------- load / save / auth ---------- */
 async function loadContent() {
   for (const url of ['/api/content', '../content.json']) {
@@ -827,7 +960,8 @@ async function openApp() {
   $('#storageWarn').hidden = storage !== 'none';
   $$('#langPick button').forEach(x => x.setAttribute('aria-selected', String(x.dataset.lang === lang)));
   const start = location.hash.slice(1);
-  go(PAGES.some(p => p.id === start) ? start : 'dashboard');
+  go(allPages().some(p => p.id === start) ? start : 'dashboard');
+  setTimeout(() => tour(false), 600);
   loadLeads().then(() => { if (['dashboard', 'inbox', 'stats', 'mail'].includes(page)) render(); });
 }
 $('#saveBtn').addEventListener('click', async () => {
