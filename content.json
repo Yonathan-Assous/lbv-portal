@@ -291,17 +291,17 @@
     },
     {
       "he": {
-        "title": "מהקמח ועד הפיצה",
+        "title": "מהמטבח באהבה",
         "file": "media/pizza.mp4",
         "poster": "media/pizza.jpg"
       },
       "fr": {
-        "title": "De la farine à la pizza",
+        "title": "De notre cuisine, avec amour",
         "file": "media/pizza-fr.mp4",
         "poster": "media/pizza-fr.jpg"
       },
       "en": {
-        "title": "From flour to pizza",
+        "title": "From our kitchen, with love",
         "file": "media/pizza-fr.mp4",
         "poster": "media/pizza-fr.jpg"
       }
