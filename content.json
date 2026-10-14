@@ -86,15 +86,15 @@
       "photo": "media/team-yishai.jpg",
       "he": {
         "name": "ישי",
-        "role": "צוות"
+        "role": "מנהל צוות"
       },
       "fr": {
         "name": "Yishai",
-        "role": "Équipe"
+        "role": "Chef d’équipe"
       },
       "en": {
         "name": "Yishai",
-        "role": "Team"
+        "role": "Team manager"
       }
     }
   ],
