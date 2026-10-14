@@ -151,7 +151,7 @@ function renderLeads() {
   $('#leadsBody').innerHTML = list.length ? list.map((l, i) => {
     const wa = waLink(l.phone);
     return `<tr>
-      <td>${escH(l.name)}</td><td dir="ltr">${escH(l.phone)}</td><td dir="ltr">${escH(l.email)}</td>
+      <td>${escH(l.name)}</td><td dir="ltr">${escH(l.phone)}</td><td dir="ltr">${escH(l.email)}${l.unsubscribed ? ' <span class="tag">הוסר מהרשימה</span>' : ''}</td>
       <td>${escH(INTEREST[l.interest] || l.interest)}</td><td>${escH(LANG_NAME[l.lang] || l.lang)}</td>
       <td>${escH((l.at || '').slice(0, 10).split('-').reverse().join('/'))}</td>
       <td class="leads__act">${wa ? `<a class="btn btn--line btn--sm" href="${wa}" target="_blank" rel="noopener">וואטסאפ</a>` : ''}
@@ -190,6 +190,40 @@ $('#leadsCsv').addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(a.href);
 });
+
+/* ---------- mailing to the sign-ups ---------- */
+function mailStatus(text, kind) {
+  const s = $('#mailStatus');
+  s.textContent = text; s.hidden = false; s.className = `compose__status compose__status--${kind}`;
+}
+async function sendMail(test) {
+  const payload = {
+    subject: $('#mailSubject').value.trim(), message: $('#mailBody').value.trim(),
+    buttonText: $('#mailBtn').value.trim(), buttonUrl: $('#mailUrl').value.trim(), interest: $('#mailTo').value,
+  };
+  if (!payload.subject || !payload.message) return mailStatus('צריך לכתוב נושא ותוכן למייל.', 'err');
+  if (test) {
+    payload.test = $('#mailTest').value.trim();
+    if (!/\S+@\S+\.\S+/.test(payload.test)) return mailStatus('כתבו מייל תקין לשליחת הבדיקה.', 'err');
+  } else {
+    const n = new Set(leads.filter(l => l.email && !l.unsubscribed && (!payload.interest || l.interest === payload.interest || l.interest === 'all')).map(l => l.email)).size;
+    if (!n) return mailStatus('אין נרשמים עם מייל ברשימה הזאת.', 'err');
+    if (!confirm(`לשלוח את המייל ל-${n} נרשמים? אי אפשר לבטל אחרי השליחה.`)) return;
+  }
+  mailStatus('שולח…', 'info');
+  try {
+    const r = await fetch('/api/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 503 && j.error === 'email-not-configured') return mailStatus('שירות המיילים עוד לא מחובר. כשמחברים לניהול הראשי (אותו מפתח של מערכת הגאלה), השליחה תעבוד.', 'err');
+    if (r.status === 503) return mailStatus('האחסון עוד לא מחובר, אי אפשר לשלוח.', 'err');
+    if (r.status === 401) return mailStatus('פג תוקף הכניסה. היכנסו שוב.', 'err');
+    if (!r.ok) return mailStatus('השליחה נכשלה. נסו שוב.', 'err');
+    const sim = j.simulated ? ' (בדיקה במחשב: לא נשלח באמת)' : '';
+    mailStatus(test ? `מייל הבדיקה נשלח${sim}.` : `נשלח ל-${j.sent} מתוך ${j.total} נרשמים${sim}.`, j.failures && j.failures.length ? 'err' : 'ok');
+  } catch (e) { mailStatus('השליחה נכשלה. בדקו את החיבור לאינטרנט.', 'err'); }
+}
+$('#mailTestBtn').addEventListener('click', () => sendMail(true));
+$('#mailSendBtn').addEventListener('click', () => sendMail(false));
 
 /* ---------- load / save / auth ---------- */
 async function loadContent() {

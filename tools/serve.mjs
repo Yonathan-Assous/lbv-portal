@@ -55,6 +55,16 @@ async function api(req, res, p) {
       return json(res, 200, { ok: true });
     }
   }
+  if (p === '/api/send') {
+    // Local stand-in: counts who would receive it, sends nothing.
+    if (!authed(req)) return json(res, 401, { error: 'login' });
+    const b = JSON.parse((await body(req)).toString() || '{}');
+    if (!b.subject || !b.message) return json(res, 400, { error: 'empty' });
+    const file = path.join(root, 'data', 'leads.local.json');
+    const all = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
+    const n = b.test ? 1 : new Set(all.filter(l => l.email && (!b.interest || l.interest === b.interest || l.interest === 'all')).map(l => l.email)).size;
+    return json(res, 200, { ok: true, sent: n, total: n, simulated: true });
+  }
   if (p === '/api/upload-local') {
     if (!authed(req)) return json(res, 401, { error: 'login' });
     const name = (new URL(req.url, 'http://x').searchParams.get('name') || 'file').replace(/[^\w.\-]/g, '_');

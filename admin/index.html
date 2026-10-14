@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="only light">
 <title>ניהול האתר – La Belle Vie</title>
-<link rel="icon" href="../media/logo-color.png">
+<link rel="icon" type="image/png" href="../media/icon-gold.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
@@ -97,6 +97,26 @@
       <p class="hint">כל מי שנרשם באתר לעדכונים (למשל ״לעדכון ראשון על פסח״). אפשר לשלוח לכל אחד הודעה בוואטסאפ, או להעתיק את כל המיילים ולשלוח מהמייל שלכם.</p>
       <div class="leads__filter"><label>סינון<select id="leadsFilter"><option value="">הכול</option><option value="pesach">פסח</option><option value="sukkot">סוכות</option><option value="all">כל הנופשים והאירועים</option></select></label><span id="leadsCount"></span></div>
       <div class="leads__wrap"><table class="leads"><thead><tr><th>שם</th><th>טלפון</th><th>מייל</th><th>מעניין אותו</th><th>שפה</th><th>תאריך</th><th></th></tr></thead><tbody id="leadsBody"></tbody></table></div>
+
+      <div class="compose">
+        <h3>שליחת מייל לנרשמים</h3>
+        <p class="hint">המייל נשלח מהכתובת של החברה (noreply@lbv-event.com), לכל נרשם בנפרד, עם קישור להסרה מהרשימה. התשובות מגיעות למייל של LBV.</p>
+        <div class="two">
+          <label>למי לשלוח<select id="mailTo"><option value="">כל הנרשמים עם מייל</option><option value="pesach">מי שנרשם לפסח</option><option value="sukkot">מי שנרשם לסוכות</option></select></label>
+          <label>נושא המייל<input id="mailSubject" placeholder="למשל: ההרשמה לפסח נפתחה!"></label>
+        </div>
+        <label>תוכן המייל<textarea id="mailBody" rows="7" placeholder="שורה ריקה בין פסקאות"></textarea></label>
+        <div class="two">
+          <label>טקסט לכפתור (רשות)<input id="mailBtn" placeholder="להרשמה"></label>
+          <label>קישור לכפתור (רשות)<input id="mailUrl" dir="ltr" placeholder="https://"></label>
+        </div>
+        <div class="compose__send">
+          <label>שליחת בדיקה למייל שלכם<input id="mailTest" type="email" dir="ltr" placeholder="you@example.com"></label>
+          <button class="btn btn--line" type="button" id="mailTestBtn">שליחת בדיקה</button>
+          <button class="btn btn--gold" type="button" id="mailSendBtn">שליחה לכל הנרשמים</button>
+        </div>
+        <p class="compose__status" id="mailStatus" role="status" hidden></p>
+      </div>
     </section>
   </main>
 </div>

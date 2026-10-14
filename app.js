@@ -85,7 +85,7 @@
       team.innerHTML = c.team.map(m => {
         const pic = m.photo
           ? `<img src="${esc(asset(m.photo))}" alt="" loading="lazy" width="480" height="600">`
-          : `<span class="team__mono" aria-hidden="true">${esc((tr(m).name || '').replace(/[׳']/g, '').trim().charAt(0))}</span>`;
+          : `<span class="team__mono" aria-hidden="true"><svg viewBox="0 0 212 212" aria-hidden="true"><path fill="#fff" d="M106 50a35 35 0 1 1 0 70 35 35 0 0 1 0-70zm0 82c38 0 68 19 74 46a106 106 0 0 1-148 0c6-27 36-46 74-46z"/></svg></span>`;
         return `<li>${pic}<b>${esc(tr(m).name)}</b><span>${esc(tr(m).role)}</span></li>`;
       }).join('');
     }
@@ -315,7 +315,9 @@
     $('#gCollective').textContent = fill(UI.collective, { n: ils(Math.floor(total / PER_CHILD)) });
     $('#gTowards').textContent = fill(UI.towards, { have: ils(total % PER_CHILD) + ' ₪', need: ils(PER_CHILD) + ' ₪' });
   };
-  let doorTimer = null;
+  let doorTimers = [];
+  // The lock and key live on the seam between the doors.
+  gDoors.insertAdjacentHTML('beforeend', '<span class="gn__lock" aria-hidden="true"></span><svg class="gn__key" viewBox="0 0 120 44" aria-hidden="true"><defs><linearGradient id="gnKeyG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f7e6c0"/><stop offset=".5" stop-color="#d4af6a"/><stop offset="1" stop-color="#8a6a32"/></linearGradient></defs><g fill="none" stroke="url(#gnKeyG)" stroke-width="5" stroke-linecap="round"><circle cx="20" cy="22" r="14"/><circle cx="20" cy="22" r="5"/><path d="M34 22h76M92 22v12M101 22v8M110 22v12"/></g></svg>');
   const donate = (amount, reveal = true) => {
     const name = pick(T.families);
     total += amount; // the goal can be passed, as on a real night
@@ -325,15 +327,22 @@
     while (gBoard.children.length > 10) gBoard.lastChild.remove();
     if (reveal) {
       const n = Math.max(1, Math.floor(amount / PER_CHILD));
-      $('#gName').textContent = name;
-      $('#gAmount').textContent = ils(amount) + ' ₪';
-      $('#gChild').textContent = n === 1 ? UI.childOne : fill(UI.childMany, { n: ils(n) });
-      // The doors swing open on every donation, then close again for the next one.
-      gDoors.classList.remove('is-open');
-      void gDoors.offsetWidth;
-      gDoors.classList.add('is-open');
-      clearTimeout(doorTimer);
-      doorTimer = setTimeout(() => gDoors.classList.remove('is-open'), 3800);
+      // Every donation: the doors close (if open), a gold key turns in the lock, then they swing open.
+      doorTimers.forEach(clearTimeout);
+      const wasOpen = gDoors.classList.contains('is-open');
+      gDoors.classList.remove('is-open', 'is-locking');
+      const at = (ms, fn) => doorTimers.push(setTimeout(fn, ms));
+      const closeWait = wasOpen ? 1150 : 0, keyTime = reduced ? 0 : 1250;
+      doorTimers = [];
+      at(closeWait, () => {
+        $('#gName').textContent = name;
+        $('#gAmount').textContent = ils(amount) + ' ₪';
+        $('#gChild').textContent = n === 1 ? UI.childOne : fill(UI.childMany, { n: ils(n) });
+        void gDoors.offsetWidth;
+        gDoors.classList.add('is-locking');
+      });
+      at(closeWait + keyTime, () => gDoors.classList.add('is-open'));
+      at(closeWait + keyTime + 3300, () => gDoors.classList.remove('is-open', 'is-locking'));
     }
     renderTotals();
   };
@@ -375,7 +384,13 @@
   /* ---------- Raffle: the real projector screen — prize first, then digit reels stop left to right ---------- */
   const rf = $('.rf'), rReels = $('#rReels'), rGo = $('#rGo'), rWinner = $('#rWinner');
   const rPrize = $('#rPrize'), rImg = $('#rImg'), rPrizeText = $('#rPrizeText');
-  const PRIZE_IMG = ['hero.jpg', 'holiday-card.jpg', 'banner-tables.jpg', ''];
+  // Prizes are shown like the real screen's "no photo" mode: the name as the hero, with a gold line drawing.
+  const PRIZE_ART = [
+    '<path d="M30 70a18 18 0 1 1 36 0 18 18 0 0 1-36 0zM48 52V18h40v10H76v8h12v10H76"/><circle cx="48" cy="70" r="7"/>',
+    '<ellipse cx="60" cy="74" rx="44" ry="12"/><path d="M22 70c0-9 17-16 38-16s38 7 38 16"/><circle cx="60" cy="60" r="9"/><path d="M34 52v-16h7v16M80 50V30h9v20M80 38h9"/>',
+    '<path d="M18 78h84M26 78a34 34 0 0 1 68 0M60 44v-6M54 38h12"/><path d="M14 90h92"/>',
+    '<path d="M38 92h44M44 92V58M76 92V58M40 58h8M72 58h8M44 46c0-6 4-8 0-14M76 46c0-6 4-8 0-14"/><path d="M60 26v8"/>',
+  ];
   const DIGITS = 4, LOOPS = 6;
   let prizeIdx = 0, spinning = false;
   const cells = Array.from({ length: DIGITS }, () => {
@@ -386,11 +401,10 @@
     return cell;
   });
   const showPrize = () => {
-    const name = T.prizes[prizeIdx], img = PRIZE_IMG[prizeIdx];
-    rPrize.textContent = name;
-    rImg.hidden = !img;
-    if (img) rImg.src = MEDIA + img;
-    rPrizeText.textContent = img ? '' : name;
+    const name = T.prizes[prizeIdx];
+    rPrize.textContent = fill({ he: 'פרס {i} מתוך {n}', fr: 'Lot {i} sur {n}', en: 'Prize {i} of {n}' }[LANG] || '', { i: prizeIdx + 1, n: T.prizes.length });
+    rImg.hidden = true;
+    rPrizeText.innerHTML = `<svg class="rf__art" viewBox="0 0 120 110" aria-hidden="true">${PRIZE_ART[prizeIdx % PRIZE_ART.length]}</svg><b>${esc(name)}</b><i class="rf__orn" aria-hidden="true"></i>`;
     rf.dataset.phase = 'presenting';
     rWinner.textContent = '';
     cells.forEach(c => { const s = $('.rf__strip', c); s.style.transition = 'none'; s.style.transform = 'none'; s.innerHTML = '<span>–</span>'; c.classList.remove('is-locked'); });

@@ -245,11 +245,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .team li { display: grid; gap: 2px; align-content: start; }
 .team img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 20px; margin-bottom: 12px; background: var(--foam); }
 .team b { font: 700 1.25rem/1.2 var(--display); }
-.team .team__mono {
-  display: grid; width: 100%; font-size: clamp(3rem, 6vw, 5rem) !important; color: var(--sun) !important; place-items: center; aspect-ratio: 4 / 5; margin-bottom: 12px; border-radius: 20px;
-  background: radial-gradient(circle at 50% 35%, #1C2A63, var(--night)); color: var(--sun);
-  font: 700 clamp(3rem, 6vw, 5rem)/1 var(--display); box-shadow: inset 0 0 0 1px rgba(227,182,92,.35);
-}
+.team .team__mono { display: grid; place-items: end center; width: 100%; aspect-ratio: 4 / 5; margin-bottom: 12px; border-radius: 20px; overflow: hidden; background: #CFD8DC; }
+.team__mono svg { width: 92%; height: auto; margin-bottom: -4%; }
 .team span { color: var(--ink-soft); font-size: .95rem; }
 
 /* ---------- Pesach ---------- */
@@ -571,7 +568,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .player__close { position: absolute; top: -8px; inset-inline-end: -56px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: #fff; color: var(--night); font-size: 1.7rem; line-height: 1; }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1020px) {
+/* The full menu needs ~1250px; below that it folds into the menu button. */
+@media (max-width: 1260px) {
   .bar__nav { display: none; position: fixed; inset: 64px 0 auto; flex-direction: column; gap: 0; padding: 8px var(--gutter) 20px; background: rgba(11,20,48,.97); }
   .bar__nav.is-open { display: flex; }
   .bar__nav a { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 1.1rem; }
@@ -580,7 +578,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .bar__menu { display: grid; gap: 6px; place-content: center; width: 44px; height: 44px; border: 0; background: rgba(255,255,255,.1); border-radius: 50%; }
   .bar__menu span { width: 20px; height: 2px; background: #fff; transition: transform .25s; }
   .bar__menu[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
-  .bar__menu[aria-expanded="true"] span:last-child { transform: translateY(-4px) rotate(-45deg); }
+  .bar__menu[aria-expanded="true"] span:last-child { transform: translateY(-4px) rotate(-45deg); }}
+
+@media (max-width: 1020px) {
+
   .doors { grid-template-columns: 1fr 1fr; }
   .door--hero { grid-column: 1 / -1; grid-row: auto; min-height: 380px; }
   .door--wide .door__body { grid-template-columns: 1fr; }
@@ -851,6 +852,30 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gn__doors.is-open .gn__door--b { transform: rotateY(78deg); }
 .gn__doors.is-open .gn__light { opacity: 1; }
 .gn__doors.is-open .gn__plate { opacity: 1; transform: none; }
+.gn__doors { perspective: 900px; }
+/* Lock plate on the seam, and the gold key that turns in it before the doors open. */
+.gn__lock { position: absolute; z-index: 3; left: 50%; top: 50%; width: 22px; height: 44px; translate: -50% -50%; border-radius: 11px; background: linear-gradient(180deg, #f7e6c0, #d4af6a 45%, #8a6a32); box-shadow: 0 0 0 2px #04080f, 0 6px 16px rgba(0,0,0,.5); transition: opacity .4s ease, box-shadow .4s ease; }
+.gn__lock::before { content: ""; position: absolute; left: 50%; top: 12px; width: 7px; height: 7px; translate: -50% 0; border-radius: 50%; background: #1d1405; }
+.gn__lock::after { content: ""; position: absolute; left: 50%; top: 17px; width: 3px; height: 11px; translate: -50% 0; border-radius: 0 0 2px 2px; background: #1d1405; }
+.gn__key { position: absolute; z-index: 4; left: calc(50% - 120px); top: calc(50% - 24px); width: 130px; height: 48px; opacity: 0; pointer-events: none; transform-origin: 92% 50%; filter: drop-shadow(0 4px 10px rgba(0,0,0,.6)); }
+.gn__doors.is-locking .gn__key { animation: gnKeyIn 1.25s cubic-bezier(.4,0,.2,1) forwards; }
+.gn__doors.is-locking .gn__lock { box-shadow: 0 0 0 2px #04080f, 0 0 26px 6px rgba(247,230,192,.75); }
+.gn__doors.is-open .gn__key { animation: gnKeyOut .5s ease forwards; }
+.gn__doors.is-open .gn__lock { opacity: 0; }
+@keyframes gnKeyIn {
+  0% { opacity: 0; transform: translateX(-60px) scale(1.25); }
+  35% { opacity: 1; transform: translateX(-14px) scale(1); }
+  55% { opacity: 1; transform: translateX(0) rotateX(0); }
+  90%, 100% { opacity: 1; transform: translateX(0) rotateX(180deg); filter: drop-shadow(0 0 14px rgba(247,230,192,.9)); }
+}
+@keyframes gnKeyOut { from { opacity: 1; transform: rotateX(180deg); } to { opacity: 0; transform: rotateX(180deg) scale(1.3); } }
+@media (prefers-reduced-motion: reduce) { .gn__key { display: none; } }
+/* Raffle prize: the name as the hero with a gold line drawing, like the real screen's no-photo mode. */
+.rf__art { width: 104px; height: 95px; fill: none; stroke: #d4af6a; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 12px rgba(212,175,106,.35)); }
+.rf__prizeText { display: grid; justify-items: center; gap: 10px; }
+.rf__prizeText b { font: 900 clamp(1.5rem, 3.4vw, 2.4rem)/1.15 var(--display); background: linear-gradient(180deg, #f7e6c0, #d4af6a 55%, #8a6a32); -webkit-background-clip: text; background-clip: text; color: transparent; text-align: center; }
+.rf__orn { display: block; width: 150px; height: 10px; background: linear-gradient(90deg, transparent, #d4af6a 30%, transparent 46%, transparent 54%, #d4af6a 70%, transparent) center / 100% 1px no-repeat; position: relative; }
+.rf__orn::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; translate: -50% -50%; rotate: 45deg; background: #d4af6a; }
 .gn__bottom { grid-column: 1; display: grid; gap: 10px; }
 .gn__collective { margin: 0; text-align: center; font: 700 1.15rem var(--display); color: #f7e6c0; }
 .gn__nums { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: #AFC0D8; font-size: .9rem; }
@@ -866,6 +891,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .rf__prizeZone img { position: relative; height: 100%; width: auto; max-width: 420px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; filter: drop-shadow(0 18px 30px rgba(0,0,0,.6)); -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 82%, transparent 100%); mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 82%, transparent 100%); }
 .rf__prizeText { position: relative; font: 700 2.2rem var(--display); color: #f7e6c0; }
 .rf[data-phase="revealing"] .rf__prizeZone, .rf[data-phase="revealed"] .rf__prizeZone { height: 110px; }
+.rf__prizeZone img[hidden] { display: none; }
+.rf__art { transition: width .9s, height .9s, opacity .5s; }
+.rf[data-phase="revealing"] .rf__art, .rf[data-phase="revealed"] .rf__art { width: 0; height: 0; opacity: 0; }
+.rf[data-phase="revealing"] .rf__orn, .rf[data-phase="revealed"] .rf__orn { display: none; }
 .rf__reels { display: flex; gap: 10px; justify-content: center; transform: scale(.9); transition: transform .9s cubic-bezier(.22,.61,.36,1); }
 .rf[data-phase="revealing"] .rf__reels, .rf[data-phase="revealed"] .rf__reels { transform: scale(1); }
 .rf[data-phase="revealed"] .rf__reels { transform: scale(1.05); }
