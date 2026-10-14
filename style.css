@@ -291,6 +291,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sheet--dark .au__text .about__values li { background: var(--foam); }
 .au__video { margin: 0; max-width: 340px; justify-self: center; width: 100%; }
 .about-us .h3 { margin: 0 0 18px; }
+.au__teambtn { margin-top: 20px; gap: 8px; }
 .about-us .team { margin: 0 0 54px; grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 760px) { .about-us .team { grid-template-columns: 1fr 1fr; } }
 .about-us .h3 + .lead { margin: -8px 0 22px; }
