@@ -44,7 +44,6 @@ Yonathan veut que cette branche devienne la page principale du site.
 - Ne pas fusionner et ne pas déployer en production sans l'accord explicite de Yonathan.
 - Ne jamais copier de secrets, tokens ou fichiers `.env` dans GitHub.
 - Ne pas toucher aux projets Gala, Simha et Booking, ni à leurs bases de données. Ce site ne les utilise pas.
-- Recommandation de sécurité : d'anciens secrets apparaissent dans l'historique Git des projets gala et simha. Il faut les régénérer (rotation) chez les fournisseurs concernés.
 
 ## Repères techniques
 
