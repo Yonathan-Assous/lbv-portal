@@ -1,6 +1,10 @@
 {
   "name": "lbv-portal",
-  "version": "1.0.0",
-  "description": "Portail La Belle Vie - Services Communautaires",
-  "private": true
+  "version": "1.1.0",
+  "description": "Portail La Belle Vie - page d'accueil + administration du contenu",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/blob": "^2.8.1"
+  }
 }

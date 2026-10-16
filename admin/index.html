@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="only light">
+<title>ניהול האתר – La Belle Vie</title>
+<script>if (!location.pathname.endsWith('/')) location.replace(location.pathname + '/' + location.search + location.hash);</script>
+<link rel="icon" type="image/png" href="../media/icon-gold.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Login -->
+<main class="login" id="login" hidden>
+  <form class="login__card" id="loginForm">
+    <img src="../media/logo-letters.png" alt="La Belle Vie" width="114" height="80">
+    <h1>ניהול האתר</h1>
+    <p>La Belle Vie</p>
+    <label>שם משתמש<input name="username" autocomplete="username" dir="ltr" required></label>
+    <label>סיסמה<input type="password" name="password" autocomplete="current-password" required></label>
+    <p class="msg msg--err" id="loginErr" hidden></p>
+    <button class="btn btn--gold btn--block" type="submit">כניסה</button>
+  </form>
+</main>
+
+<!-- App -->
+<div class="app" id="app" hidden>
+  <header class="hb">
+    <div class="hb__row wrap">
+      <a class="hb__brand" href="#dashboard"><img src="../media/logo-letters.png" alt="" width="40" height="28"><span><b>ניהול האתר</b><small>La Belle Vie</small></span></a>
+      <div class="hb__search" role="search">
+        <input type="search" id="gq" placeholder="חיפוש: טקסט באתר, שם של פונה, טלפון…" autocomplete="off" aria-label="חיפוש">
+        <div class="hb__res" id="gqRes" hidden></div>
+      </div>
+      <span class="hb__me" id="me"></span>
+      <a class="hb__link" href="../" target="_blank" rel="noopener">↗ לאתר</a>
+      <button class="hb__link" type="button" id="logoutBtn">יציאה</button>
+    </div>
+    <nav class="hb__groups wrap" id="groups" aria-label="תחומים"></nav>
+    <nav class="hb__tabs" aria-label="דפים"><div class="wrap" id="tabs"></div></nav>
+  </header>
+
+  <div class="main wrap">
+    <div class="pagehead">
+      <div><h1 id="pageTitle"></h1><p id="pageSub"></p></div>
+      <div class="langpick" id="langPick" role="tablist" aria-label="שפת העריכה" hidden>
+        <span class="langpick__label">שפת העריכה:</span>
+        <button type="button" role="tab" data-lang="he">עברית</button>
+        <button type="button" role="tab" data-lang="fr">Français</button>
+        <button type="button" role="tab" data-lang="en">English</button>
+      </div>
+    </div>
+    <p class="banner" id="storageWarn" hidden>האחסון עוד לא מחובר, ולכן אי אפשר לשמור או להעלות קבצים.</p>
+    <main class="page" id="page"></main>
+  </div>
+
+  <!-- Live preview: the real site, with the changes that are not published yet -->
+  <aside class="pv" id="pv" hidden aria-label="תצוגה חיה">
+    <div class="pv__bar">
+      <div class="pv__title"><b>תצוגה חיה</b><small>כך זה ייראה באתר. עוד לא פורסם.</small></div>
+      <div class="seg" role="group" aria-label="סוג מסך">
+        <button type="button" data-dev="desktop">מחשב</button>
+        <button type="button" data-dev="phone">טלפון</button>
+      </div>
+      <button type="button" class="icon" id="pvReload" title="רענון התצוגה">⟳</button>
+      <button type="button" class="icon" id="pvClose" title="סגירת התצוגה">✕</button>
+    </div>
+    <div class="pv__stage" id="pvStage"><div class="pv__frame" id="pvFrame"><iframe id="pvIframe" title="תצוגה חיה של האתר"></iframe></div></div>
+  </aside>
+  <button type="button" class="pv-open" id="pvOpen" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    תצוגה חיה
+  </button>
+
+  <div class="savebar" id="saveBar" hidden>
+    <span class="savebar__dot" aria-hidden="true"></span>
+    <span class="savebar__text">יש שינויים שעוד לא פורסמו באתר</span>
+    <button class="btn btn--ghost" type="button" id="undoBtn">ביטול השינויים</button>
+    <button class="btn btn--gold" type="button" id="saveBtn">שמירה ופרסום</button>
+  </div>
+  <p class="toast" id="toast" role="status" hidden></p>
+</div>
+
+<script src="../edit-map.js"></script>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

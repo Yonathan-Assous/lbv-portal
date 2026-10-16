@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="fr" dir="ltr" data-media="../media/" data-vsuffix="-fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Belle Vie – Séjours de fêtes, événements et galas</title>
+<meta name="description" content="La Belle Vie : séjours organisés pour les fêtes en cacherout méhadrin, organisation de mariages, bar-mitsvot et soirées de gala, et notre propre système pour tombolas, dons et confirmations de présence.">
+<meta name="theme-color" content="#0B1430">
+<meta name="color-scheme" content="only light">
+<link rel="alternate" hreflang="he" href="../">
+<link rel="alternate" hreflang="en" href="../en/">
+<link rel="icon" type="image/png" href="../media/icon-gold.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@300;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../gala-demo.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="bar" id="bar">
+  <a class="bar__logo" href="#top" aria-label="La Belle Vie – haut de page">
+    <img src="../media/logo-letters.png" alt="" width="54" height="38">
+    <span>La Belle Vie</span>
+  </a>
+  <nav class="bar__nav" id="nav" aria-label="Navigation principale">
+    <a href="#services">Que recherchez-vous</a>
+    <a href="#about-us">Qui sommes-nous</a>
+    <a href="#team">Notre équipe</a>
+    <a href="#holidays">Séjours</a>
+    <a href="#events">Événements</a>
+    <a href="#gala">Système de gala</a>
+    <a href="#faq">Questions</a>
+  </nav>
+  <a class="btn btn--sun bar__cta" href="#contact">Devis</a>
+  <span class="langs-switch" dir="ltr"><a class="bar__lang" href="../" hreflang="he" lang="he" aria-label="גרסה בעברית">עב</a><a class="bar__lang bar__lang--2" href="../en/" hreflang="en" lang="en" aria-label="English version">EN</a></span>
+  <button class="bar__menu" id="menuBtn" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+    <span></span><span></span>
+  </button>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <video class="hero__video" autoplay muted loop playsinline poster="../media/hero.jpg" aria-hidden="true">
+    <source src="../media/hero-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
+    <source src="../media/hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero__shade"></div>
+
+  <div class="hero__inner">
+    <h1 class="hero__title">
+      <span class="hero__line">Pas seulement un événement.</span>
+      <span class="hero__line hero__line--gold">Une expérience inoubliable.</span>
+    </h1>
+    <p class="hero__lead">Séjours, événements et moments uniques – avec le souci de chaque détail, du rêve à l'expérience.</p>
+    <div class="hero__actions">
+      <a class="btn btn--sun" href="#contact">Demander un devis</a>
+      <a class="btn btn--ghost" href="#watch">Voir les vidéos</a>
+    </div>
+  </div>
+
+  <div class="horizon" aria-hidden="true">
+    <svg class="horizon__sun" viewBox="0 0 200 100">
+      <g class="rays">
+        <line x1="100" y1="100" x2="100" y2="6"/><line x1="100" y1="100" x2="44" y2="22"/><line x1="100" y1="100" x2="156" y2="22"/>
+        <line x1="100" y1="100" x2="12" y2="62"/><line x1="100" y1="100" x2="188" y2="62"/><line x1="100" y1="100" x2="70" y2="10"/>
+        <line x1="100" y1="100" x2="130" y2="10"/><line x1="100" y1="100" x2="24" y2="40"/><line x1="100" y1="100" x2="176" y2="40"/>
+      </g>
+      <path d="M58 100a42 42 0 0 1 84 0z"/>
+    </svg>
+    <span class="horizon__line"></span>
+  </div>
+
+  <ul class="hero__facts">
+    <li><strong>15</strong> ans d’expérience</li>
+    <li>Cacherout méhadrin</li>
+    <li>Équipe francophone et hébréophone</li>
+  </ul>
+</section>
+
+<!-- ============ CHOOSER ============ -->
+<section class="services" id="services" aria-labelledby="services-title">
+  <div class="wrap">
+    <h2 class="h2" id="services-title">Que recherchez-vous ?</h2>
+    <p class="lead">Choisissez, et découvrez exactement ce que vous recevez chez nous et pourquoi ça vaut le coup.</p>
+
+    <div class="doors">
+      <article class="door door--hero">
+        <img src="../media/holiday-card.jpg" alt="" loading="lazy">
+        <div class="door__body">
+          <h3><a class="door__link" href="#holidays">Séjours</a></h3>
+          <p>Des séjours organisés pour les fêtes à l’hôtel : pension complète en cacherout méhadrin, rabbanim, spa, programme enfants et soirées inoubliables.</p>
+          <ul class="door__subs">
+            <li><b>Souccot</b> à l’hôtel Nof Kinneret <span class="badge">Réservations ouvertes</span></li>
+            <li><b>Pessah</b> <span class="badge badge--soft">Bientôt</span></li>
+          </ul>
+          <span class="door__more">Tous les séjours</span>
+        </div>
+      </article>
+
+      <article class="door door--gala">
+        <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h16l-2 14a6 6 0 0 1-12 0zM24 26v12M16 42h16"/><path d="M36 10l4-3M38 16h5M12 10 8 7M10 16H5"/></svg>
+        <div class="door__body">
+          <h3><a class="door__link" href="#gala">Système de gala avancé</a></h3>
+          <p>Notre système numérique pour les soirées de levée de fonds : dons en direct sur grand écran, tombolas, billetterie, ambassadeurs et centre d’appels. Aussi sans organisation.</p>
+          <span class="door__more">Voir le système</span>
+        </div>
+      </article>
+
+      <article class="door door--events">
+        <img class="door__brand" src="../media/logo-events.png" alt="" width="600" height="528" loading="lazy">
+        <div class="door__body">
+          <h3><a class="door__link" href="#events">Organisation d’événements</a></h3>
+          <p>Mariages, bar et bat-mitsva, soirées de gala. De la salle et des prestataires jusqu’à la dernière danse, vous n’avez qu’à profiter.</p>
+          <span class="door__more">Comment ça se passe</span>
+        </div>
+      </article>
+
+      <article class="door door--wide">
+        <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="4" width="22" height="40" rx="4"/><circle cx="20" cy="18" r="3"/><circle cx="28" cy="18" r="3"/><circle cx="24" cy="27" r="3"/><path d="M21 38h6"/></svg>
+        <div class="door__body">
+          <h3><a class="door__link" href="#wedding">Application mariage</a></h3>
+          <p>Invitations élégantes, confirmations de présence, rappels et plan de table, sans tableur et sans coups de fil.</p>
+          <span class="door__more">Comment ça marche</span>
+        </div>
+      </article>
+    </div>
+
+    <ul class="mini-doors">
+      <li><a href="#why"><b>Pourquoi La Belle Vie ?</b><span>Ce qui nous distingue, et pour qui nous sommes faits</span></a></li>
+      <li><a href="#faq"><b>Questions fréquentes</b><span>Ce qui est inclus, la soucca, combien de temps à l’avance</span></a></li>
+      <li><a href="#contact"><b>Demander un devis</b><span>Quelques informations, et nous vous répondons le jour même</span></a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="about" id="about" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="about__intro">
+      <h2 class="h2" id="about-title">Qui sommes-nous</h2>
+      <p class="tagline">Nous transformons vos rêves en réalité</p>
+      <p class="lead">La Belle Vie est une entreprise familiale. Depuis 15 ans, nous organisons des séjours de fêtes et des événements pour un public attaché à la tradition, en français et en hébreu.</p>
+      <a class="more-link" href="#about-us">En savoir plus sur nous <span aria-hidden="true">→</span></a>
+      <ul class="about__values">
+        <li><b>Toujours sur place</b>À l’hôtel pendant toute la fête et dans la salle toute la soirée, du premier matin à la dernière danse.</li>
+        <li><b>Le matériel et le spirituel</b>Un vrai confort, avec la Torah, la téfila et la joie.</li>
+        <li><b>Comme une famille</b>Nos invités reviennent année après année.</li>
+      </ul>
+    </div>
+
+    <!-- CEO letter: draft built from Ilan's own words at the end of Souccot. Ilan can replace the text. -->
+    <div class="letter">
+      <figure class="letter__photo">
+        <img src="../media/ilan.jpg" alt="Ilan, directeur de La Belle Vie, sur la terrasse face au Kinneret" loading="lazy" width="864" height="1080">
+        <button class="letter__play" data-video="ilan-short" data-title="Qui est Ilan">
+          <span class="vthumb__play" aria-hidden="true"></span>
+          <span>Ce que nos invités disent d’Ilan</span>
+        </button>
+      </figure>
+      <div class="letter__body">
+        <h3 class="h3">Le mot du directeur</h3>
+        <p>Chers invités, chers amis,</p>
+        <p>Quand nous commençons à préparer une fête, nous ne pensons pas aux chambres ni aux menus. Nous pensons au moment où une famille est réunie dans la soucca, où les enfants sont heureux, et où les parents peuvent enfin se reposer.</p>
+        <p>Après tout notre investissement et toute notre préparation, voir chacun repartir avec le sourire, c’est ce qui nous fait chaud au cœur. Et si c’est une réussite, c’est grâce à chacun d’entre vous, et à l’ambiance que vous apportez.</p>
+        <p>Nous sommes là pour vous faire kiffer et rêver, du côté matériel comme du côté spirituel. On vous attend à Pessah, à Souccot, et à chaque événement que nous organiserons ensemble.</p>
+        <p class="letter__sign">Ilan<small>Directeur de La Belle Vie</small></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="team-sec" id="team" aria-labelledby="team-title">
+  <div class="wrap">
+    <h2 class="h2" id="team-title">Notre équipe</h2>
+    <p class="lead">Les personnes que vous rencontrerez à l’hôtel et dans la salle.</p>
+    <ul class="team">
+      <li>
+        <img src="../media/team-ilan.jpg" alt="" loading="lazy" width="480" height="600">
+        <b>Ilan</b><span>Directeur et fondateur</span>
+      </li>
+      <li>
+        <img src="../media/team-maayan.jpg" alt="" loading="lazy" width="480" height="600">
+        <b>Maayan</b><span>Responsable réseaux sociaux et projets</span>
+      </li>
+      <li>
+        <span class="team__mono" aria-hidden="true"><svg viewBox="0 0 212 212" aria-hidden="true"><path fill="#fff" d="M106 50a35 35 0 1 1 0 70 35 35 0 0 1 0-70zm0 82c38 0 68 19 74 46a106 106 0 0 1-148 0c6-27 36-46 74-46z"/></svg></span>
+        <b>Johanna</b><span>Responsable de la production des événements et graphiste</span>
+      </li>
+      <li>
+        <img src="../media/team-yishai.jpg" alt="" loading="lazy" width="480" height="600">
+        <b>Yishai</b><span>Chef d’équipe</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ ABOUT US (own window) ============ -->
+<section class="about-us sheet" data-hero="hero.jpg" id="about-us" data-title="Qui sommes-nous">
+  <div class="wrap au">
+    <div class="au__text">
+      <p class="tagline">Nous transformons vos rêves en réalité</p>
+      <p class="lead">La Belle Vie est une entreprise familiale. Depuis 15 ans, nous organisons des séjours de fêtes et des événements pour un public attaché à la tradition, en français et en hébreu.</p>
+      <ul class="about__values">
+        <li><b>Toujours sur place</b>À l’hôtel pendant toute la fête et dans la salle toute la soirée, du premier matin à la dernière danse.</li>
+        <li><b>Le matériel et le spirituel</b>Un vrai confort, avec la Torah, la téfila et la joie.</li>
+        <li><b>Comme une famille</b>Nos invités reviennent année après année.</li>
+      </ul>
+      <button class="btn btn--line au__teambtn" type="button" aria-expanded="false" aria-controls="about-team" data-open="Découvrir l’équipe" data-close="Masquer l’équipe">Découvrir l’équipe <span aria-hidden="true">↓</span></button>
+    </div>
+    <figure class="au__video">
+      <button class="vthumb vthumb--big" data-video="special" data-title="Ce qui nous rend uniques">
+        <img src="../media/special.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">Ce qui nous rend uniques<small>1 min 10</small></span>
+      </button>
+    </figure>
+  </div>
+  <div class="wrap">
+    <div class="au__team" id="about-team" hidden>
+    <h3 class="h3">Notre équipe</h3>
+    <p class="lead">Les personnes que vous rencontrerez à l’hôtel et dans la salle.</p>
+    <ul class="team">
+      <li>
+        <img src="../media/team-ilan.jpg" alt="" loading="lazy" width="480" height="600">
+        <b>Ilan</b><span>Directeur et fondateur</span>
+      </li>
+      <li>
+        <img src="../media/team-maayan.jpg" alt="" loading="lazy" width="480" height="600">
+        <b>Maayan</b><span>Responsable réseaux sociaux et projets</span>
+      </li>
+      <li>
+        <span class="team__mono" aria-hidden="true"><svg viewBox="0 0 212 212" aria-hidden="true"><path fill="#fff" d="M106 50a35 35 0 1 1 0 70 35 35 0 0 1 0-70zm0 82c38 0 68 19 74 46a106 106 0 0 1-148 0c6-27 36-46 74-46z"/></svg></span>
+        <b>Johanna</b><span>Responsable de la production des événements et graphiste</span>
+      </li>
+      <li>
+        <img src="../media/team-yishai.jpg" alt="" loading="lazy" width="480" height="600">
+        <b>Yishai</b><span>Chef d’équipe</span>
+      </li>
+    </ul>
+    </div>
+    <h3 class="h3">En bref</h3>
+    <ul class="au__facts"><li><b>15</b><span>ans d’expérience en séjours et événements</span></li><li><b>2</b><span>langues : français et hébreu</span></li><li><b>4</b><span>services sous un même toit : séjours de fêtes, production d’événements, système de gala et application mariage</span></li></ul>
+    <h3 class="h3">Ce que nous faisons</h3>
+    <ul class="au__what"><li><a href="#holidays"><b>Séjours de fêtes</b><span>Souccot et Pessah à l’hôtel, cacherout méhadrin</span><i aria-hidden="true">→</i></a></li><li><a href="#events"><b>Production d’événements</b><span>Mariages, bar-mitsva et soirées de gala</span><i aria-hidden="true">→</i></a></li><li><a href="#gala"><b>Système de gala</b><span>Billets, tombolas, dons et centre d’appels</span><i aria-hidden="true">→</i></a></li><li><a href="#wedding"><b>Application mariage</b><span>Invitations, confirmations et plan de table</span><i aria-hidden="true">→</i></a></li></ul>
+    <ul class="au__what au__what--why"><li><a href="#why"><b>Pourquoi La Belle Vie ?</b><span>Ce qui nous distingue, et pour qui nous sommes faits</span><i aria-hidden="true">→</i></a></li><li><a href="#faq"><b>Questions fréquentes</b><span>Ce qui est inclus, la soucca, combien de temps à l’avance</span><i aria-hidden="true">→</i></a></li></ul>
+    <div class="actions au__cta"><a class="btn btn--sun" href="#contact">Demander un devis</a></div>
+  </div>
+</section>
+
+<!-- ============ HOLIDAYS ============ -->
+<section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="Séjours" aria-labelledby="holidays-title">
+  <div class="wrap trips-head">
+    <h2 class="h2" id="holidays-title" data-hero-title>Séjours</h2>
+    <p class="lead">Les fêtes à l’hôtel, en groupe organisé. Choisissez votre séjour :</p>
+    <ul class="trips">
+      <li>
+        <a href="#sukkot" class="trips__card">
+          <img src="../media/hero.jpg" alt="" loading="lazy">
+          <span class="badge">Réservations ouvertes</span>
+          <b>Souccot</b>
+          <small>Hôtel Nof Kinneret, Tibériade</small>
+        </a>
+      </li>
+      <li>
+        <a href="#pesach" class="trips__card trips__card--soon">
+          <svg viewBox="0 0 220 140" aria-hidden="true"><ellipse cx="110" cy="112" rx="96" ry="18"/><path d="M40 100c0-14 32-22 70-22s70 8 70 22"/><circle cx="110" cy="92" r="20"/><circle cx="110" cy="92" r="12"/><path d="M58 76v-26h10v26M150 74V42h14v32M150 52h14"/></svg>
+          <span class="badge badge--soft">Bientôt</span>
+          <b>Pessah</b>
+          <small>Laissez vos coordonnées pour être informés en premier</small>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ SUKKOT (own window) ============ -->
+<section class="holidays sheet" data-parent="holidays" data-hero="hero.mp4" id="sukkot" data-title="Souccot à l’hôtel Nof Kinneret">
+  <div class="wrap split">
+    <div class="split__text">
+      <h3 class="h2" data-hero-title>Souccot à l’hôtel Nof Kinneret</h3>
+      <p class="lead">Vous arrivez avec vos valises, nous nous occupons de tout le reste. Souccot à l’hôtel Nof Kinneret à Tibériade, face au Kinneret.</p>
+      <ul class="ticks">
+        <li><b>Pension complète en cacherout méhadrin</b> Des repas riches et variés sous la surveillance des différents Badatz, viande Beit Yossef.</li>
+        <li><b>Une soucca près de la chambre</b> Possibilité de dormir dans une soucca privée dans les chambres avec balcon ou jardin.</li>
+        <li><b>Piscine et spa</b> Piscine semi-olympique, jacuzzi, sauna, hammam et salle de sport, avec des horaires séparés hommes et femmes.</li>
+        <li><b>Des rabbanim pendant toute la fête</b> Téfilot, cours de Torah et conférences avec les rabbanim tout au long de la fête.</li>
+        <li><b>Un programme enfants chaque jour</b> Châteaux gonflables, ateliers créatifs, jeux et une chorale d’enfants avec le chanteur Yoël Dayan.</li>
+        <li><b>Des soirées de joie</b> Spectacles, chanteurs, soirées musicales et un concours de chant façon « The Voice ».</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn--lake" href="https://booking.lbv-event.com/fr/reservation" target="_blank" rel="noopener">Vérifier les disponibilités</a>
+        <a class="btn btn--line" href="https://booking.lbv-event.com/fr/rooms" target="_blank" rel="noopener">Voir les chambres</a>
+      </div>
+    </div>
+
+    <figure class="split__media feature-video">
+      <button class="vthumb vthumb--big" data-video="why" data-title="Pourquoi La Belle Vie">
+        <img src="../media/why-fr.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">Pourquoi La Belle Vie<small>30 secondes</small></span>
+      </button>
+    </figure>
+  </div>
+
+  <div class="day wrap" aria-labelledby="day-title">
+    <h3 class="h3" id="day-title">Une journée chez nous</h3>
+    <ol class="timeline">
+      <li><time>Matin</time>Téfila au minyan</li>
+      <li><time>09:00</time>Petit-déjeuner</li>
+      <li><time>10:30</time>Cours de Torah</li>
+      <li><time>13:00</time>Déjeuner</li>
+      <li><time>14:00</time>Activités enfants, piscine et repos</li>
+      <li><time>Soir</time>Dîner dans la soucca et Simhat Beit Hachoeva</li>
+      <li><time>Nuit</time>Spectacle et fête</li>
+    </ol>
+  </div>
+
+  <div class="rail-wrap" id="watch">
+    <div class="wrap rail-head">
+      <h3 class="h3">En images : Souccot 5787</h3>
+      <div class="rail-nav">
+        <button class="round" data-rail="-1" aria-label="Précédent">&#8592;</button>
+        <button class="round" data-rail="1" aria-label="Suivant">&#8594;</button>
+      </div>
+    </div>
+    <div class="rail" id="rail" tabindex="0" aria-label="Vidéos du séjour">
+      <button class="vthumb" data-video="guests-full" data-title="Nos invités racontent"><img src="../media/guests-full-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">Nos invités racontent</span></button>
+      <button class="vthumb" data-video="day" data-title="Une journée – des expériences sans fin"><img src="../media/day-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">Une journée – des expériences sans fin</span></button>
+      <button class="vthumb" data-video="kids" data-title="Le paradis des enfants"><img src="../media/kids-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">Le paradis des enfants</span></button>
+      <button class="vthumb" data-video="pizza" data-title="De notre cuisine, avec amour"><img src="../media/pizza-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">De notre cuisine, avec amour</span></button>
+      <button class="vthumb" data-video="vibe" data-title="L’ambiance chez nous"><img src="../media/vibe-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">L’ambiance chez nous</span></button>
+      <button class="vthumb" data-video="shows" data-title="Des soirées inoubliables"><img src="../media/shows-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">Des soirées inoubliables</span></button>
+      <button class="vthumb" data-video="included" data-title="Une expérience qui vous attend"><img src="../media/included-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">Une expérience qui vous attend</span></button>
+      <button class="vthumb" data-video="guests" data-title="Comme papa et maman"><img src="../media/guests-fr.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">Comme papa et maman</span></button>
+    </div>
+  </div>
+
+    <div class="gallery wrap" id="gallery">
+    <h3 class="h3">Moments du séjour</h3>
+    <ul class="gallery__grid">
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/01-kinneret.jpg"><img src="../media/gallery/01-kinneret.jpg" alt="Vue sur le Kinneret" loading="lazy" width="1080" height="1350"><span>Vue sur le Kinneret</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/02-room.jpg"><img src="../media/gallery/02-room.jpg" alt="La chambre" loading="lazy" width="1080" height="1350"><span>La chambre</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/03-torah.jpg"><img src="../media/gallery/03-torah.jpg" alt="Le Sefer Torah" loading="lazy" width="1080" height="1350"><span>Le Sefer Torah</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/04-moroccan-night.jpg"><img src="../media/gallery/04-moroccan-night.jpg" alt="Soirée marocaine" loading="lazy" width="1080" height="1350"><span>Soirée marocaine</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/05-sukkah-dance.jpg"><img src="../media/gallery/05-sukkah-dance.jpg" alt="Danses dans la soucca" loading="lazy" width="1080" height="1350"><span>Danses dans la soucca</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/06-joy.jpg"><img src="../media/gallery/06-joy.jpg" alt="La joie" loading="lazy" width="1080" height="1350"><span>La joie</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/07-hummus.jpg"><img src="../media/gallery/07-hummus.jpg" alt="Houmous" loading="lazy" width="1080" height="1350"><span>Houmous</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/08-shawarma.jpg"><img src="../media/gallery/08-shawarma.jpg" alt="Chawarma" loading="lazy" width="1080" height="1350"><span>Chawarma</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/09-kids-lizards.jpg"><img src="../media/gallery/09-kids-lizards.jpg" alt="Les enfants et les lézards" loading="lazy" width="1080" height="1350"><span>Les enfants et les lézards</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/10-kid-parrot.jpg"><img src="../media/gallery/10-kid-parrot.jpg" alt="Un enfant et un perroquet" loading="lazy" width="1080" height="1350"><span>Un enfant et un perroquet</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/11-vr.jpg"><img src="../media/gallery/11-vr.jpg" alt="Réalité virtuelle" loading="lazy" width="1080" height="1350"><span>Réalité virtuelle</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/12-sfenj.jpg"><img src="../media/gallery/12-sfenj.jpg" alt="Sfenj" loading="lazy" width="1080" height="1350"><span>Sfenj</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/13-ilan.jpg"><img src="../media/gallery/13-ilan.jpg" alt="Ilan" loading="lazy" width="1080" height="1350"><span>Ilan</span></button></li>
+      <li><button type="button" class="gallery__item" data-full="../media/gallery/14-kinneret-2.jpg"><img src="../media/gallery/14-kinneret-2.jpg" alt="Le Kinneret" loading="lazy" width="1080" height="1350"><span>Le Kinneret</span></button></li>
+    </ul>
+  </div>
+
+  <blockquote class="quote wrap">
+    <p>Tout le monde court, tout le monde s’occupe de vous, tout le monde apporte, comme un papa et une maman qui prennent soin de leurs enfants.</p>
+    <cite>Un invité du séjour de Souccot, hôtel Nof Kinneret</cite>
+  </blockquote>
+</section>
+
+<!-- ============ PESACH (own window) ============ -->
+<section class="holidays holidays--pesach sheet" data-parent="holidays" data-hero="hero.jpg" id="pesach" data-title="Pessah avec La Belle Vie">
+  <div class="pesach wrap">
+    <svg class="pesach__art draw" viewBox="0 0 220 140" aria-hidden="true">
+      <ellipse cx="110" cy="112" rx="96" ry="18"/>
+      <path d="M40 100c0-14 32-22 70-22s70 8 70 22"/>
+      <circle cx="110" cy="92" r="20"/><circle cx="110" cy="92" r="12"/>
+      <path d="M58 76v-26h10v26M62 50c0-6 2-10 1-14M150 74V42h14v32M150 52h14"/>
+      <path d="M78 94l-6 10M142 94l6 10M30 30l8 8M190 26l-8 8M110 18v10"/>
+    </svg>
+    <div class="pesach__text">
+      <h2 class="h2" data-hero-title>Pessah avec La Belle Vie</h2>
+      <p class="lead">Nous préparons déjà le prochain séjour de Pessah : la même cacherout, la même ambiance, la même attention à chaque détail. Les places sont limitées, et ceux qui s’inscrivent maintenant sont informés en premier.</p>
+      <a class="btn btn--sun" href="#contact" data-service="pesach">Être informé en premier</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EVENTS ============ -->
+<section class="events sheet" data-hero="banner-tables.jpg" id="events" data-title="Organisation d’événements" aria-labelledby="events-title">
+  <div class="wrap">
+    <img class="brand-mark" src="../media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
+    <h2 class="h2" id="events-title" data-hero-title>Organisation d’événements</h2>
+    <p class="lead">Mariage, bar-mitsva ou soirée de gala : vous venez avec une idée et une date, nous gérons tout le reste, des prestataires jusqu’au déroulé de la soirée.</p>
+
+    <div class="event-film">
+      <button class="vthumb vthumb--big" data-video="event-gala" data-same-video data-title="Les coulisses d’une soirée de gala">
+        <img src="../media/event-gala.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">Les coulisses d’une soirée de gala<small>Une minute et demie</small></span>
+      </button>
+      <div class="event-film__text">
+        <h3 class="h3">Comment se construit une soirée</h3>
+        <p>De la préparation des billets et des invitations jusqu’à la mise en place des tables, le tapis rouge à l’entrée et l’orchestre sur scène. Il n’y a pas de problèmes, il n’y a que des solutions.</p>
+        <a class="gala-cta" href="#gala">
+          <span class="gala-cta__ic">🎰</span>
+          <span><b>Système de gala avancé</b><small>Écran en direct, tombolas, billetterie, dons et centre d’appels</small></span>
+          <span class="gala-cta__go">Voir le système</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="kinds">
+      <article>
+        <svg class="kinds__art draw" viewBox="0 0 160 110" aria-hidden="true">
+          <path d="M20 104V34M140 104V34M12 34h136M20 34c18-24 102-24 120 0"/>
+          <path d="M34 34c6 10 18 10 24 0M58 34c6 10 18 10 24 0M82 34c6 10 18 10 24 0M106 34c6 10 18 10 24 0"/>
+          <circle cx="68" cy="58" r="7"/><path d="M68 65v26M58 104l10-13 10 13M60 74h16"/>
+          <circle cx="94" cy="58" r="7"/><path d="M94 65l-12 39h24zM86 74h16"/>
+          <path d="M4 104h152"/>
+        </svg>
+        <h3>Mariages</h3>
+        <p>Salle, traiteur, musique, photo et décoration, avec les confirmations de présence et le placement grâce à notre application.</p>
+      </article>
+      <article>
+        <svg class="kinds__art draw" viewBox="0 0 160 110" aria-hidden="true">
+          <rect x="34" y="30" width="18" height="60" rx="9"/><rect x="108" y="30" width="18" height="60" rx="9"/>
+          <path d="M43 30V18M117 30V18M43 90v12M117 90v12"/>
+          <path d="M52 38h56v44H52z"/>
+          <path d="M62 50h36M62 58h36M62 66h28M62 74h32"/>
+          <path d="M20 104h120"/>
+        </svg>
+        <h3>Bar et bat-mitsva</h3>
+        <p>De la montée à la Torah jusqu’à la fête, avec un programme qui plaît autant aux enfants qu’aux grands-parents.</p>
+      </article>
+      <article>
+        <svg class="kinds__art draw" viewBox="0 0 160 110" aria-hidden="true">
+          <path d="M80 4v14M56 18h48M56 18c0 14 10 22 24 22s24-8 24-22"/>
+          <path d="M64 40v6M80 40v8M96 40v6"/>
+          <ellipse cx="80" cy="96" rx="62" ry="10"/>
+          <path d="M44 66l6 18M50 66h-12l6 18M44 84v10M116 66l-6 18M110 66h12l-6 18M116 84v10"/>
+          <path d="M74 70h12v16H74zM80 70v-6"/>
+          <path d="M18 30l4 4M142 30l-4 4M10 56h6M144 56h6"/>
+        </svg>
+        <h3>Soirées de gala</h3>
+        <p>Un dîner de gala pour une institution ou une association : salle, traiteur, programme et scène, avec notre système de gala pour les tombolas et les dons.</p>
+        <a class="kinds__more" href="#gala">Voir le système de gala</a>
+      </article>
+    </div>
+
+    <h3 class="h3">Comment se passe une organisation avec nous</h3>
+    <ol class="steps">
+      <li>
+        <h4>Premier échange</h4>
+        <p>Nous comprenons ce que vous voulez : nombre d’invités, date et budget.</p>
+      </li>
+      <li>
+        <h4>Un devis clair</h4>
+        <p>Vous recevez un devis détaillé avec tous les éléments, sans surprise ensuite.</p>
+      </li>
+      <li>
+        <h4>Préparation et prestataires</h4>
+        <p>Nous réservons salle, traiteur, musique et décoration. Vous validez, nous coordonnons.</p>
+      </li>
+      <li>
+        <h4>Le jour J</h4>
+        <p>Nous sommes sur place dès le matin. Vous n’avez qu’à arriver, profiter et accueillir vos invités.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ GALA DEMO ============ -->
+<section class="gala sheet" id="gala" data-title="Système de gala avancé" aria-labelledby="gala-title">
+  <div class="wrap">
+    <img class="brand-mark" src="../media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
+    <h2 class="h2" id="gala-title">Système de gala avancé</h2>
+    <p class="lead">Notre système s’affiche sur le grand écran de la salle et sur le téléphone de chaque invité. Vous pouvez le prendre avec une organisation complète, ou seul pour une soirée que vous organisez. Essayez vous-même :</p>
+
+    <ul class="modules" role="tablist" aria-label="Les parties du gala">
+      <li><button type="button" role="tab" aria-selected="false" data-mod="production"><span class="modules__ic">🎩</span><b>L’organisation de la soirée</b><small>Salle, traiteur, programme et scène</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-raffle"><span class="modules__ic">🎰</span><b>Le système de gala</b><small>Écran en direct et tombolas</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-tickets"><span class="modules__ic">🎟️</span><b>La billetterie</b><small>Depuis le téléphone, tous moyens de paiement</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-donate"><span class="modules__ic">💝</span><b>Le système de dons</b><small>Dons en direct et promesses</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="phoning"><span class="modules__ic">📞</span><b>Le centre d’appels</b><small>Des bénévoles appellent les donateurs</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="dream" class="modules__dream"><span class="modules__ic">✨</span><b>Et tout ce dont vous rêvez</b><small>Dites-le-nous, nous le construisons</small></button></li>
+    </ul>
+    <p class="modules__hint">Choisissez une partie pour la découvrir</p>
+
+    <div class="mod-panel mod-panel--text" data-mod="production" hidden>
+      <h3 class="h3">L’organisation de la soirée</h3>
+      <p class="lead">Nous organisons votre gala du début à la fin : salle, traiteur, programme artistique, scène, sonorisation et décoration, avec notre système numérique au cœur de la soirée.</p>
+      <a class="btn btn--sun" href="#events">Comment se passe une organisation</a>
+    </div>
+
+    <div class="mod-panel mod-panel--text" data-mod="dream" hidden>
+      <h3 class="h3">Et tout ce dont vous rêvez</h3>
+      <p class="lead">Un écran qui met les donateurs en valeur d’une façon unique ? Une tombola avec un lot exceptionnel ? Un billet au design sur mesure ? Dites-nous ce que vous voulez, et nous le construisons pour vous.</p>
+      <a class="btn btn--sun" href="#contact" data-service="gala-system">Nous parler de votre idée</a>
+    </div>
+
+    <div class="mod-panel" data-mod="system" hidden>
+    <div class="stage" id="gala-demo">
+      <div class="stage__tabs" role="tablist" aria-label="Démonstration du système">
+        <button role="tab" aria-selected="true" aria-controls="p-donate" id="t-donate">Dons en direct</button>
+        <button role="tab" aria-selected="false" aria-controls="p-raffle" id="t-raffle" tabindex="-1">Tombola</button>
+        <button role="tab" aria-selected="false" aria-controls="p-tickets" id="t-tickets" tabindex="-1">Vente de billets</button>
+      </div>
+
+      <div class="venue">
+      <div class="screen">
+        <div class="screen__head">
+          <img src="../media/logo-events.png" alt="" width="600" height="528">
+          <span><b>Soirée de gala 2026</b>Au profit des enfants de la communauté</span>
+        </div>
+        <!-- Donations -->
+        <div class="panel" role="tabpanel" id="p-donate" aria-labelledby="t-donate">
+          <div class="gn">
+            <aside class="gn__board"><h4 data-t="board"></h4><ol id="gBoard"></ol></aside>
+            <div class="gn__stage">
+              <div class="gn__doors" id="gDoors">
+                <div class="gn__light" aria-hidden="true"></div>
+                <div class="gn__plate" aria-live="polite"><small data-t="plaque"></small><b id="gName"></b><span id="gAmount"></span></div>
+                <div class="gn__door gn__door--a" aria-hidden="true"><i></i></div>
+                <div class="gn__door gn__door--b" aria-hidden="true"><i></i></div>
+              </div>
+            </div>
+            <div class="gn__bottom">
+              <p class="gn__custom">La porte n'est qu'un exemple : elle peut prendre la forme de votre choix, et tout l'écran s'adapte à votre soirée.</p>
+              <p class="gn__collective" id="gCollective"></p>
+              <div class="meter" aria-hidden="true"><span id="dBar"></span></div>
+              <div class="gn__nums"><span id="gTowards"></span><span><span data-t="goal"></span> <output id="dTotal">0</output> / <span id="gGoal"></span></span></div>
+              <button class="btn btn--sun" id="dAdd" data-t="add"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raffle -->
+        <div class="panel" role="tabpanel" id="p-raffle" aria-labelledby="t-raffle" hidden>
+          <div class="rf" data-phase="presenting">
+            <span class="rf__kicker" data-t="raffleKicker"></span>
+            <strong class="rf__prize" id="rPrize"></strong>
+            <div class="rf__prizeZone"><div class="rf__glow" aria-hidden="true"></div><img id="rImg" alt=""><span class="rf__prizeText" id="rPrizeText"></span></div>
+            <div class="rf__reels" id="rReels" dir="ltr" aria-hidden="true"></div>
+            <div class="rf__winner" id="rWinner" aria-live="polite"></div>
+            <button class="btn btn--sun" id="rGo"></button>
+            <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+          </div>
+        </div>
+
+        <!-- Tickets -->
+        <div class="panel" role="tabpanel" id="p-tickets" aria-labelledby="t-tickets" hidden>
+          <div class="tickets">
+            <div class="tickets__info">
+              <div class="ticket">
+                <img src="../media/gala-ticket.jpg" alt="Billet LBV Gala 2026" width="1200" height="571">
+                <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
+              </div>
+              <div class="tiers">
+                <button class="pack tier tier--bronze" data-n="1"><b>Bronze</b><small>1 invité · 1 numéro de tombola</small><span>180 ₪</span></button>
+                <button class="pack tier tier--silver" data-n="2"><b>Argent</b><small>2 invités · 3 numéros</small><span>360 ₪</span></button>
+                <button class="pack tier tier--gold pack--best" data-n="2"><b>Or</b><small>2 invités · 5 numéros</small><span>600 ₪</span></button>
+                <button class="pack tier tier--diamond" data-n="2"><b>Diamant</b><small>2 invités · 10 numéros</small><span>1 000 ₪</span></button>
+              </div>
+              <p class="tickets__sold"><output id="tSold">312</output> billets vendus ce soir</p>
+            </div>
+
+            <div class="sim sim--buy" data-durations="2600,3400,3200,3800" role="img" aria-label="Simulation : achat d’un billet depuis le téléphone">
+              <div class="sim__phone">
+                <div class="sim__notch"></div>
+                <div class="sim__screen buy">
+                  <div class="sim__step" data-step="0">
+                    <div class="buy__cam">
+                      <div class="buy__frame"><svg class="buy__qr" viewBox="0 0 25 25" aria-hidden="true"></svg><span class="buy__scan"></span></div>
+                      <span class="buy__hint">On vise le code posé sur la table</span>
+                    </div>
+                  </div>
+                  <div class="sim__step" data-step="1">
+                    <div class="buy__top"><img src="../media/logo-events.png" alt=""><span><b>Soirée de gala 2026</b>Choisissez votre billet</span></div>
+                    <div class="buy__tiers">
+                      <span class="t-bronze">Bronze<em>180 ₪</em></span>
+                      <span class="t-silver">Argent<em>360 ₪</em></span>
+                      <span class="t-gold is-on">Or<em>600 ₪</em></span>
+                      <span class="t-diamond">Diamant<em>1 000 ₪</em></span>
+                    </div>
+                    <span class="buy__note">2 invités · 5 numéros de tombola</span>
+                  </div>
+                  <div class="sim__step" data-step="2">
+                    <div class="buy__top"><img src="../media/logo-events.png" alt=""><span><b>Paiement</b>Billet Or</span></div>
+                    <div class="buy__field">Nom complet<span>Famille Cohen</span></div>
+                    <div class="buy__pay"><span class="is-on">Bit</span><span>Carte</span><span>Virement</span></div>
+                    <div class="buy__sum">À payer<b>600 ₪</b></div>
+                    <span class="buy__btn">Paiement sécurisé</span>
+                  </div>
+                  <div class="sim__step" data-step="3">
+                    <span class="buy__ok">Paiement reçu !</span>
+                    <div class="buy__ticket"><img src="../media/gala-ticket.jpg" alt=""><svg class="buy__qr buy__qr--mini" viewBox="0 0 25 25" aria-hidden="true"></svg></div>
+                    <span class="buy__h">Vos numéros de tombola</span>
+                    <div class="buy__nums"><span>1042</span><span>1043</span><span>1044</span><span>1045</span><span>1046</span></div>
+                    <span class="buy__note">Le billet est aussi envoyé par WhatsApp et e-mail</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <p class="stage__note">Voici ce que l’on voit sur le grand écran de la salle. <b>Le fond, les couleurs, le logo et le design s’adaptent à chaque institution et à chaque soirée.</b> Les noms et montants sont fictifs.</p>
+    </div>
+
+    <div class="gala-more">
+      <h3 class="h3">Et en coulisses : le tableau de bord des organisateurs</h3>
+      <figure class="shot shot--link"><a href="#control-room"><img src="../media/control-room-fr.jpg" alt="Le tableau de bord du système de gala, avec des données de démonstration" loading="lazy" width="1400" height="740"></a>
+        <figcaption>Le tableau de bord, avec des données de démonstration. Cliquez pour l'essayer</figcaption>
+      </figure>
+      <ul class="features">
+        <li><b>Tout en temps réel</b> La collecte, les billets vendus, les participants et les tombolas.</li>
+        <li><b>Ambassadeurs</b> Chaque vendeur a un code unique, avec un classement des meilleurs.</li>
+        <li><b>Types de billets</b> Bronze, Argent, Or et Diamant, ou tombola seule.</li>
+        <li><b>Tous les moyens de paiement</b> Virement, espèces, Bit, chèque ou promesse, en shekels ou en euros.</li>
+        <li><b>Suivi des arrivées</b> À l’entrée de la salle, on voit qui est déjà arrivé.</li>
+        <li><b>Export des données</b> Toutes les ventes dans un seul fichier à la fin de la soirée.</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn--sun" href="#control-room">Voir le tableau de bord</a>
+      </div>
+    </div>
+    </div><!-- /system panel -->
+
+    <div class="phoning mod-panel" id="phoning" data-mod="phoning" hidden>
+      <div class="phoning__text">
+        <h3 class="h3">Un centre d’appels pour la levée de fonds</h3>
+        <p class="lead">Avant la soirée, des bénévoles appellent les donateurs depuis leur téléphone, et tout est enregistré dans le système.</p>
+        <ol class="flow">
+          <li><b>On importe la liste</b> La liste des donateurs depuis Excel, en un clic.</li>
+          <li><b>« Prochain appel »</b> Chaque bénévole reçoit la personne suivante. Deux bénévoles n’appellent jamais la même personne.</li>
+          <li><b>On note le résultat</b> Pas répondu, rappeler, engagé, refusé, déjà donné ou lien envoyé.</li>
+          <li><b>Un lien de paiement</b> Celui qui s’engage reçoit un lien, et le don arrive dans le tableau de bord.</li>
+        </ol>
+        <p class="note">Ceux qui n’ont pas répondu reviennent seuls dans la file, et ceux qui ont demandé un rappel sont rappelés à l’heure prévue.</p>
+      </div>
+      <div class="sim" id="sim" data-durations="3200,3000,3600,3200" aria-label="Simulation du centre d’appels" role="img">
+        <div class="sim__phone">
+          <div class="sim__notch"></div>
+          <div class="sim__screen">
+            <div class="sim__step" data-step="0">
+              <span class="sim__title">Phoning</span>
+              <div class="sim__card sim__card--center">
+                <span class="sim__muted">142 donateurs dans la file</span>
+                <span class="sim__go">Prochain appel</span>
+                <span class="sim__muted sim__searching">Recherche du prochain numéro…</span>
+              </div>
+            </div>
+            <div class="sim__step" data-step="1">
+              <div class="sim__card">
+                <strong class="sim__name">Famille Levy</strong>
+                <span class="sim__tel"><span dir="ltr">054-•••-••12</span><small>Appeler</small></span>
+                <span class="sim__h">Informations donateur</span>
+                <p class="sim__info">A donné au dernier gala. Préfère être appelé après 18h.</p>
+                <span class="sim__h">Historique des appels</span>
+                <p class="sim__hist">🔄 Rappeler · Michal · 02/10</p>
+              </div>
+            </div>
+            <div class="sim__step" data-step="2">
+              <div class="sim__card">
+                <span class="sim__h2">Résultat de l’appel</span>
+                <div class="sim__outcomes">
+                  <span class="o-slate">📵<br>Pas répondu</span><span class="o-blue">🔄<br>Rappeler</span>
+                  <span class="o-green is-on">🤝<br>Engagé</span><span class="o-red">❌<br>Refusé</span>
+                  <span class="o-purple">✅<br>Déjà donné</span><span class="o-teal">🔗<br>Lien envoyé</span>
+                </div>
+                <div class="sim__pledge"><small>Montant engagé :</small><b>1 800 ₪</b></div>
+                <span class="sim__go sim__go--sm">Valider</span>
+              </div>
+            </div>
+            <div class="sim__step" data-step="3">
+              <div class="sim__card sim__card--center">
+                <span class="sim__ok">Engagement créé !</span>
+                <span class="sim__muted">Lien de paiement envoyé au donateur</span>
+                <div class="sim__total"><small>Collecté jusqu’à présent</small><b>143 800 ₪</b></div>
+                <span class="sim__go sim__go--sm">Prochain appel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WEDDING APP ============ -->
+<section class="wedding sheet" data-hero="real-simha-styles.jpg" id="wedding" data-title="Application mariage" aria-labelledby="wedding-title">
+  <div class="wrap split split--rev">
+    <div class="split__text">
+      <h2 class="h2" id="wedding-title" data-hero-title>Application mariage</h2>
+      <p class="lead">Au lieu de courir après les invités au téléphone et de faire le plan de table sur un tableur jusqu’à deux heures du matin.</p>
+      <ul class="ticks">
+        <li><b>Une invitation numérique élégante</b> Sept styles au choix : classique, moderne, élégant, vintage, festif, nature et prestige.</li>
+        <li><b>Envoi par WhatsApp, SMS ou e-mail</b> Chaque invité reçoit un lien personnel vers l’invitation.</li>
+        <li><b>Confirmations en temps réel</b> Qui vient, combien de personnes, et les préférences de repas de chacun.</li>
+        <li><b>Tous les événements au même endroit</b> Henné, Chabbat Hatan, houppa et réception, avec une réponse pour chaque événement.</li>
+        <li><b>Rappels automatiques</b> Ceux qui n’ont pas répondu reçoivent un rappel, sans que vous ayez à appeler.</li>
+        <li><b>Plan de table</b> Vous placez les invités sur un plan simple de la salle.</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn--lake" href="https://simha.lbv-event.com" target="_blank" rel="noopener">Ouvrir le système d’invitations</a>
+        <a class="btn btn--line" href="#contact" data-service="wedding-app">Nous poser une question</a>
+      </div>
+      <figure class="shot shot--light">
+        <img src="../media/real-simha-styles.jpg" alt="Les styles d’invitation du système mariage" loading="lazy" width="960" height="640">
+        <figcaption>Quelques styles d’invitation du vrai système</figcaption>
+      </figure>
+    </div>
+
+    <div class="split__media">
+      <div class="phone">
+        <div class="phone__notch"></div>
+        <div class="phone__screen">
+          <div class="app-head">
+            <span>Le mariage de Noa et Ariel</span>
+            <small>390 invités</small>
+          </div>
+          <div class="rsvp">
+            <div><output id="aYes">286</output><span>présents</span></div>
+            <div><output id="aNo">41</output><span>absents</span></div>
+            <div><output id="aWait">63</output><span>sans réponse</span></div>
+          </div>
+          <div class="hall" id="hall" aria-label="Plan de table"></div>
+          <button class="btn btn--sun btn--block" id="seatBtn">Placer les invités</button>
+          <p class="app-legend"><i class="g1"></i>Famille du marié <i class="g2"></i>Famille de la mariée <i class="g3"></i>Amis</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY / HONEST ============ -->
+<section class="why sheet" data-hero="banner-tables.jpg" id="why" data-title="Pourquoi La Belle Vie ?" aria-labelledby="why-title">
+  <div class="wrap">
+    <h2 class="h2" id="why-title" data-hero-title>Pourquoi La Belle Vie ?</h2>
+    <p class="lead">Parce que des vacances inoubliables commencent avec des gens qui pensent à chaque détail.</p>
+    <div class="ledger">
+      <div class="ledger__col">
+        <h3>Ce qui nous distingue ?</h3>
+        <ul>
+          <li><b>Une attention sincère</b> Nous vous accompagnons du premier instant jusqu’à la fin du séjour, attentifs à chaque détail.</li>
+          <li><b>Tout au même endroit</b> Hébergement, gastronomie, spectacles et activités : tout est soigneusement pensé pour une expérience parfaite.</li>
+          <li><b>Une expérience pour toute la famille</b> Des séjours qui allient plaisir, tradition, contenu de qualité et moments inoubliables.</li>
+          <li><b>Un service qui fait la différence</b> Une équipe professionnelle, attentive et disponible, pour que vous n’ayez plus qu’à profiter.</li>
+          <li><b>15 ans d’expérience</b> Une longue expérience des séjours et des événements, avec une exigence de qualité et de service.</li>
+        </ul>
+      </div>
+      <div class="ledger__col ledger__col--honest">
+        <h3>À qui s’adresse notre expérience ?</h3>
+        <ul>
+          <li><b>Pour ceux qui veulent plus que de simples vacances</b> et souhaitent vivre une expérience soignée, riche et pleine de moments uniques.</li>
+          <li><b>Pour ceux qui apprécient la qualité et le service personnalisé</b> et ne transigent pas sur les petits détails.</li>
+          <li><b>Pour les familles qui veulent profiter ensemble</b> de vacances qui allient activités pour les enfants, contenu pour les adultes et ambiance familiale chaleureuse.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq sheet" data-hero="holiday-card.jpg" id="faq" data-title="Questions fréquentes" aria-labelledby="faq-title">
+  <div class="wrap narrow">
+    <h2 class="h2" id="faq-title" data-hero-title>Questions fréquentes</h2>
+    <details>
+      <summary>Qu’est-ce qui est inclus dans le prix du séjour ?</summary>
+      <p>L’hébergement, tous les repas en cacherout méhadrin, les cours, les soirées inoubliables et le club enfants. Avant l’inscription, vous recevez le détail complet de ce qui est inclus ou non, pour éviter toute surprise.</p>
+    </details>
+    <details>
+      <summary>Y a-t-il une soucca pour chaque famille ?</summary>
+      <p>Les repas sont servis dans la soucca principale de l’hôtel. Dans les chambres avec balcon ou jardin, il est aussi possible d’installer une soucca privée près de la chambre, selon la configuration.</p>
+    </details>
+    <details>
+      <summary>Peut-on venir seulement une partie du séjour ?</summary>
+      <p>Cela dépend du séjour et des disponibilités. Écrivez-nous les dates qui vous conviennent et nous vérifierons.</p>
+    </details>
+    <details>
+      <summary>Combien de temps à l’avance faut-il réserver l’organisation d’un événement ?</summary>
+      <p>Pour un mariage, mieux vaut nous contacter quelques mois à l’avance, surtout en haute saison. Pour une bar-mitsva ou un gala, c’est possible avec un délai plus court, selon les disponibilités.</p>
+    </details>
+    <details>
+      <summary>Peut-on prendre uniquement le système de gala, sans l’organisation ?</summary>
+      <p>Oui. Vous pouvez louer seulement le système de tombolas, de vente de billets et de dons, et nous venons le faire fonctionner le soir même.</p>
+    </details>
+    <details>
+      <summary>Peut-on utiliser l’application mariage sans organisation complète ?</summary>
+      <p>Oui. L’application de confirmations et de placement peut être utilisée seule.</p>
+    </details>
+    <details>
+      <summary>Travaillez-vous avec des familles francophones ?</summary>
+      <p>Bien sûr. Une grande partie de nos invités sont francophones, et l’équipe parle français et hébreu.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact sheet" data-hero="hero.jpg" id="contact" data-title="Demander un devis" aria-labelledby="contact-title">
+  <div class="wrap split">
+    <div class="split__text">
+      <h2 class="h2" id="contact-title" data-hero-title>Demander un devis</h2>
+      <p class="lead">Remplissez quelques informations : le message s’ouvre dans WhatsApp et nous parvient directement. Nous vous répondons le jour même.</p>
+    </div>
+
+    <form class="form" id="quote" novalidate>
+      <label>Qu’est-ce qui vous intéresse ?
+        <select name="service" id="fService" required>
+          <option value="">Choisissez un service</option>
+          <option value="holiday">Séjour de Souccot</option>
+          <option value="pesach">Séjour de Pessah</option>
+          <option value="wedding">Organisation de mariage</option>
+          <option value="barmitzva">Bar / bat-mitsva</option>
+          <option value="gala">Soirée de gala</option>
+          <option value="gala-system">Uniquement le système de tombola et de dons</option>
+          <option value="wedding-app">Application mariage</option>
+          <option value="other">Autre chose</option>
+        </select>
+      </label>
+      <div class="form__row">
+        <label>Nom complet<input name="name" autocomplete="name" required></label>
+        <label>Téléphone<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      </div>
+      <div class="form__row">
+        <label>Date approximative<input name="date" placeholder="Ex. : Pessah, ou juin 2027"></label>
+        <label>Combien de personnes ?<input name="guests" inputmode="numeric" placeholder="Nombre approximatif"></label>
+      </div>
+      <label>Autre chose à nous dire<textarea name="notes" rows="3"></textarea></label>
+      <p class="form__error" id="fErr" role="alert" hidden></p>
+      <button class="btn btn--sun btn--block" type="submit">Envoyer sur WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <img src="../media/logo-white.png" alt="La Belle Vie – Séjours &amp; Voyages" width="150" height="144" loading="lazy">
+  <ul class="reach reach--foot">
+        <li><a class="reach__wa" href="https://wa.me/972585182655" target="_blank" rel="noopener" title="+972 58-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm5.8 15.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.4z"/></svg></span><span class="reach__label">WhatsApp</span></a></li>
+        <li><a class="reach__tel" href="tel:+972585182655" title="+972 58-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">Téléphone</span></a></li>
+        <li><a class="reach__tel" href="tel:+972585551826" title="+972 58-555-1826"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">Autre numéro</span></a></li>
+        <li><a class="reach__mail" href="mailto:LBV0585551826@gmail.com" title="LBV0585551826@gmail.com"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="reach__label">E-mail</span></a></li>
+        <li><a class="reach__ig" href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener" title="@la_belle_vie_lbv"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></span><span class="reach__label">Instagram</span></a></li>
+        <li><a class="reach__tt" href="https://www.tiktok.com/@la.belle.vie.event" target="_blank" rel="noopener" title="@la.belle.vie.event"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 3h3a5 5 0 0 0 4 4v3a8 8 0 0 1-4-1.2V15a6 6 0 1 1-6-6v3.2A2.8 2.8 0 1 0 14 15z"/></svg></span><span class="reach__label">TikTok</span></a></li>
+        <li><a class="reach__fb" href="https://www.facebook.com/share/1JXfFgiY9Y/" target="_blank" rel="noopener" title="La Belle Vie"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5z"/></svg></span><span class="reach__label">Facebook</span></a></li>
+        <li><a class="reach__yt" href="https://youtube.com/@lbv-la_belle_vie" target="_blank" rel="noopener" title="lbv-la_belle_vie"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg></span><span class="reach__label">YouTube</span></a></li>
+      </ul>
+  <p>Séjours de fêtes, organisation d’événements et soirées de gala</p>
+  <p class="foot__small">© La Belle Vie</p>
+</footer>
+
+<div class="float-stack">
+  <a class="float-btn float-btn--ig" href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></a>
+  <a class="float-btn float-btn--tel" href="tel:+972585182655" aria-label="Appeler"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></a>
+  <a class="wa-float" href="https://wa.me/972585182655" target="_blank" rel="noopener" aria-label="Envoyer un message WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.4z"/></svg>
+</a>
+</div>
+
+<nav class="dock" aria-label="Actions rapides">
+  <a href="https://booking.lbv-event.com/fr/reservation" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Réserver</a>
+  <a href="#contact">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/></svg>Devis</a>
+  <a class="dock__wa" href="https://wa.me/972585182655" target="_blank" rel="noopener">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3z"/></svg>WhatsApp</a>
+  <a href="tel:+972585182655"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Appeler</a>
+  <a class="dock__ig" href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg>Instagram</a>
+</nav>
+
+<dialog class="player" id="player" aria-label="Lecteur vidéo">
+  <button class="player__close" id="playerClose" aria-label="Fermer">&times;</button>
+  <video id="playerVideo" controls playsinline></video>
+</dialog>
+
+<script src="../edit-map.js"></script>
+<script src="../gala-demo.js"></script>
+<script src="../legal.js"></script>
+<script src="../app.js"></script>
+<!-- Anonymous visit counts (Vercel Web Analytics: no cookies, no personal data). -->
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
