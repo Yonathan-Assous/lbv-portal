@@ -1197,7 +1197,8 @@ async function loadQuoteCatalog() {
   if (quoteCat) return quoteCat;
   try { const r = await fetch('/api/quotes?catalog', { cache: 'no-store' }); const j = r.ok ? await r.json() : {}; quoteCat = j.sections ? j : clone(QUOTE_DEFAULTS); }
   catch (e) { quoteCat = clone(QUOTE_DEFAULTS); }
-  quoteCat.social ??= clone(QUOTE_DEFAULTS.social);
+  // Packages saved before the exact list (with add-ons) existed are replaced by it.
+  if (!quoteCat.social?.he?.extras) quoteCat.social = clone(QUOTE_DEFAULTS.social);
   return quoteCat;
 }
 /** A new quote in the company's template, optionally filled from a request that came from the site. */
@@ -1380,13 +1381,16 @@ function quoteEditor(pg) {
           field('מה כלול', (o.bullets || []).join('\n'), v => { o.bullets = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 6 }));
         grid.append(k);
       });
+      const more = html('<div class="grid2"></div>');
+      more.append(field('תוספות לפי בחירה (כל שורה בשורה נפרדת)', (P.extras || []).join('\n'), v => { P.extras = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 6 }),
+        field('הערה (תקציב הפרסום)', P.note || '', v => { P.note = v; dirty(); }, { multi: true, rows: 3 }));
       const keep = html('<button type="button" class="btn btn--line btn--sm">לשמור את החבילות האלה כברירת מחדל</button>');
       keep.addEventListener('click', async () => {
         quoteCat.social[q.lang] = clone(P);
         const r = await fetch('/api/quotes?catalog', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(quoteCat) });
         if (r.ok) { quoteCat = await r.json(); quoteCat.social ??= clone(QUOTE_DEFAULTS.social); toast('החבילות נשמרו לכל ההצעות הבאות'); } else toast('השמירה נכשלה', 'err');
       });
-      box.append(setup, grid, keep);
+      box.append(setup, grid, more, keep);
     }
     c2.append(box);
   }

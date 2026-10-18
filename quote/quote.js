@@ -1,5 +1,5 @@
 // A La Belle Vie quote, as the client sees it: /quote/?id=q-…&t=… (the signed link the admin sends).
-// It opens behind gold-locked doors, then lays the quote out on real A4 pages, each with the logo header.
+// It lays the quote out on real A4 pages, each with the gold logo header.
 (function () {
   const $ = s => document.querySelector(s);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -10,7 +10,7 @@
 
   const L = {
     he: {
-      kind: 'הצעת מחיר', forYou: 'הצעה אישית עבור', open: 'לפתיחת ההצעה', page: (i, n) => `עמוד ${i} מתוך ${n}`,
+      kind: 'הצעת מחיר', page: (i, n) => `עמוד ${i} מתוך ${n}`,
       to: 'לכבוד', event: 'האירוע', date: 'תאריך', place: 'מקום', guests: 'משתתפים', tbd: 'להשלמה',
       number: 'הצעה מס׳', issued: 'תאריך', valid: 'בתוקף עד', included: 'מה כלול בהצעה', fin: 'הצעה כספית', item: 'פירוט', amount: 'סכום',
       qty: 'כמות', incl: 'כלול', subtotal: 'סה״כ', discount: 'הנחה', vat: 'מע״מ', total: 'סה״כ לתשלום', monthly: 'ובנוסף, החבילה החודשית שתבחרו',
@@ -19,10 +19,10 @@
       okTitle: 'אישור ההצעה', okText: 'מתאים לכם? כתבו את השם המלא ולחצו על האישור. נקבל הודעה ונחזור אליכם.', okPick: 'איזו חבילה מתאימה לכם?',
       okName: 'השם המלא', okBtn: 'אני מאשר/ת את ההצעה', okDone: 'ההצעה אושרה', okBy: (n, d, p) => `אושרה על ידי ${n}, ב־${d}${p ? `, בחבילת ${p}` : ''}. תודה! נחזור אליכם בהקדם.`,
       okErr: 'לא הצלחנו לשמור את האישור. נסו שוב, או כתבו לנו בוואטסאפ.', print: 'הורדה כ־PDF / הדפסה',
-      signName: 'שם', signDate: 'תאריך וחתימה', notFound: 'ההצעה לא נמצאה. ודאו שהקישור שלם, או פנו אלינו.', clientDefault: 'המוסד', cont: '(המשך)',
+      extras: 'תוספות לפי בחירה', signName: 'שם', signDate: 'תאריך וחתימה', notFound: 'ההצעה לא נמצאה. ודאו שהקישור שלם, או פנו אלינו.', clientDefault: 'המוסד', cont: '(המשך)',
     },
     fr: {
-      kind: 'Devis', forYou: 'Une proposition personnelle pour', open: 'Ouvrir le devis', page: (i, n) => `Page ${i} / ${n}`,
+      kind: 'Devis', page: (i, n) => `Page ${i} / ${n}`,
       to: 'À l’attention de', event: 'L’événement', date: 'Date', place: 'Lieu', guests: 'Participants', tbd: 'À compléter',
       number: 'Devis n°', issued: 'Date', valid: 'Valable jusqu’au', included: 'Ce que comprend la prestation', fin: 'Proposition financière', item: 'Désignation', amount: 'Montant',
       qty: 'Qté', incl: 'Inclus', subtotal: 'Total', discount: 'Remise', vat: 'TVA', total: 'Total à payer', monthly: 'Puis le forfait mensuel choisi',
@@ -31,7 +31,7 @@
       okTitle: 'Bon pour accord', okText: 'Cela vous convient ? Indiquez votre nom complet et validez. Nous serons prévenus et reviendrons vers vous.', okPick: 'Quel forfait vous convient ?',
       okName: 'Nom complet', okBtn: 'J’accepte ce devis', okDone: 'Devis accepté', okBy: (n, d, p) => `Accepté par ${n}, le ${d}${p ? `, forfait ${p}` : ''}. Merci ! Nous revenons vers vous rapidement.`,
       okErr: 'L’accord n’a pas pu être enregistré. Réessayez, ou écrivez-nous sur WhatsApp.', print: 'Télécharger en PDF / imprimer',
-      signName: 'Nom', signDate: 'Date et signature', notFound: 'Devis introuvable. Vérifiez le lien complet, ou contactez-nous.', clientDefault: 'votre institution', cont: '(suite)',
+      extras: 'Options au choix', signName: 'Nom', signDate: 'Date et signature', notFound: 'Devis introuvable. Vérifiez le lien complet, ou contactez-nous.', clientDefault: 'votre institution', cont: '(suite)',
     },
   };
   const CONTACT0 = { whatsapp: '058-518-2655', phone: '058-518-2655', phone2: '058-555-1826', email: 'LBV0585551826@gmail.com' };
@@ -94,6 +94,7 @@
           <h4>${esc(o.name)}</h4><div class="q-pkg__price">${Number(o.price) ? cur(Number(o.price)) : t.tbd}<small>${esc(pk.unit || '')}</small></div>
           <ul>${(o.bullets || []).map(b => `<li>${fill(b)}</li>`).join('')}</ul></div>`).join('')}</div>
         ${pk.note ? `<p class="q-note">${fill(pk.note)}</p>` : ''}`);
+      if ((pk.extras || []).length) out.push(`<div class="q-extras"><h3>${t.extras}</h3><ul>${pk.extras.map(x => `<li>${fill(x)}</li>`).join('')}</ul></div>`);
     }
 
     // The money: each priced chapter, the extra lines, the setup; then the total.
@@ -205,35 +206,6 @@
     });
   }
 
-  /** The doors: the client turns the gold key and the quote is revealed. */
-  function cover(q) {
-    const t = L[q.lang] || L.he;
-    const el = $('#cover');
-    el.innerHTML = `<div class="cover__in">
-      <img class="cover__logo" src="../media/logo-events.png" alt="La Belle Vie" width="600" height="528">
-      <p class="cover__for">${t.forYou}<b>${esc((q.client && q.client.name) || '')}</b></p>
-      <div class="doors" id="doors" role="button" tabindex="0" aria-label="${t.open}">
-        <div class="doors__light" aria-hidden="true"></div>
-        <div class="door door--a" aria-hidden="true"><i></i></div><div class="door door--b" aria-hidden="true"><i></i></div>
-        <span class="lock" aria-hidden="true"></span>
-        <svg class="key" viewBox="0 0 120 44" aria-hidden="true"><defs><linearGradient id="kG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f7e6c0"/><stop offset=".5" stop-color="#d4af6a"/><stop offset="1" stop-color="#8a6a32"/></linearGradient></defs><g fill="none" stroke="url(#kG)" stroke-width="5" stroke-linecap="round"><circle cx="20" cy="22" r="14"/><circle cx="20" cy="22" r="5"/><path d="M34 22h76M92 22v12M101 22v8M110 22v12"/></g></svg>
-      </div>
-      <button type="button" class="cover__btn" id="openBtn">${t.open}</button></div>`;
-    el.hidden = false;
-    let opened = false;
-    const open = () => {
-      if (opened) return; opened = true;
-      const d = $('#doors');
-      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { el.classList.add('is-gone'); return; }
-      d.classList.add('is-locking');
-      setTimeout(() => { d.classList.add('is-open'); el.classList.add('is-gone'); }, 1150);
-    };
-    $('#doors').addEventListener('click', open);
-    $('#doors').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
-    $('#openBtn').addEventListener('click', open);
-  }
-
   $('#printBtn').addEventListener('click', () => window.print());
   addEventListener('resize', fit);
   (async () => {
@@ -246,7 +218,6 @@
       const q = await r.json();
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
       render(q, content && content.contact);
-      if (!qs.has('print') && q.status !== 'accepted') cover(q);
     } catch (e) {
       $('#pages').innerHTML = `<p class="err">${L.he.notFound}<br><span dir="ltr">${L.fr.notFound}</span></p>`;
     }

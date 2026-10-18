@@ -51,7 +51,7 @@ function cleanPackages(p) {
   const opt = (Array.isArray(p.options) ? p.options : []).slice(0, 4).map(o => ({ name: str(o.name, 80), price: num(o.price), recommended: o.recommended === true, bullets: lines(o.bullets, 20, 200) }));
   if (!opt.length) return null;
   return {
-    title: str(p.title, 160), intro: str(p.intro, 2000), unit: str(p.unit, 40), note: str(p.note, 600),
+    title: str(p.title, 160), intro: str(p.intro, 2000), unit: str(p.unit, 40), note: str(p.note, 600), extras: lines(p.extras, 20, 300),
     setup: p.setup && p.setup.name ? { name: str(p.setup.name, 160), price: num(p.setup.price), bullets: lines(p.setup.bullets, 20, 300) } : null,
     options: opt,
   };

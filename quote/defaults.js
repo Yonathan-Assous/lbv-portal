@@ -25,24 +25,60 @@ export const QUOTE_DEFAULTS = {
     he: {
       title: "ניהול רשתות חברתיות", intro: "כל מה שצריך כדי שהעסק יופיע ויימכר ברשתות: פתיחת החשבונות ומיתוגם, כתיבת תוכן, צילום ועריכת סרטונים, העלאה שוטפת, מענה לגולשים וקמפיינים ממומנים. אתם מתמקדים בעסק, ואנחנו בכל השאר.",
       unit: "לחודש",
-      setup: { name: "הקמה מאפס (תשלום חד־פעמי)", price: 2900, bullets: ["פתיחת חשבונות אינסטגרם, פייסבוק וטיקטוק, חשבון עסקי ומנהל מודעות.", "מיתוג הפרופילים: תמונת פרופיל וקאבר, ביוגרפיה, קישורים וכפתור וואטסאפ.", "עיצוב בסיס: כיסויי הייליטס ותבניות קבועות לפוסטים ולסרטונים.", "אסטרטגיה ותוכנית תוכן: פגישת אפיון, קהל יעד, בדיקת מתחרים ותוכנית לחודש הראשון."] },
+      setup: { name: "הקמה מאפס (תשלום חד־פעמי)", price: 2900, bullets: [
+        "פתיחת חשבונות: אינסטגרם, פייסבוק, טיקטוק + חשבון עסקי ומנהל מודעות (Meta Business) – 600 ₪",
+        "מיתוג פרופילים: תמונת פרופיל, תמונת קאבר, ביוגרפיה, קישורים, כפתור וואטסאפ – 700 ₪",
+        "עיצוב בסיס: סטורי היילייטס, תבניות קבועות לפוסטים ולסרטונים, פלטת צבעים ופונטים – 800 ₪",
+        "אסטרטגיה: פגישת אפיון, קהל יעד, בדיקת מתחרים, קו סגנון ותוכנית תוכן לחודש הראשון – 800 ₪",
+        "משך ההקמה: כ־10 ימי עבודה.",
+        "לקוח שמתחייב לחבילה חודשית ל־6 חודשים מקבל 50% הנחה על ההקמה (1,450 ₪)."] },
       options: [
-        { name: "בסיס", price: 2400, recommended: false, bullets: ["אינסטגרם ופייסבוק", "8 פוסטים מעוצבים בחודש", "4 סרטוני רילס ערוכים", "3 סטוריז בשבוע", "מענה לתגובות והודעות א׳–ה׳", "דו״ח ביצועים חודשי"] },
-        { name: "צמיחה", price: 3900, recommended: true, bullets: ["אינסטגרם, פייסבוק וטיקטוק", "יום צילום בעסק פעם בחודש", "12 פוסטים מעוצבים", "8 סרטוני רילס ערוכים", "5 סטוריז בשבוע", "מענה לתגובות והודעות א׳–ו׳", "עד 3 קמפיינים ממומנים", "דו״ח ביצועים חודשי ופגישה"] },
-        { name: "פרימיום", price: 6500, recommended: false, bullets: ["אינסטגרם, פייסבוק, טיקטוק ויוטיוב שורטס", "2 ימי צילום בחודש", "16 פוסטים מעוצבים", "12 סרטוני רילס ערוכים", "סטוריז כל יום", "מענה לתגובות והודעות א׳–ו׳", "עד 5 קמפיינים ממומנים", "דו״ח שבועי ופגישה חודשית"] },
+        { name: "בסיס", price: 2400, recommended: false, bullets: [
+          "פלטפורמות: אינסטגרם + פייסבוק", "8 פוסטים מעוצבים בחודש", "4 סרטוני רילס / טיקטוק ערוכים", "3 סטוריז בשבוע",
+          "כתיבת תוכן וכיתובים", "עריכת סרטונים (כתוביות, מוזיקה, אפקטים)", "העלאה ותזמון פוסטים",
+          "מענה לתגובות והודעות: ימי א׳–ה׳", "ניהול קמפיין קידום ממומן אחד", "דו״ח ביצועים חודשי"] },
+        { name: "צמיחה", price: 3900, recommended: true, bullets: [
+          "פלטפורמות: אינסטגרם + פייסבוק + טיקטוק", "12 פוסטים מעוצבים בחודש", "8 סרטוני רילס / טיקטוק ערוכים", "5 סטוריז בשבוע",
+          "כתיבת תוכן וכיתובים", "עריכת סרטונים (כתוביות, מוזיקה, אפקטים)", "יום צילום בעסק: אחד בחודש (3 שעות)", "העלאה ותזמון פוסטים",
+          "מענה לתגובות והודעות: ימי א׳–ו׳", "ניהול עד 3 קמפייני קידום ממומן", "דו״ח ביצועים חודשי + פגישת סיכום"] },
+        { name: "פרימיום", price: 6500, recommended: false, bullets: [
+          "פלטפורמות: כל הפלטפורמות + יוטיוב Shorts", "16 פוסטים מעוצבים בחודש", "12 סרטוני רילס / טיקטוק ערוכים", "סטוריז יומי",
+          "כתיבת תוכן וכיתובים + תסריטים לסרטונים", "עריכת סרטונים (כתוביות, מוזיקה, אפקטים)", "יום צילום בעסק: שניים בחודש", "העלאה ותזמון פוסטים",
+          "מענה לתגובות והודעות: שוטף, כולל סופ״ש", "ניהול קמפייני קידום ממומן: ללא הגבלה + רימרקטינג", "דו״ח ביצועים דו־שבועי + פגישת סיכום"] },
       ],
-      note: "תקציב הפרסום עצמו משולם ישירות למטא או לטיקטוק, ואינו כלול במחיר החבילה.",
+      extras: [
+        "סרטון רילס נוסף (עריכה מלאה) – 250 ₪ לסרטון", "סרטון תדמית / פרסומת מושקע (עד 60 שניות) – 1,200 ₪", "יום צילום נוסף (3 שעות) – 900 ₪",
+        "שיתוף פעולה עם משפיען, איתור ותיאום – 500 ₪ + עלות המשפיען", "דף נחיתה לקמפיין – 1,500 ₪", "תוכן בשפה נוספת (אנגלית / צרפתית) – 20% ממחיר החבילה"],
+      note: "תקציב הפרסום עצמו משולם ישירות למטא / טיקטוק מכרטיס הלקוח ואינו כלול במחיר. המלצה להתחלה: 1,500–3,000 ₪ לחודש.",
     },
     fr: {
       title: "Gestion des réseaux sociaux", intro: "Tout ce qu’il faut pour que votre activité existe et vende sur les réseaux : création et image des comptes, rédaction, tournage et montage vidéo, publication régulière, réponses aux abonnés et campagnes sponsorisées. Vous vous concentrez sur votre activité, nous nous occupons du reste.",
       unit: "par mois",
-      setup: { name: "Mise en place (paiement unique)", price: 2900, bullets: ["Création des comptes Instagram, Facebook et TikTok, compte professionnel et gestionnaire de publicités.", "Image des profils : photo, couverture, bio, liens et bouton WhatsApp.", "Design de base : couvertures des stories à la une et modèles de publications et vidéos.", "Stratégie et plan de contenu : rendez-vous de lancement, cible, analyse de la concurrence et plan du premier mois."] },
+      setup: { name: "Mise en place de zéro (paiement unique)", price: 2900, bullets: [
+        "Création des comptes : Instagram, Facebook, TikTok + compte professionnel et gestionnaire de publicités (Meta Business) – 600 ₪",
+        "Image des profils : photo de profil, couverture, bio, liens, bouton WhatsApp – 700 ₪",
+        "Design de base : stories à la une, modèles fixes pour les publications et vidéos, palette de couleurs et typographies – 800 ₪",
+        "Stratégie : rendez-vous de lancement, cible, analyse de la concurrence, ligne éditoriale et plan de contenu du premier mois – 800 ₪",
+        "Durée de la mise en place : environ 10 jours ouvrés.",
+        "Engagement de 6 mois sur un forfait mensuel : 50 % de remise sur la mise en place (1 450 ₪)."] },
       options: [
-        { name: "Essentiel", price: 2400, recommended: false, bullets: ["Instagram et Facebook", "8 publications par mois", "4 reels montés", "3 stories par semaine", "Réponses aux commentaires et messages du dimanche au jeudi", "Rapport mensuel"] },
-        { name: "Croissance", price: 3900, recommended: true, bullets: ["Instagram, Facebook et TikTok", "Une journée de tournage par mois", "12 publications", "8 reels montés", "5 stories par semaine", "Réponses du dimanche au vendredi", "Jusqu’à 3 campagnes sponsorisées", "Rapport mensuel et rendez-vous"] },
-        { name: "Premium", price: 6500, recommended: false, bullets: ["Instagram, Facebook, TikTok et YouTube Shorts", "2 journées de tournage par mois", "16 publications", "12 reels montés", "Stories tous les jours", "Réponses du dimanche au vendredi", "Jusqu’à 5 campagnes sponsorisées", "Rapport hebdomadaire et rendez-vous mensuel"] },
+        { name: "Essentiel", price: 2400, recommended: false, bullets: [
+          "Plateformes : Instagram + Facebook", "8 publications par mois", "4 reels / TikTok montés", "3 stories par semaine",
+          "Rédaction des contenus et légendes", "Montage vidéo (sous-titres, musique, effets)", "Publication et programmation",
+          "Réponses aux commentaires et messages : du dimanche au jeudi", "Gestion d’une campagne sponsorisée", "Rapport de performance mensuel"] },
+        { name: "Croissance", price: 3900, recommended: true, bullets: [
+          "Plateformes : Instagram + Facebook + TikTok", "12 publications par mois", "8 reels / TikTok montés", "5 stories par semaine",
+          "Rédaction des contenus et légendes", "Montage vidéo (sous-titres, musique, effets)", "Journée de tournage : une par mois (3 heures)", "Publication et programmation",
+          "Réponses aux commentaires et messages : du dimanche au vendredi", "Gestion de jusqu’à 3 campagnes sponsorisées", "Rapport mensuel + rendez-vous bilan"] },
+        { name: "Premium", price: 6500, recommended: false, bullets: [
+          "Plateformes : toutes + YouTube Shorts", "16 publications par mois", "12 reels / TikTok montés", "Stories quotidiennes",
+          "Rédaction des contenus et légendes + scripts des vidéos", "Montage vidéo (sous-titres, musique, effets)", "Journées de tournage : deux par mois", "Publication et programmation",
+          "Réponses aux commentaires et messages : en continu, week-end compris", "Campagnes sponsorisées : sans limite + remarketing", "Rapport bimensuel + rendez-vous bilan"] },
       ],
-      note: "Le budget publicitaire est payé directement à Meta ou TikTok et n’est pas inclus dans le prix du forfait.",
+      extras: [
+        "Reel supplémentaire (montage complet) – 250 ₪ par vidéo", "Vidéo institutionnelle / publicitaire soignée (jusqu’à 60 secondes) – 1 200 ₪", "Journée de tournage supplémentaire (3 heures) – 900 ₪",
+        "Collaboration avec un influenceur, recherche et coordination – 500 ₪ + son tarif", "Page d’atterrissage pour une campagne – 1 500 ₪", "Contenu dans une langue supplémentaire (anglais / hébreu) – 20 % du prix du forfait"],
+      note: "Le budget publicitaire est payé directement à Meta / TikTok par la carte du client et n’est pas inclus dans le prix. Recommandation pour démarrer : 1 500 à 3 000 ₪ par mois.",
     },
   },
   sections: [
