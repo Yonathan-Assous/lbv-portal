@@ -4,7 +4,9 @@ import { isAuthed, can, readBody } from './_lib.js';
 import { leadsToken, leadsReady } from './_leads.js';
 
 // Quotes (הצעות מחיר) built in the admin, kept in the PRIVATE store next to the requests:
-//   quotes/q-<id>.json   one quote          quotes/_catalog.json   the chapters (services) and default texts, in Hebrew and French
+//   quotes/q-<id>/v….json   one quote      quotes/_catalog/v….json   the chapters (services) and default texts
+// Every save is a new version file (an overwritten file can be served stale for a minute); the newest wins
+// and older versions are removed. Quotes saved before this as quotes/q-<id>.json are still read.
 // Admin (sales permission):
 //   GET            → every quote (newest first)          GET ?id=     → one quote
 //   POST           → create or update a quote            DELETE ?id=  → delete
@@ -13,7 +15,7 @@ import { leadsToken, leadsReady } from './_leads.js';
 //   GET ?view=<id>&t=<token>   → the quote as the client sees it
 //   POST ?view=<id>&t=<token>  { name } → the client approves the quote
 const PREFIX = 'quotes/q-';
-const CATALOG = 'quotes/_catalog.json';
+const CATALOG = 'quotes/_catalog';
 const opts = extra => ({ token: leadsToken(), ...extra });
 const secret = () => process.env.ADMIN_SECRET || process.env.ADMIN_PASSWORD || '';
 export const quoteToken = id => crypto.createHmac('sha256', secret()).update('quote:' + id).digest('base64url').slice(0, 22);
@@ -25,17 +27,35 @@ async function readJson(key, fallback = null) {
     return JSON.parse(await new Response(r.stream).text());
   } catch (e) { return fallback; }
 }
-const writeJson = (key, v) => put(key, JSON.stringify(v), opts({ access: 'private', contentType: 'application/json', addRandomSuffix: false, allowOverwrite: true }));
 
-async function listQuotes() {
+async function listAll(prefix) {
   const out = [];
   let cursor;
   do {
-    const page = await list(opts({ prefix: PREFIX, cursor, limit: 1000 }));
+    const page = await list(opts({ prefix, cursor, limit: 1000 }));
     out.push(...page.blobs);
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);
-  const all = await Promise.all(out.map(b => readJson(b.pathname)));
+  return out;
+}
+/** The newest version of a document ("quotes/q-…" or the catalog), or the old single file. */
+async function readDoc(key, fallback = null) {
+  const versions = (await listAll(key + '/v')).map(b => b.pathname).sort();
+  if (versions.length) return readJson(versions[versions.length - 1], fallback);
+  return readJson(key + '.json', fallback);
+}
+async function writeDoc(key, value) {
+  const stamp = String(Date.now()).padStart(15, '0') + '-' + crypto.randomBytes(3).toString('hex');
+  await put(`${key}/v${stamp}.json`, JSON.stringify(value), opts({ access: 'private', contentType: 'application/json', addRandomSuffix: false }));
+  try {
+    const old = (await listAll(key + '/v')).map(b => b.pathname).sort().slice(0, -3);   // keep the last 3
+    const legacy = (await listAll(key + '.json')).map(b => b.pathname);
+    if (old.length || legacy.length) await del([...old, ...legacy], opts());
+  } catch (e) {}
+}
+async function listQuotes() {
+  const ids = new Set((await listAll(PREFIX)).map(b => (b.pathname.match(/^quotes\/(q-[a-z0-9]+)/) || [])[1]).filter(Boolean));
+  const all = await Promise.all([...ids].map(id => readDoc('quotes/' + id)));
   return all.filter(Boolean).sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1));
 }
 
@@ -93,7 +113,7 @@ export default async function handler(req, res) {
   // ----- the client's signed link -----
   if (view) {
     if (!/^q-[a-z0-9]+$/.test(view) || url.searchParams.get('t') !== quoteToken(view)) return res.status(404).json({ error: 'not-found' });
-    const q = await readJson(`quotes/${view}.json`);
+    const q = await readDoc(`quotes/${view}`);
     if (!q) return res.status(404).json({ error: 'not-found' });
     if (req.method === 'GET') return res.status(200).json(forClient(q));
     if (req.method === 'POST') {
@@ -105,7 +125,7 @@ export default async function handler(req, res) {
         q.status = 'accepted';
         const pkg = q.packages && q.packages.options.find(o => o.name === str(b.package, 80));
         q.accepted = { name, at: new Date().toISOString(), ...(pkg ? { package: pkg.name, packagePrice: pkg.price } : {}) };
-        await writeJson(`quotes/${view}.json`, q);
+        await writeDoc(`quotes/${view}`, q);
       }
       return res.status(200).json(forClient(q));
     }
@@ -118,7 +138,7 @@ export default async function handler(req, res) {
   if (!can(s, 'leads')) return res.status(403).json({ error: 'forbidden' });
 
   if (url.searchParams.has('catalog')) {
-    if (req.method === 'GET') return res.status(200).json(await readJson(CATALOG, null) || { sections: null });
+    if (req.method === 'GET') return res.status(200).json(await readDoc(CATALOG, null) || { sections: null });
     if (req.method === 'PUT') {
       let b;
       try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
@@ -129,7 +149,7 @@ export default async function handler(req, res) {
         he: txt(b.he), fr: txt(b.fr), vatRate: num(b.vatRate) || 18,
         social: b.social ? { he: cleanPackages(b.social.he), fr: cleanPackages(b.social.fr) } : null,
       };
-      await writeJson(CATALOG, cat);
+      await writeDoc(CATALOG, cat);
       return res.status(200).json(cat);
     }
     return res.status(405).json({ error: 'method' });
@@ -140,7 +160,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     if (id) {
-      const q = await readJson(`quotes/${id}.json`);
+      const q = await readDoc(`quotes/${id}`);
       return q ? res.status(200).json({ ...q, token: quoteToken(q.id) }) : res.status(404).json({ error: 'not-found' });
     }
     return res.status(200).json((await listQuotes()).map(q => ({ ...q, token: quoteToken(q.id) })));
@@ -153,7 +173,7 @@ export default async function handler(req, res) {
     let q;
     if (b.id) {
       if (!/^q-[a-z0-9]+$/.test(b.id)) return res.status(400).json({ error: 'bad-id' });
-      const old = await readJson(`quotes/${b.id}.json`);
+      const old = await readDoc(`quotes/${b.id}`);
       if (!old) return res.status(404).json({ error: 'not-found' });
       q = { ...old, ...cleanQuote(b), updatedAt: now, updatedBy: s.n };
       if (b.status === 'sent' && old.status === 'draft') q.status = 'sent';
@@ -164,13 +184,14 @@ export default async function handler(req, res) {
       const number = `LBV-${year}-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, '0')}`;
       q = { id: 'q-' + crypto.randomBytes(8).toString('hex'), number, status: b.status === 'sent' ? 'sent' : 'draft', createdAt: now, createdBy: s.n, ...cleanQuote(b) };
     }
-    await writeJson(`quotes/${q.id}.json`, q);
+    await writeDoc(`quotes/${q.id}`, q);
     return res.status(200).json({ ...q, token: quoteToken(q.id) });
   }
 
   if (req.method === 'DELETE') {
     if (!id) return res.status(400).json({ error: 'bad-id' });
-    await del(`quotes/${id}.json`, opts());
+    const files = [...(await listAll(`quotes/${id}/`)), ...(await listAll(`quotes/${id}.json`))].map(b => b.url);
+    if (files.length) await del(files, opts());
     return res.status(200).json({ ok: true });
   }
   return res.status(405).json({ error: 'method' });
