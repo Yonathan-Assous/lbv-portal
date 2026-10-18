@@ -64,7 +64,7 @@
     out.push(`<div class="q-title"><h1>${esc(q.title || t.kind)}</h1>${q.subtitle ? `<p>${esc(q.subtitle)}</p>` : ''}
       <div class="q-meta"><span>${t.number} <b>${esc(q.number || '')}</b></span><span>${t.issued}: ${dateStr(issued, lang)}</span><span>${t.valid}: ${dateStr(until, lang)}</span></div></div>`);
     out.push(`<div class="q-parts">
-      <div class="q-box"><h2>${t.to}</h2><p class="big">${esc(who)}</p>
+      <div class="q-box"><h2>${t.to}</h2><p class="big">${q.client?.name ? esc(q.client.name) : tbd('')}</p>
         ${q.client?.phone ? `<p><bdi dir="ltr">${esc(q.client.phone)}</bdi></p>` : ''}${q.client?.email ? `<p><bdi dir="ltr">${esc(q.client.email)}</bdi></p>` : ''}</div>
       <div class="q-box"><h2>${t.event}</h2>${q.event?.type ? `<p class="big">${esc(q.event.type)}</p>` : ''}
         <p>${t.date}: ${tbd(q.event?.date)} · ${t.place}: ${tbd(q.event?.place)}</p><p>${t.guests}: ${tbd(q.event?.guests)}</p></div></div>`);
@@ -86,7 +86,7 @@
 
     const pk = q.packages;
     if (pk && pk.options && pk.options.length) {
-      out.push(`<h2 class="q-h">${fill(pk.title)}</h2>${pk.intro ? `<p class="q-pk-intro">${fill(pk.intro)}</p>` : ''}`);
+      out.push(`<h2 class="q-h">${fill(pk.title)}</h2>${pk.intro && pk.intro !== q.intro ? `<p class="q-pk-intro">${fill(pk.intro)}</p>` : ''}`);
       if (pk.setup) out.push(`<div class="q-setup"><b>${fill(pk.setup.name)}</b><span class="q-price">${Number(pk.setup.price) ? cur(Number(pk.setup.price)) : t.tbd}</span>
         ${(pk.setup.bullets || []).length ? `<ul>${pk.setup.bullets.map(b => `<li>${fill(b)}</li>`).join('')}</ul>` : ''}</div>`);
       out.push(`<div class="q-pkgs" style="--n:${pk.options.length}">${pk.options.map(o => `
