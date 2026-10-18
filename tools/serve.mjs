@@ -84,6 +84,37 @@ async function api(req, res, p) {
       return json(res, 200, { ok: true });
     }
   }
+  if (p === "/api/quotes") {
+    // Local stand-in for the private quotes store.
+    const qf = path.join(root, "data", "quotes.local.json"), cf = path.join(root, "data", "catalog.local.json");
+    const all = fs.existsSync(qf) ? JSON.parse(fs.readFileSync(qf, "utf8")) : [];
+    const saveAll = l => { fs.mkdirSync(path.dirname(qf), { recursive: true }); fs.writeFileSync(qf, JSON.stringify(l, null, 2)); };
+    const tok = id => crypto.createHmac("sha256", PASSWORD || "x").update("quote:" + id).digest("base64url").slice(0, 22);
+    const u = new URL(req.url, "http://x"), view = u.searchParams.get("view"), id = u.searchParams.get("id");
+    if (view) {
+      const q = all.find(x => x.id === view);
+      if (!q || u.searchParams.get("t") !== tok(view)) return json(res, 404, { error: "not-found" });
+      if (req.method === "POST") { const b = JSON.parse((await body(req)).toString() || "{}"); if (!b.name) return json(res, 400, { error: "name" }); if (q.status !== "accepted") { q.status = "accepted"; q.accepted = { name: b.name, at: new Date().toISOString() }; saveAll(all); } }
+      const { createdBy, updatedBy, leadId, ...rest } = q; return json(res, 200, rest);
+    }
+    const me = authed(req);
+    if (!me) return json(res, 401, { error: "login" });
+    if (!can(me, "leads")) return json(res, 403, { error: "forbidden" });
+    if (u.searchParams.has("catalog")) {
+      if (req.method === "PUT") { const b = JSON.parse((await body(req)).toString() || "{}"); fs.mkdirSync(path.dirname(cf), { recursive: true }); fs.writeFileSync(cf, JSON.stringify(b, null, 2)); return json(res, 200, b); }
+      return json(res, 200, fs.existsSync(cf) ? JSON.parse(fs.readFileSync(cf, "utf8")) : { sections: null });
+    }
+    if (req.method === "GET") return json(res, 200, id ? { ...all.find(x => x.id === id), token: tok(id) } : [...all].reverse().map(q => ({ ...q, token: tok(q.id) })));
+    if (req.method === "DELETE") { saveAll(all.filter(x => x.id !== id)); return json(res, 200, { ok: true }); }
+    if (req.method === "POST") {
+      const b = JSON.parse((await body(req)).toString() || "{}"), now = new Date().toISOString();
+      let q = b.id && all.find(x => x.id === b.id);
+      const { token, ...data } = b;
+      if (q) { Object.assign(q, data, { updatedAt: now }); if (b.status === "sent" && q.status === "draft") q.status = "sent"; }
+      else { q = { ...data, id: "q-" + crypto.randomBytes(8).toString("hex"), number: "LBV-" + now.slice(0, 4) + "-" + String(all.length + 1).padStart(3, "0"), status: b.status === "sent" ? "sent" : "draft", createdAt: now, createdBy: me.n }; all.push(q); }
+      saveAll(all); return json(res, 200, { ...q, token: tok(q.id) });
+    }
+  }
   if (p === '/api/send') {
     // Local stand-in: counts who would receive it, sends nothing.
     if (!authed(req)) return json(res, 401, { error: 'login' });

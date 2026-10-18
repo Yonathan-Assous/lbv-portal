@@ -1,0 +1,159 @@
+import crypto from 'node:crypto';
+import { list, put, get, del } from '@vercel/blob';
+import { isAuthed, can, readBody } from './_lib.js';
+import { leadsToken, leadsReady } from './_leads.js';
+
+// Quotes (הצעות מחיר) built in the admin, kept in the PRIVATE store next to the requests:
+//   quotes/q-<id>.json   one quote          quotes/_catalog.json   the chapters (services) and default texts, in Hebrew and French
+// Admin (sales permission):
+//   GET            → every quote (newest first)          GET ?id=     → one quote
+//   POST           → create or update a quote            DELETE ?id=  → delete
+//   GET ?catalog   → the services list                   PUT ?catalog → save it
+// Client (no login, with the quote's signed link):
+//   GET ?view=<id>&t=<token>   → the quote as the client sees it
+//   POST ?view=<id>&t=<token>  { name } → the client approves the quote
+const PREFIX = 'quotes/q-';
+const CATALOG = 'quotes/_catalog.json';
+const opts = extra => ({ token: leadsToken(), ...extra });
+const secret = () => process.env.ADMIN_SECRET || process.env.ADMIN_PASSWORD || '';
+export const quoteToken = id => crypto.createHmac('sha256', secret()).update('quote:' + id).digest('base64url').slice(0, 22);
+
+async function readJson(key, fallback = null) {
+  try {
+    const r = await get(key, opts({ access: 'private' }));
+    if (!r || r.statusCode !== 200) return fallback;
+    return JSON.parse(await new Response(r.stream).text());
+  } catch (e) { return fallback; }
+}
+const writeJson = (key, v) => put(key, JSON.stringify(v), opts({ access: 'private', contentType: 'application/json', addRandomSuffix: false, allowOverwrite: true }));
+
+async function listQuotes() {
+  const out = [];
+  let cursor;
+  do {
+    const page = await list(opts({ prefix: PREFIX, cursor, limit: 1000 }));
+    out.push(...page.blobs);
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
+  const all = await Promise.all(out.map(b => readJson(b.pathname)));
+  return all.filter(Boolean).sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1));
+}
+
+const str = (v, max) => String(v ?? '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').slice(0, max);
+const num = v => { const n = Number(v); return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0; };
+const pick = (v, ok, dflt) => (ok.includes(v) ? v : dflt);
+
+/** Only known fields, with limits: what the admin may store in a quote. */
+const lines = (v, n, max) => (Array.isArray(v) ? v : []).slice(0, n).map(x => str(x, max)).filter(x => x.trim());
+function cleanQuote(b) {
+  return {
+    lang: pick(b.lang, ["he", "fr"], "he"),
+    currency: pick(b.currency, ["ILS", "EUR"], "ILS"),
+    title: str(b.title, 160), subtitle: str(b.subtitle, 160),
+    client: { name: str(b.client?.name, 120), phone: str(b.client?.phone, 40), email: str(b.client?.email, 160) },
+    event: { type: str(b.event?.type, 80), date: str(b.event?.date, 60), guests: str(b.event?.guests, 40), place: str(b.event?.place, 120) },
+    intro: str(b.intro, 3000),
+    sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 20).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400) })),
+    items: (Array.isArray(b.items) ? b.items : []).slice(0, 60).map(it => ({ name: str(it.name, 300), qty: num(it.qty) || 1, price: num(it.price) })),
+    discount: num(b.discount),
+    vat: pick(b.vat, ["incl", "plus", "none", "note"], "incl"),
+    vatRate: num(b.vatRate) || 18,
+    vatNote: str(b.vatNote, 300),
+    payment: str(b.payment, 1000),
+    validDays: Math.max(1, Math.min(365, Math.round(num(b.validDays) || 14))),
+    closing: str(b.closing, 3000), tagline: str(b.tagline, 200),
+    leadId: str(b.leadId, 200),
+  };
+}
+/** What the client sees (no internal fields). */
+const forClient = q => {
+  const { createdBy, updatedBy, leadId, ...rest } = q;
+  return rest;
+};
+
+export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  if (!leadsReady()) return res.status(503).json({ error: 'not-configured' });
+  const url = new URL(req.url, 'http://x');
+  const view = url.searchParams.get('view');
+
+  // ----- the client's signed link -----
+  if (view) {
+    if (!/^q-[a-z0-9]+$/.test(view) || url.searchParams.get('t') !== quoteToken(view)) return res.status(404).json({ error: 'not-found' });
+    const q = await readJson(`quotes/${view}.json`);
+    if (!q) return res.status(404).json({ error: 'not-found' });
+    if (req.method === 'GET') return res.status(200).json(forClient(q));
+    if (req.method === 'POST') {
+      let b;
+      try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
+      const name = str(b.name, 120).trim();
+      if (!name) return res.status(400).json({ error: 'name' });
+      if (q.status !== 'accepted') {
+        q.status = 'accepted';
+        q.accepted = { name, at: new Date().toISOString() };
+        await writeJson(`quotes/${view}.json`, q);
+      }
+      return res.status(200).json(forClient(q));
+    }
+    return res.status(405).json({ error: 'method' });
+  }
+
+  // ----- the admin -----
+  const s = isAuthed(req);
+  if (!s) return res.status(401).json({ error: 'login' });
+  if (!can(s, 'leads')) return res.status(403).json({ error: 'forbidden' });
+
+  if (url.searchParams.has('catalog')) {
+    if (req.method === 'GET') return res.status(200).json(await readJson(CATALOG, null) || { sections: null });
+    if (req.method === 'PUT') {
+      let b;
+      try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
+      const sec = arr => (Array.isArray(arr) ? arr : []).slice(0, 40).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400) }));
+      const txt = o => ({ title: str(o?.title, 160), subtitle: str(o?.subtitle, 160), intro: str(o?.intro, 3000), closing: str(o?.closing, 3000), tagline: str(o?.tagline, 200), payment: str(o?.payment, 1000), lines: lines(o?.lines, 20, 300) });
+      const cat = { sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 40).map(x => ({ he: sec([x.he])[0] || { title: "", bullets: [] }, fr: sec([x.fr])[0] || { title: "", bullets: [] } })), he: txt(b.he), fr: txt(b.fr), vatRate: num(b.vatRate) || 18 };
+      await writeJson(CATALOG, cat);
+      return res.status(200).json(cat);
+    }
+    return res.status(405).json({ error: 'method' });
+  }
+
+  const id = url.searchParams.get('id') || '';
+  if (id && !/^q-[a-z0-9]+$/.test(id)) return res.status(400).json({ error: 'bad-id' });
+
+  if (req.method === 'GET') {
+    if (id) {
+      const q = await readJson(`quotes/${id}.json`);
+      return q ? res.status(200).json({ ...q, token: quoteToken(q.id) }) : res.status(404).json({ error: 'not-found' });
+    }
+    return res.status(200).json((await listQuotes()).map(q => ({ ...q, token: quoteToken(q.id) })));
+  }
+
+  if (req.method === 'POST') {
+    let b;
+    try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
+    const now = new Date().toISOString();
+    let q;
+    if (b.id) {
+      if (!/^q-[a-z0-9]+$/.test(b.id)) return res.status(400).json({ error: 'bad-id' });
+      const old = await readJson(`quotes/${b.id}.json`);
+      if (!old) return res.status(404).json({ error: 'not-found' });
+      q = { ...old, ...cleanQuote(b), updatedAt: now, updatedBy: s.n };
+      if (b.status === 'sent' && old.status === 'draft') q.status = 'sent';
+    } else {
+      // A running number per year: LBV-2026-001, LBV-2026-002, …
+      const year = now.slice(0, 4);
+      const nums = (await listQuotes()).map(x => String(x.number || '')).filter(n => n.startsWith(`LBV-${year}-`)).map(n => Number(n.split('-')[2]) || 0);
+      const number = `LBV-${year}-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, '0')}`;
+      q = { id: 'q-' + crypto.randomBytes(8).toString('hex'), number, status: b.status === 'sent' ? 'sent' : 'draft', createdAt: now, createdBy: s.n, ...cleanQuote(b) };
+    }
+    await writeJson(`quotes/${q.id}.json`, q);
+    return res.status(200).json({ ...q, token: quoteToken(q.id) });
+  }
+
+  if (req.method === 'DELETE') {
+    if (!id) return res.status(400).json({ error: 'bad-id' });
+    await del(`quotes/${id}.json`, opts());
+    return res.status(200).json({ ok: true });
+  }
+  return res.status(405).json({ error: 'method' });
+}

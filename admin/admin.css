@@ -362,3 +362,28 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
 @media (max-width: 520px) { .sty__row { grid-template-columns: 1fr; gap: 4px; } }.field small.muted { font-weight: 600; color: var(--ink-3); }
 .pv__bar .seg { flex-wrap: nowrap; }
 @media (max-width: 520px) { .pv__title small { display: none; } .pv__bar .seg button { padding: 6px 10px; } }
+
+/* ---------- Quotes ---------- */
+.qbar { position: sticky; top: calc(var(--hbh, 124px) + 8px); z-index: 6; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px; margin: 0 -4px; border-radius: 14px; background: rgba(255,255,255,.96); box-shadow: var(--shadow); border: 1px solid var(--line); backdrop-filter: blur(8px); }
+.qbar b { font-size: 1.05rem; }
+.qbar__sp { flex: 1; }
+.qchips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.qchip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 14px; font: inherit; font-weight: 700; font-size: .9rem; color: var(--ink-2); cursor: pointer; }
+.qchip:hover { border-color: var(--gold); color: var(--ink); }
+.qchip.is-on { background: var(--night); border-color: var(--night); color: #fff; }
+.qline { display: grid; grid-template-columns: minmax(0, 1fr) 80px 130px 120px 34px; gap: 10px; align-items: end; }
+.qline .field { margin-bottom: 8px; }
+.qline__tot { padding-bottom: 18px; font-weight: 800; font-variant-numeric: tabular-nums; text-align: end; }
+.qline .icon { margin-bottom: 12px; }
+.qsum { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--gold); color: var(--ink-2); }
+.qsum b { font-size: 1.3rem; color: var(--ink); }
+.qcat { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.qcat summary { cursor: pointer; font-weight: 800; padding: 4px 0; }
+.qcat[open] summary { margin-bottom: 10px; }
+.card .seg { margin-bottom: 14px; }
+@media (max-width: 860px) {
+  .qline { grid-template-columns: 1fr 1fr; }
+  .qline .field:first-child { grid-column: 1 / -1; }
+  .qline__tot { padding-bottom: 0; text-align: start; }
+  .qbar .btn { flex: 1 1 auto; }
+}

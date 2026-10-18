@@ -9,6 +9,7 @@ const LANGS = ['he', 'fr', 'en'];
 const LNAME = { he: 'עברית', fr: 'צרפתית', en: 'אנגלית' };
 const DIR = { he: 'rtl', fr: 'ltr', en: 'ltr' };
 const E = window.LBVEdit;
+import { QUOTE_DEFAULTS } from "../quote/defaults.js";
 
 let me = null; // the logged-in manager: { name, role }
 let state = null, saved = '', storage = 'none', lang = 'he', page = 'dashboard', scopeId = 'top', leads = [], leadsReady = false;
@@ -272,6 +273,7 @@ const GROUPS = () => [
   { id: 'home', name: 'ראשי', pages: [{ id: 'dashboard', title: 'לוח בקרה', sub: 'תמונת מצב: פניות, נרשמים וקיצורי דרך' }] },
   { id: 'inbox', name: 'פניות', badge: true, pages: [
     { id: 'inbox', title: 'פניות ונרשמים', sub: 'כל מי שהשאיר פרטים באתר: בקשות להצעת מחיר והרשמות לעדכונים', badge: true },
+    { id: 'quotes', title: 'הצעות מחיר', sub: 'בונים הצעת מחיר ממותגת, שולחים ללקוח בוואטסאפ ורואים מתי הוא מאשר' },
     { id: 'mail', title: 'מייל לנרשמים', sub: 'עדכון לכל מי שנרשם, מהמייל של החברה' }] },
   { id: 'site', name: 'עמודי האתר', pages: windows() },
   { id: 'people', name: 'צוות', pages: [{ id: 'team', title: 'צוות ודבר המנכ״ל', sub: 'תמונות, שמות ותפקידים, והמכתב של אילן', lang: true }] },
@@ -288,7 +290,7 @@ const GROUPS = () => [
 /** Only the areas this manager may use. */
 const myGroups = () => GROUPS().map(g => ({ ...g, pages: g.pages.filter(p => pageAllowed(p.id)) })).filter(g => g.pages.length);
 function pageAllowed(id) {
-  if (['inbox', 'mail'].includes(id)) return canDo('leads');
+  if (['inbox', 'mail', 'quotes'].includes(id)) return canDo('leads');
   if (id === 'users') return canDo('users');
   if (id === 'dashboard') return canDo('leads');
   if (['guide', 'support', 'stats', 'account'].includes(id)) return true;
@@ -314,6 +316,7 @@ function go(p, opts = {}) {
   $('#langPick').hidden = !info.lang;
   history.replaceState(null, '', '#' + page);
   drawNav();
+  document.documentElement.style.setProperty("--hbh", $(".hb").offsetHeight + "px");
   render();
   pvShow(wide() ? pv.want : false);
   scrollTo({ top: 0 });
@@ -323,7 +326,7 @@ function render() {
   const pg = $('#page');
   pg.innerHTML = '';
   if (page.startsWith('w-') || page.startsWith('trip-')) return windowPage(pg, page);
-  ({ dashboard, inbox, mail, team, contact, banners, stats, guide, support, users, account })[page](pg);
+  ({ dashboard, inbox, mail, quotes, team, contact, banners, stats, guide, support, users, account })[page](pg);
 }
 $$('#langPick button').forEach(b => b.addEventListener('click', () => {
   lang = b.dataset.lang;
@@ -476,11 +479,13 @@ function leadRow(l, compact) {
         <span>${LNAME[l.lang] || ''}</span><span>${date(l.at)}</span></div>
     </div>
     ${compact ? '' : `<div class="row-tools">
+      ${quote ? '<button type="button" class="btn btn--gold btn--sm" data-quote>הכנת הצעת מחיר</button>' : ''}
       ${wa ? `<a class="btn btn--line btn--sm" href="${wa}" target="_blank" rel="noopener">וואטסאפ</a>` : ''}
       <button type="button" class="btn btn--sm ${l.handled ? 'btn--line' : 'btn--dark'}" data-done>${l.handled ? 'להחזיר ל"חדש"' : 'סימון כטופל'}</button>
       <button type="button" class="icon icon--del" data-del title="מחיקה">✕</button></div>`}
     ${!compact && l.notes ? `<p class="lead__notes">${esc(l.notes)}</p>` : ''}
   </article>`);
+  $('[data-quote]', row)?.addEventListener('click', () => startQuote(l));
   $('[data-done]', row)?.addEventListener('click', async () => {
     const r = await fetch(`/api/leads?id=${encodeURIComponent(l.id)}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ handled: !l.handled }) });
     if (!r.ok) return toast('לא הצלחנו לעדכן', 'err');
@@ -980,6 +985,7 @@ const HOWTO = [
   ['להסתיר משהו מהאתר בלי למחוק', ['ליד כל טקסט, פריט, סרטון או תמונה יש כפתור "להסתיר".', 'הדבר נשאר בניהול, חיוור, ואפשר להחזיר אותו בלחיצה על "להציג באתר".'], 'w-home'],
   ['לבנות דף לפסח, או לפתוח נופש חדש', ['"עמודי האתר" ← "נופשים" ← "+ נופש חדש" (או הלשונית "פסח").', 'כותבים שם ומצב ("בקרוב" או "ההרשמה פתוחה").', 'מסמנים "לנופש יש דף משלו באתר".', 'לוחצים "מילוי מהתבנית של סוכות" כדי להתחיל עם דף מלא, ומשנים מה שצריך.', 'מעלים סרטון ראשי, סרטונים לפס, תמונות לגלריה ותמונת רקע.', '"שמירה ופרסום". הנופש מופיע כרטיס בחלון "נופשים", עם דף משלו.'], 'w-holidays'],
   ['להוסיף סרטונים או תמונות', ['סרטונים ותמונות של סוכות: "עמודי האתר" ← "סוכות".', 'של נופש אחר: בלשונית של אותו נופש.', 'לוחצים "+ סרטון" או "+ הוספת תמונות" ובוחרים קבצים מהמחשב או מהטלפון.', 'אפשר לסדר בחיצים ↑↓, להסתיר או למחוק.'], 'trip-sukkot'],
+  ['להכין הצעת מחיר ולשלוח ללקוח', ['"פניות" ← "הצעות מחיר" ← "+ הצעת מחיר חדשה". או ליד פנייה מהאתר: "הכנת הצעת מחיר", והפרטים שלה נכנסים לבד.', 'שלב 1: שם הלקוח, טלפון ופרטי האירוע. מה שלא ידוע יופיע כ"להשלמה".', 'שלב 2: לוחצים על הפרקים שכלולים (תכנון, עיצוב גרפי, ביום האירוע…). אפשר לשנות כל שורה.', 'שלב 3: כותבים סכום בכל שורת מחיר. הסה״כ והמע״מ מחושבים לבד.', '"שמירה ותצוגת ההצעה" מראה בדיוק מה הלקוח יראה, ומשם אפשר להוריד PDF.', '"שליחה ללקוח בוואטסאפ" שולחת לו קישור. כשהוא מאשר, ההצעה מסומנת "אושרה" עם השם שלו.'], 'quotes'],
   ['לטפל בפנייה', ['"פניות" ← "פניות ונרשמים". המספר הזהוב אומר כמה מחכות.', 'לוחצים "וואטסאפ" כדי לענות, או על מספר הטלפון כדי להתקשר.', 'כשסיימתם לוחצים "סימון כטופל". הפנייה עוברת ל"הכול".', '"ייצוא לאקסל" מוריד את כל הרשימה.'], 'inbox'],
   ['לשלוח מייל לכל הנרשמים', ['"פניות" ← "מייל לנרשמים".', 'בוחרים למי, כותבים נושא ותוכן.', 'שולחים קודם "שליחת בדיקה" למייל שלכם ובודקים איך זה נראה.', 'רק אז "שליחה לכל הנרשמים".'], 'mail'],
   ['להחליף טלפון, וואטסאפ או קישור', ['"הגדרות" ← "פרטי קשר וקישורים".', 'משנים את המספר או הכתובת. זה מתחלף בכל האתר בבת אחת.'], 'contact'],
@@ -1163,6 +1169,258 @@ function account(pg) {
   c.append(form);
   if (me?.role === 'owner') c.append(html('<p class="hint" style="margin-top:14px">הסיסמה הראשית שמוגדרת בחשבון האחסון ממשיכה לעבוד כגיבוי, למקרה ששכחתם את החדשה.</p>'));
   pg.append(c);
+}
+
+/* ---------- 14. quotes: build a branded quote, send it, see when the client approves ---------- */
+let quotesList = null, quoteCat = null, qEdit = null, qDirty = false, qCatLang = 'he';
+const Q_STATUS = { draft: ['טיוטה', 'tag--muted'], sent: ['נשלחה', 'tag--blue'], accepted: ['אושרה', 'tag--ok'] };
+const Q_TYPES = { he: ['ערב דינר / התרמה', 'חתונה', 'בר מצווה', 'בת מצווה', 'נופש סוכות', 'נופש פסח', 'אירוע חברה'], fr: ['Gala / dîner de bienfaisance', 'Mariage', 'Bar-mitsva', 'Bat-mitsva', 'Séjour Souccot', 'Séjour Pessah', 'Événement d’entreprise'] };
+const qMoney = (v, cur) => new Intl.NumberFormat('he-IL', { style: 'currency', currency: cur === 'EUR' ? 'EUR' : 'ILS', maximumFractionDigits: 2 }).format(v || 0);
+function qTotals(q) {
+  const sub = (q.items || []).reduce((s, it) => s + (Number(it.qty) || 1) * (Number(it.price) || 0), 0);
+  const after = Math.max(0, sub - (Number(q.discount) || 0));
+  const r = (Number(q.vatRate) || 18) / 100;
+  if (q.vat === 'plus') return { sub, after, vat: after * r, total: after * (1 + r) };
+  if (q.vat === 'incl') return { sub, after, vat: after - after / (1 + r), total: after };
+  return { sub, after, vat: 0, total: after };
+}
+const waNum = phone => { let d = String(phone || "").replace(/D/g, ""); if (d.startsWith("0")) d = "972" + d.slice(1); return d; };
+const qLink = q => `${location.origin}/quote/?id=${encodeURIComponent(q.id)}&t=${encodeURIComponent(q.token)}`;
+async function loadQuotes() {
+  try { const r = await fetch('/api/quotes', { cache: 'no-store' }); quotesList = r.ok ? await r.json() : []; } catch (e) { quotesList = []; }
+}
+async function loadQuoteCatalog() {
+  if (quoteCat) return quoteCat;
+  try { const r = await fetch('/api/quotes?catalog', { cache: 'no-store' }); const j = r.ok ? await r.json() : {}; quoteCat = j.sections ? j : clone(QUOTE_DEFAULTS); }
+  catch (e) { quoteCat = clone(QUOTE_DEFAULTS); }
+  return quoteCat;
+}
+/** A new quote in the company's template, optionally filled from a request that came from the site. */
+function newQuote(lead) {
+  const lang = lead?.lang === 'fr' ? 'fr' : 'he', D = quoteCat[lang] || QUOTE_DEFAULTS[lang];
+  return {
+    lang, currency: 'ILS', status: 'draft',
+    title: D.title + (lead?.service ? ` — ${lead.service}` : ''), subtitle: D.subtitle,
+    client: { name: lead?.name || '', phone: lead?.phone || '', email: lead?.email || '' },
+    event: { type: lead?.service || '', date: lead?.date || '', place: '', guests: lead?.guests || '' },
+    intro: D.intro, sections: [], items: (D.lines || []).map(n => ({ name: n, qty: 1, price: 0 })),
+    discount: 0, vat: 'incl', vatRate: quoteCat.vatRate || 18, vatNote: '', payment: D.payment || '', validDays: 14,
+    closing: D.closing, tagline: D.tagline, leadId: lead?.id || '',
+  };
+}
+async function startQuote(lead) {
+  await loadQuoteCatalog();
+  qEdit = newQuote(lead); qDirty = !!lead;
+  if (page === 'quotes') render(); else go('quotes');
+}
+async function saveQuote(extra = {}) {
+  const r = await fetch('/api/quotes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...qEdit, ...extra }) });
+  if (r.status === 401) { toast('פג תוקף הכניסה. היכנסו שוב', 'err'); showLogin(); return null; }
+  if (!r.ok) { toast(r.status === 503 ? 'האחסון הפרטי עוד לא מחובר' : 'השמירה נכשלה. נסו שוב', 'err'); return null; }
+  qEdit = await r.json(); qDirty = false; quotesList = null;
+  return qEdit;
+}
+
+function quotes(pg) {
+  if (!quoteCat) { pg.append(html('<p class="hint">טוען…</p>')); loadQuoteCatalog().then(() => page === 'quotes' && render()); return; }
+  if (qEdit) return quoteEditor(pg);
+  if (!quotesList) { pg.append(html('<p class="hint">טוען את ההצעות…</p>')); loadQuotes().then(() => page === 'quotes' && render()); return; }
+  const c = card('הצעות מחיר', 'כל ההצעות ששלחתם, ומי כבר אישר', '<button type="button" class="btn btn--gold" data-new>+ הצעת מחיר חדשה</button>');
+  $('[data-new]', c).addEventListener('click', () => startQuote(null));
+  if (!quotesList.length) c.append(html('<p class="empty">עוד אין הצעות. לוחצים "הצעת מחיר חדשה", או "הכנת הצעת מחיר" ליד פנייה שהגיעה מהאתר.</p>'));
+  quotesList.forEach(q => {
+    const st = Q_STATUS[q.status] || Q_STATUS.draft, tot = qTotals(q);
+    const row = html(`<article class="lead">
+      <div><div class="lead__name">${esc(q.client?.name || 'ללא שם')} <span class="tag ${st[1]}">${st[0]}</span> <span class="tag">${esc(q.number || '')}</span></div>
+        <div class="lead__meta"><span>${esc(q.event?.type || q.title || '')}</span>${tot.total ? `<b>${qMoney(tot.total, q.currency)}</b>` : ''}<span>${date(q.createdAt)}</span>
+        ${q.status === 'accepted' ? `<span>אושרה על ידי ${esc(q.accepted?.name || '')}, ${date(q.accepted?.at)}</span>` : ''}</div></div>
+      <div class="row-tools">
+        <button type="button" class="btn btn--line btn--sm" data-edit>עריכה</button>
+        <a class="btn btn--line btn--sm" href="${esc(qLink(q))}" target="_blank" rel="noopener">צפייה</a>
+        <button type="button" class="btn btn--line btn--sm" data-copy>העתקת קישור</button>
+        <button type="button" class="icon icon--del" data-del title="מחיקה">✕</button></div></article>`);
+    $('[data-edit]', row).addEventListener('click', () => { qEdit = clone(q); qDirty = false; render(); });
+    $('[data-copy]', row).addEventListener('click', async () => { try { await navigator.clipboard.writeText(qLink(q)); toast('הקישור הועתק'); } catch (e) { prompt('הקישור להצעה:', qLink(q)); } });
+    $('[data-del]', row).addEventListener('click', async () => {
+      if (!confirm(`למחוק את ההצעה ${q.number}? אי אפשר לשחזר.`)) return;
+      const r = await fetch(`/api/quotes?id=${encodeURIComponent(q.id)}`, { method: 'DELETE' });
+      if (!r.ok) return toast('המחיקה נכשלה', 'err');
+      quotesList = quotesList.filter(x => x !== q); render(); toast('נמחקה');
+    });
+    c.append(row);
+  });
+  pg.append(c, quoteCatalogCard());
+}
+
+function quoteEditor(pg) {
+  const q = qEdit, he = q.lang !== 'fr';
+  const dirty = () => { qDirty = true; };
+  const reDraw = () => { const y = scrollY; render(); scrollTo({ top: y }); };
+  const head = html(`<div class="qbar">
+    <button type="button" class="btn btn--line" data-back>→ לרשימת ההצעות</button>
+    <b>${q.id ? `הצעה ${esc(q.number)}` : 'הצעת מחיר חדשה'}</b>
+    <span class="qbar__sp"></span>
+    <button type="button" class="btn btn--line" data-save>שמירה</button>
+    <button type="button" class="btn btn--dark" data-view>שמירה ותצוגת ההצעה</button>
+    <button type="button" class="btn btn--gold" data-wa>שליחה ללקוח בוואטסאפ</button></div>`);
+  $('[data-back]', head).addEventListener('click', () => { if (qDirty && !confirm('יש שינויים שלא נשמרו. לצאת בלי לשמור?')) return; qEdit = null; render(); });
+  $('[data-save]', head).addEventListener('click', async () => { if (await saveQuote()) { toast('ההצעה נשמרה'); reDraw(); } });
+  $('[data-view]', head).addEventListener('click', async () => {
+    const w = window.open('', '_blank');
+    const s = await saveQuote();
+    if (s) { w ? (w.location = qLink(s)) : window.open(qLink(s), '_blank'); reDraw(); } else w?.close();
+  });
+  $('[data-wa]', head).addEventListener('click', async () => {
+    if (!q.client.phone) return toast('חסר טלפון של הלקוח (בשלב 1)', 'err');
+    const w = window.open('', '_blank');
+    const s = await saveQuote({ status: 'sent' });
+    if (!s) return w?.close();
+    const msg = s.lang === 'fr'
+      ? `Bonjour ${s.client.name},\nVoici notre devis${s.event.type ? ` pour ${s.event.type}` : ''} :\n${qLink(s)}\nVous pouvez le consulter, le télécharger en PDF et le valider en ligne.\nLA BELLE VIE`
+      : `שלום ${s.client.name},\nמצורפת הצעת המחיר שלנו${s.event.type ? ` ל${s.event.type}` : ''}:\n${qLink(s)}\nאפשר לצפות, להוריד כ-PDF ולאשר ישירות מהקישור.\nLa Belle Vie`;
+    const url = `https://wa.me/${waNum(s.client.phone)}?text=${encodeURIComponent(msg)}`;
+    w ? (w.location = url) : window.open(url, '_blank');
+    reDraw();
+  });
+
+  // 1. For whom
+  const c1 = card('1. למי ההצעה', 'הפרטים של הלקוח ושל האירוע. מה שעוד לא ידוע יופיע בהצעה כ"להשלמה".');
+  const lang = html(`<div class="seg" role="group" aria-label="שפת ההצעה"><button type="button" data-l="he" aria-pressed="${he}">ההצעה בעברית</button><button type="button" data-l="fr" aria-pressed="${!he}">L’offre en français</button></div>`);
+  $$('[data-l]', lang).forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.l === q.lang) return;
+    const D = quoteCat[b.dataset.l];
+    if (confirm('להחליף גם את הטקסטים הקבועים (פתיחה, סיום, שורות המחיר) לשפה החדשה? הפרקים שבחרתם יוסרו ותבחרו אותם שוב.')) {
+      Object.assign(q, { title: D.title, subtitle: D.subtitle, intro: D.intro, closing: D.closing, tagline: D.tagline, payment: D.payment || '', sections: [], items: (D.lines || []).map(n => ({ name: n, qty: 1, price: 0 })) });
+    }
+    q.lang = b.dataset.l; dirty(); reDraw();
+  }));
+  const g1 = html('<div class="grid2"></div>');
+  const dl = html(`<datalist id="qTypes">${Q_TYPES[q.lang].map(t => `<option value="${esc(t)}">`).join('')}</datalist>`);
+  g1.append(
+    field('שם הלקוח / המוסד', q.client.name, v => { q.client.name = v; dirty(); }),
+    field('טלפון', q.client.phone, v => { q.client.phone = v; dirty(); }, { dir: 'ltr' }),
+    field('מייל', q.client.email, v => { q.client.email = v; dirty(); }, { dir: 'ltr' }),
+    field('סוג האירוע', q.event.type, v => { q.event.type = v; dirty(); }),
+    field('תאריך האירוע', q.event.date, v => { q.event.date = v; dirty(); }, { placeholder: 'למשל 12.03.2027' }),
+    field('מקום', q.event.place, v => { q.event.place = v; dirty(); }),
+    field('מספר משתתפים', q.event.guests, v => { q.event.guests = v; dirty(); }));
+  $('input', g1.children[3]).setAttribute('list', 'qTypes');
+  c1.append(lang, g1, dl);
+
+  // 2. What is included
+  const secs = quoteCat.sections.map(s => s[q.lang] || s.he).filter(s => s.title);
+  const c2 = card('2. מה כלול בהצעה', 'לוחצים על פרק כדי להוסיף אותו, ואחר כך אפשר לשנות כל שורה. איפה שכתוב <bdi dir="ltr">{client}</bdi> ייכנס לבד שם הלקוח.');
+  const chips = html('<div class="qchips"></div>');
+  secs.forEach(s => {
+    const on = q.sections.some(x => x.title === s.title);
+    const b = html(`<button type="button" class="qchip ${on ? 'is-on' : ''}">${on ? '✓' : '+'} ${esc(s.title)}</button>`);
+    b.addEventListener('click', () => {
+      const i = q.sections.findIndex(x => x.title === s.title);
+      if (i >= 0) q.sections.splice(i, 1); else q.sections.push(clone(s));
+      dirty(); reDraw();
+    });
+    chips.append(b);
+  });
+  const all = html('<button type="button" class="btn btn--line btn--sm">כל הפרקים</button>');
+  all.addEventListener('click', () => { q.sections = secs.map(clone); dirty(); reDraw(); });
+  const own = html('<button type="button" class="btn btn--line btn--sm">+ פרק חדש משלי</button>');
+  own.addEventListener('click', () => { q.sections.push({ title: '', bullets: [] }); dirty(); reDraw(); });
+  c2.append(chips, html('<div class="row-tools"></div>'));
+  c2.lastChild.append(all, own);
+  q.sections.forEach((s, i) => {
+    const blk = html(`<div class="block"><div class="block__head"><span class="block__kind">פרק ${i + 1}</span></div></div>`);
+    blk.firstChild.append(tools(q.sections, i, () => { dirty(); reDraw(); }, { hide: false, confirm: 'להסיר את הפרק מההצעה?' }));
+    blk.append(field('כותרת הפרק', s.title, v => { s.title = v; dirty(); }),
+      field('השורות (כל שורה בשורה נפרדת)', (s.bullets || []).join('\n'), v => { s.bullets = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 4 }));
+    c2.append(blk);
+  });
+
+  // 3. The price
+  const c3 = card('3. המחיר', 'שורה עם מחיר 0 תופיע בהצעה כ"______". הסכום הכולל מחושב לבד.');
+  const sum = html('<div class="qsum"></div>');
+  const drawSum = () => {
+    const t = qTotals(q);
+    sum.innerHTML = `${q.discount ? `<span>לפני הנחה: ${qMoney(t.sub, q.currency)}</span>` : ''}
+      ${q.vat === 'plus' ? `<span>לפני מע״מ: ${qMoney(t.after, q.currency)}</span><span>מע״מ ${q.vatRate}%: ${qMoney(t.vat, q.currency)}</span>` : ''}
+      ${q.vat === 'incl' && t.total ? `<span>מתוכו מע״מ: ${qMoney(t.vat, q.currency)}</span>` : ''}
+      <b>סה״כ לתשלום: ${qMoney(t.total, q.currency)}</b>`;
+  };
+  q.items.forEach((it, i) => {
+    const row = html('<div class="qline"></div>');
+    const lineTot = html('<span class="qline__tot"></span>');
+    const upd = () => { lineTot.textContent = qMoney((Number(it.qty) || 1) * (Number(it.price) || 0), q.currency); drawSum(); };
+    row.append(
+      field(i ? '' : 'פירוט', it.name, v => { it.name = v; dirty(); }, { multi: true, rows: 1 }),
+      field(i ? '' : 'כמות', it.qty, v => { it.qty = Number(v) || 1; dirty(); upd(); }, { type: 'number', dir: 'ltr' }),
+      field(i ? '' : 'מחיר', it.price || '', v => { it.price = Number(v) || 0; dirty(); upd(); }, { type: 'number', dir: 'ltr', placeholder: '0' }),
+      lineTot);
+    const del = html('<button type="button" class="icon icon--del" title="מחיקת השורה">✕</button>');
+    del.addEventListener('click', () => { q.items.splice(i, 1); dirty(); reDraw(); });
+    row.append(del); upd();
+    c3.append(row);
+  });
+  const addLine = html('<button type="button" class="btn btn--line btn--sm">+ שורה</button>');
+  addLine.addEventListener('click', () => { q.items.push({ name: '', qty: 1, price: 0 }); dirty(); reDraw(); });
+  const g3 = html('<div class="grid2"></div>');
+  const cur = html(`<div class="field"><span>מטבע</span><div class="seg"><button type="button" data-c="ILS" aria-pressed="${q.currency !== 'EUR'}">₪ שקל</button><button type="button" data-c="EUR" aria-pressed="${q.currency === 'EUR'}">€ יורו</button></div></div>`);
+  $$('[data-c]', cur).forEach(b => b.addEventListener('click', () => { q.currency = b.dataset.c; dirty(); reDraw(); }));
+  const vat = html(`<label class="field"><span>מע״מ</span><select>
+    <option value="incl">המחירים כוללים מע״מ</option><option value="plus">להוסיף מע״מ על המחירים</option>
+    <option value="none">ללא מע״מ</option><option value="note">הערה חופשית</option></select></label>`);
+  $('select', vat).value = q.vat;
+  $('select', vat).addEventListener('change', e => { q.vat = e.target.value; dirty(); reDraw(); });
+  g3.append(field('הנחה (סכום)', q.discount || '', v => { q.discount = Number(v) || 0; dirty(); drawSum(); }, { type: 'number', dir: 'ltr', placeholder: '0' }), cur, vat,
+    q.vat === 'note' ? field('מה לכתוב על המע״מ', q.vatNote, v => { q.vatNote = v; dirty(); }, { placeholder: 'למשל: לפי המסלול החל' })
+      : field('אחוז מע״מ', q.vatRate, v => { q.vatRate = Number(v) || 18; dirty(); drawSum(); }, { type: 'number', dir: 'ltr' }));
+  c3.append(addLine, g3, sum);
+  drawSum();
+
+  // 4. Opening and closing words
+  const c4 = card('4. פתיחה, תנאים וסיום', 'כבר מלא בנוסח של La Belle Vie. אפשר לשנות להצעה הזאת בלבד.');
+  const g4 = html('<div class="grid2"></div>');
+  g4.append(field('כותרת', q.title, v => { q.title = v; dirty(); }), field('כותרת משנה', q.subtitle, v => { q.subtitle = v; dirty(); }));
+  c4.append(g4,
+    field('פסקת פתיחה', q.intro, v => { q.intro = v; dirty(); }, { multi: true, rows: 3 }),
+    field('תנאי תשלום', q.payment, v => { q.payment = v; dirty(); }, { multi: true, rows: 2, placeholder: 'למשל: 30% מקדמה באישור ההצעה, והיתרה עד שבוע לפני האירוע' }),
+    field('תוקף ההצעה (ימים)', q.validDays, v => { q.validDays = Number(v) || 14; dirty(); }, { type: 'number', dir: 'ltr' }),
+    field('פסקת סיום', q.closing, v => { q.closing = v; dirty(); }, { multi: true, rows: 3 }),
+    field('שורת הסיום (מתחת לשם La Belle Vie)', q.tagline, v => { q.tagline = v; dirty(); }));
+  pg.append(head, c1, c2, c3, c4);
+}
+
+/** The company's fixed chapters and wording, used to start every new quote. */
+function quoteCatalogCard() {
+  const L2 = qCatLang;
+  const c = card('התבנית הקבועה שלך', 'הפרקים והנוסחים שמהם מתחילה כל הצעה חדשה. שינוי כאן משפיע על הצעות חדשות בלבד.', '<button type="button" class="btn btn--dark btn--sm" data-save>שמירת התבנית</button>');
+  const seg = html(`<div class="seg"><button type="button" data-l="he" aria-pressed="${L2 === 'he'}">עברית</button><button type="button" data-l="fr" aria-pressed="${L2 === 'fr'}">Français</button></div>`);
+  $$('[data-l]', seg).forEach(b => b.addEventListener('click', () => { qCatLang = b.dataset.l; render(); }));
+  c.append(seg);
+  const det = html('<details class="qcat"><summary>הפרקים (' + quoteCat.sections.length + ')</summary></details>');
+  quoteCat.sections.forEach((s, i) => {
+    const x = (s[L2] ??= { title: '', bullets: [] });
+    const blk = html(`<div class="block"><div class="block__head"><span class="block__kind">פרק ${i + 1}</span></div></div>`);
+    blk.firstChild.append(tools(quoteCat.sections, i, () => render(), { hide: false, confirm: 'למחוק את הפרק מהתבנית (בשתי השפות)?' }));
+    blk.append(field('כותרת', x.title, v => { x.title = v; }), field('השורות (כל שורה בשורה נפרדת)', (x.bullets || []).join('\n'), v => { x.bullets = v.split('\n').map(y => y.trim()).filter(Boolean); }, { multi: true, rows: 4 }));
+    det.append(blk);
+  });
+  const add = html('<button type="button" class="btn btn--line btn--sm">+ פרק חדש לתבנית</button>');
+  add.addEventListener('click', () => { quoteCat.sections.push({ he: { title: '', bullets: [] }, fr: { title: '', bullets: [] } }); render(); });
+  det.append(add);
+  const T = (quoteCat[L2] ??= {});
+  const det2 = html('<details class="qcat"><summary>הנוסחים הקבועים</summary></details>');
+  det2.append(field('כותרת', T.title, v => { T.title = v; }), field('כותרת משנה', T.subtitle, v => { T.subtitle = v; }),
+    field('פסקת פתיחה', T.intro, v => { T.intro = v; }, { multi: true, rows: 3 }),
+    field('שורות המחיר (כל שורה בשורה נפרדת)', (T.lines || []).join('\n'), v => { T.lines = v.split('\n').map(y => y.trim()).filter(Boolean); }, { multi: true, rows: 3 }),
+    field('תנאי תשלום', T.payment, v => { T.payment = v; }, { multi: true, rows: 2 }),
+    field('פסקת סיום', T.closing, v => { T.closing = v; }, { multi: true, rows: 3 }),
+    field('שורת הסיום', T.tagline, v => { T.tagline = v; }));
+  c.append(det, det2);
+  $('[data-save]', c).addEventListener('click', async () => {
+    const r = await fetch('/api/quotes?catalog', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(quoteCat) });
+    if (!r.ok) return toast('השמירה נכשלה', 'err');
+    quoteCat = await r.json(); toast('התבנית נשמרה'); render();
+  });
+  return c;
 }
 
 /* ---------- load / save / auth ---------- */
