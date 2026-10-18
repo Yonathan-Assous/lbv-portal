@@ -1430,7 +1430,9 @@ function quoteEditor(pg) {
       ${q.vat === 'incl' && t.total ? `<span>מתוכו מע״מ: ${qMoney(t.vat, q.currency)}</span>` : ''}
       <b>סה״כ לתשלום: ${qMoney(t.total, q.currency)}</b>${q.packages ? `<span>ובנוסף החבילה החודשית שהלקוח יבחר</span>` : ''}`;
   });
-  c2.append(g3, sum);
+  const np = html(`<label class="np"><input type="checkbox" ${q.hidePrices ? 'checked' : ''}> הצעה בלי מחירים (רק מה כלול, בלי סכומים)</label>`);
+  $('input', np).addEventListener('change', e => { q.hidePrices = e.target.checked; dirty(); });
+  c2.append(g3, np, sum);
 
   // 3. Wording (already filled; open only to change)
   const c3 = card('3. נוסחים ותנאים', 'כבר מלא בנוסח של La Belle Vie. פותחים רק אם רוצים לשנות להצעה הזאת.');

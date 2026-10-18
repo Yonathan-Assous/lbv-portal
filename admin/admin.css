@@ -420,3 +420,5 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
   .pkgrid, .grid3 { grid-template-columns: 1fr; }
   .qbar__total { order: 5; width: 100%; text-align: center; }
 }
+.np { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; font-weight: 700; cursor: pointer; }
+.np input { width: 20px; height: 20px; accent-color: var(--gold-d); }

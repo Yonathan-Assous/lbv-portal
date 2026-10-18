@@ -53,7 +53,14 @@
   /** The quote as a list of blocks; the page layout puts as many as fit on each A4 page. */
   function blocks(q, t, lang, contact) {
     const who = (q.client && q.client.name) || t.clientDefault;
-    const fill = s => esc(String(s || '').replace(/\{client\}/g, who));
+    // Without prices: amounts are left out everywhere (also "– 600 ₪" at the end of a line).
+    const np = s => {
+      s = String(s || '');
+      if (!q.hidePrices) return s;
+      s = s.replace(/\s+[–-]\s+[^–]*(₪|€|%)[^–]*$/, '');
+      return /[₪€]/.test(s) ? '' : s;   // a line that is only about a price is left out
+    };
+    const fill = s => esc(np(s).replace(/\{client\}/g, who));
     const tbd = v => v ? esc(v) : `<span class="tbd">${t.tbd}</span>`;
     const cur = v => money(v, q.currency, lang);
     const issued = new Date(q.createdAt || Date.now());
@@ -74,11 +81,11 @@
     if (secs.length) {
       out.push(`<h2 class="q-h">${t.included}</h2>`);
       secs.forEach((s, i) => {
-        const price = Number(s.price) ? `<span class="q-price">${cur(Number(s.price))}${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}</span>` : '';
+        const price = Number(s.price) && !q.hidePrices ? `<span class="q-price">${cur(Number(s.price))}${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}</span>` : '';
         const head = cont => `<h3><span class="q-num">${i + 1}</span>${fill(s.title)}${cont ? ` <small>${t.cont}</small>` : price}</h3>`;
         const bl = s.bullets || [];
         // Long chapters are split in two so a page never overflows.
-        const part = (from, to, cont) => `<section class="q-sec">${head(cont)}<ul>${bl.slice(from, to).map(b => `<li>${fill(b)}</li>`).join('')}</ul></section>`;
+        const part = (from, to, cont) => `<section class="q-sec">${head(cont)}<ul>${bl.slice(from, to).map(fill).filter(Boolean).map(b => `<li>${b}</li>`).join('')}</ul></section>`;
         if (bl.length > 7) out.push({ html: part(0, bl.length), split: [part(0, Math.ceil(bl.length / 2)), part(Math.ceil(bl.length / 2), bl.length, true)] });
         else out.push(part(0, bl.length));
       });
@@ -87,14 +94,14 @@
     const pk = q.packages;
     if (pk && pk.options && pk.options.length) {
       out.push(`<h2 class="q-h">${fill(pk.title)}</h2>${pk.intro && pk.intro !== q.intro ? `<p class="q-pk-intro">${fill(pk.intro)}</p>` : ''}`);
-      if (pk.setup) out.push(`<div class="q-setup"><b>${fill(pk.setup.name)}</b><span class="q-price">${Number(pk.setup.price) ? cur(Number(pk.setup.price)) : t.tbd}</span>
-        ${(pk.setup.bullets || []).length ? `<ul>${pk.setup.bullets.map(b => `<li>${fill(b)}</li>`).join('')}</ul>` : ''}</div>`);
+      if (pk.setup) out.push(`<div class="q-setup"><b>${fill(pk.setup.name)}</b>${q.hidePrices ? '' : `<span class="q-price">${Number(pk.setup.price) ? cur(Number(pk.setup.price)) : t.tbd}</span>`}
+        ${(pk.setup.bullets || []).length ? `<ul>${pk.setup.bullets.map(fill).filter(Boolean).map(b => `<li>${b}</li>`).join('')}</ul>` : ''}</div>`);
       out.push(`<div class="q-pkgs" style="--n:${pk.options.length}">${pk.options.map(o => `
         <div class="q-pkg ${o.recommended ? 'is-rec' : ''}">${o.recommended ? `<span class="q-rec">${t.rec}</span>` : ''}
-          <h4>${esc(o.name)}</h4><div class="q-pkg__price">${Number(o.price) ? cur(Number(o.price)) : t.tbd}<small>${esc(pk.unit || '')}</small></div>
-          <ul>${(o.bullets || []).map(b => `<li>${fill(b)}</li>`).join('')}</ul></div>`).join('')}</div>
+          <h4>${esc(o.name)}</h4>${q.hidePrices ? '' : `<div class="q-pkg__price">${Number(o.price) ? cur(Number(o.price)) : t.tbd}<small>${esc(pk.unit || '')}</small></div>`}
+          <ul>${(o.bullets || []).map(fill).filter(Boolean).map(b => `<li>${b}</li>`).join('')}</ul></div>`).join('')}</div>
         ${pk.note ? `<p class="q-note">${fill(pk.note)}</p>` : ''}`);
-      if ((pk.extras || []).length) out.push(`<div class="q-extras"><h3>${t.extras}</h3><ul>${pk.extras.map(x => `<li>${fill(x)}</li>`).join('')}</ul></div>`);
+      if ((pk.extras || []).length) out.push(`<div class="q-extras"><h3>${t.extras}</h3><ul>${pk.extras.map(fill).filter(Boolean).map(x => `<li>${x}</li>`).join('')}</ul></div>`);
     }
 
     // The money: each priced chapter, the extra lines, the setup; then the total.
@@ -105,7 +112,7 @@
     secs.forEach((s, i) => { if (secPriced) rows.push([`<b>${i + 1}. ${fill(s.title)}</b>${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}`, Number(s.price) ? cur(Number(s.price)) : (anyPrice ? t.incl : '______')]); });
     (q.items || []).forEach(it => { const v = (Number(it.qty) || 1) * (Number(it.price) || 0); rows.push([`<b>${fill(it.name)}</b>${(Number(it.qty) || 1) !== 1 ? ` <small>× ${it.qty}</small>` : ''}${it.unit ? ` <small>${esc(it.unit)}</small>` : ''}`, v ? cur(v) : '______']); });
     if (pk && pk.setup) rows.push([`<b>${fill(pk.setup.name)}</b>`, Number(pk.setup.price) ? cur(Number(pk.setup.price)) : '______']);
-    if (rows.length || pk) {
+    if ((rows.length || pk) && !q.hidePrices) {
       out.push(`<div><h2 class="q-h">${t.fin}</h2>
         ${rows.length ? `<table class="q-table"><thead><tr><th>${t.item}</th><th class="n">${t.amount}</th></tr></thead>
           <tbody>${rows.map(r => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td></tr>`).join('')}</tbody></table>` : ''}
@@ -118,7 +125,7 @@
     }
 
     const vatLine = q.vat === 'incl' ? `${t.vatIncl}${anyPrice ? ` (${t.vatPart} ${q.vatRate}%: ${cur(tot.vat)})` : ''}` : q.vat === 'none' ? t.vatNone : q.vat === 'note' ? `${t.vat}: ${esc(q.vatNote || t.tbd)}` : '';
-    out.push(`<div class="q-terms">${vatLine ? `<p>${vatLine}</p>` : ''}
+    out.push(`<div class="q-terms">${vatLine && !q.hidePrices ? `<p>${vatLine}</p>` : ''}
       <div><h3>${t.payment}</h3><p>${q.payment ? esc(q.payment) : `<span class="tbd">${t.tbd}</span>`}</p></div>
       <div><h3>${t.validity}</h3><p>${t.validText(q.validDays || 14, dateStr(until, lang))}</p></div>
       ${q.closing ? `<p>${fill(q.closing)}</p>` : ''}</div>`);

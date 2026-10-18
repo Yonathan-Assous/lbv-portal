@@ -67,6 +67,7 @@ function cleanQuote(b) {
     sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 20).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400), price: num(x.price), unit: str(x.unit, 40) })),
     items: (Array.isArray(b.items) ? b.items : []).slice(0, 60).map(it => ({ name: str(it.name, 300), qty: num(it.qty) || 1, price: num(it.price), unit: str(it.unit, 40) })),
     packages: cleanPackages(b.packages),
+    hidePrices: b.hidePrices === true,
     discount: num(b.discount),
     vat: pick(b.vat, ["incl", "plus", "none", "note"], "incl"),
     vatRate: num(b.vatRate) || 18,
