@@ -100,7 +100,9 @@
     // The money: each priced chapter, the extra lines, the setup; then the total.
     const rows = [];
     const anyPrice = tot.sub > 0;
-    secs.forEach((s, i) => { if (Number(s.price) || anyPrice) rows.push([`<b>${i + 1}. ${fill(s.title)}</b>${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}`, Number(s.price) ? cur(Number(s.price)) : (anyPrice ? t.incl : '______')]); });
+    // Chapters appear in the table only when some of them have their own price (otherwise they are described above).
+    const secPriced = secs.some(s => Number(s.price));
+    secs.forEach((s, i) => { if (secPriced) rows.push([`<b>${i + 1}. ${fill(s.title)}</b>${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}`, Number(s.price) ? cur(Number(s.price)) : (anyPrice ? t.incl : '______')]); });
     (q.items || []).forEach(it => { const v = (Number(it.qty) || 1) * (Number(it.price) || 0); rows.push([`<b>${fill(it.name)}</b>${(Number(it.qty) || 1) !== 1 ? ` <small>× ${it.qty}</small>` : ''}${it.unit ? ` <small>${esc(it.unit)}</small>` : ''}`, v ? cur(v) : '______']); });
     if (pk && pk.setup) rows.push([`<b>${fill(pk.setup.name)}</b>`, Number(pk.setup.price) ? cur(Number(pk.setup.price)) : '______']);
     if (rows.length || pk) {
