@@ -45,6 +45,17 @@ const pick = (v, ok, dflt) => (ok.includes(v) ? v : dflt);
 
 /** Only known fields, with limits: what the admin may store in a quote. */
 const lines = (v, n, max) => (Array.isArray(v) ? v : []).slice(0, n).map(x => str(x, max)).filter(x => x.trim());
+/** Packages the client chooses from (e.g. social media: one-time setup + a monthly package). */
+function cleanPackages(p) {
+  if (!p || typeof p !== 'object') return null;
+  const opt = (Array.isArray(p.options) ? p.options : []).slice(0, 4).map(o => ({ name: str(o.name, 80), price: num(o.price), recommended: o.recommended === true, bullets: lines(o.bullets, 20, 200) }));
+  if (!opt.length) return null;
+  return {
+    title: str(p.title, 160), intro: str(p.intro, 2000), unit: str(p.unit, 40), note: str(p.note, 600),
+    setup: p.setup && p.setup.name ? { name: str(p.setup.name, 160), price: num(p.setup.price), bullets: lines(p.setup.bullets, 20, 300) } : null,
+    options: opt,
+  };
+}
 function cleanQuote(b) {
   return {
     lang: pick(b.lang, ["he", "fr"], "he"),
@@ -53,8 +64,9 @@ function cleanQuote(b) {
     client: { name: str(b.client?.name, 120), phone: str(b.client?.phone, 40), email: str(b.client?.email, 160) },
     event: { type: str(b.event?.type, 80), date: str(b.event?.date, 60), guests: str(b.event?.guests, 40), place: str(b.event?.place, 120) },
     intro: str(b.intro, 3000),
-    sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 20).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400) })),
-    items: (Array.isArray(b.items) ? b.items : []).slice(0, 60).map(it => ({ name: str(it.name, 300), qty: num(it.qty) || 1, price: num(it.price) })),
+    sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 20).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400), price: num(x.price), unit: str(x.unit, 40) })),
+    items: (Array.isArray(b.items) ? b.items : []).slice(0, 60).map(it => ({ name: str(it.name, 300), qty: num(it.qty) || 1, price: num(it.price), unit: str(it.unit, 40) })),
+    packages: cleanPackages(b.packages),
     discount: num(b.discount),
     vat: pick(b.vat, ["incl", "plus", "none", "note"], "incl"),
     vatRate: num(b.vatRate) || 18,
@@ -90,7 +102,8 @@ export default async function handler(req, res) {
       if (!name) return res.status(400).json({ error: 'name' });
       if (q.status !== 'accepted') {
         q.status = 'accepted';
-        q.accepted = { name, at: new Date().toISOString() };
+        const pkg = q.packages && q.packages.options.find(o => o.name === str(b.package, 80));
+        q.accepted = { name, at: new Date().toISOString(), ...(pkg ? { package: pkg.name, packagePrice: pkg.price } : {}) };
         await writeJson(`quotes/${view}.json`, q);
       }
       return res.status(200).json(forClient(q));
@@ -110,7 +123,11 @@ export default async function handler(req, res) {
       try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
       const sec = arr => (Array.isArray(arr) ? arr : []).slice(0, 40).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400) }));
       const txt = o => ({ title: str(o?.title, 160), subtitle: str(o?.subtitle, 160), intro: str(o?.intro, 3000), closing: str(o?.closing, 3000), tagline: str(o?.tagline, 200), payment: str(o?.payment, 1000), lines: lines(o?.lines, 20, 300) });
-      const cat = { sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 40).map(x => ({ he: sec([x.he])[0] || { title: "", bullets: [] }, fr: sec([x.fr])[0] || { title: "", bullets: [] } })), he: txt(b.he), fr: txt(b.fr), vatRate: num(b.vatRate) || 18 };
+      const cat = {
+        sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 40).map(x => ({ he: sec([x.he])[0] || { title: "", bullets: [] }, fr: sec([x.fr])[0] || { title: "", bullets: [] }, price: num(x.price), unit: str(x.unit, 40) })),
+        he: txt(b.he), fr: txt(b.fr), vatRate: num(b.vatRate) || 18,
+        social: b.social ? { he: cleanPackages(b.social.he), fr: cleanPackages(b.social.fr) } : null,
+      };
       await writeJson(CATALOG, cat);
       return res.status(200).json(cat);
     }

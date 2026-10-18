@@ -6,7 +6,7 @@ export const QUOTE_DEFAULTS = {
     title: 'הצעת מחיר',
     subtitle: 'הפקה מלאה, מקצה לקצה',
     intro: 'La Belle Vie מציעה לכם ליווי מלא של הערב, מהרעיון הראשון ועד התיאום ביום האירוע. המטרה שלנו: ערב אלגנטי ומרגש, שמשרת את {client} ומחזק את הקשר עם התורמים.',
-    lines: ['חבילת La Belle Vie: תכנון, ארגון, עיצוב גרפי ותיאום מלא', 'תקציב הספקים החיצוניים שייבחרו: אולם, קייטרינג, עיצוב, טכני, הופעות, הדפסות ומתנות'],
+    lines: ['תקציב הספקים החיצוניים שייבחרו: אולם, קייטרינג, עיצוב, טכני, הופעות, הדפסות ומתנות'],
     payment: '',
     closing: 'החבילה כוללת את הליווי והתיאום של כל הסעיפים שפורטו למעלה. רכישות, השכרות, הפקות וספקים חיצוניים מתומחרים לפי הבחירות והכמויות שנאשר יחד. כל הוצאה מקבלת את האישור שלכם לפני שמתחייבים.',
     tagline: 'חזון אחד. הפקה מלאה. ערב שנראה בדיוק כמו שחלמתם.',
@@ -15,10 +15,35 @@ export const QUOTE_DEFAULTS = {
     title: 'Devis',
     subtitle: 'Prestation complète clé en main',
     intro: 'LA BELLE VIE vous propose une prise en charge complète de votre gala, de la création du concept jusqu’à la coordination de la soirée. Notre objectif : concevoir un événement élégant et marquant, au service du rayonnement de {client} et de la mobilisation de ses donateurs.',
-    lines: ['Forfait LA BELLE VIE : conception, organisation, création graphique et coordination complète', 'Budget des prestations externes retenues : salle, restauration, décoration, technique, animations, impressions et cadeaux'],
+    lines: ['Budget des prestations externes retenues : salle, restauration, décoration, technique, animations, impressions et cadeaux'],
     payment: '',
     closing: 'Le forfait comprend l’accompagnement et la coordination des postes détaillés ci-dessus. Les achats, locations, fabrications et prestations externes sont chiffrés selon les choix et quantités validés ensemble. Chaque dépense est soumise à votre accord avant engagement.',
     tagline: 'Une vision, une organisation complète, une soirée à votre image.',
+  },
+  // Social media management: a one-time setup, then a monthly package the client chooses (shown side by side).
+  social: {
+    he: {
+      title: "ניהול רשתות חברתיות", intro: "כל מה שצריך כדי שהעסק יופיע ויימכר ברשתות: פתיחת החשבונות ומיתוגם, כתיבת תוכן, צילום ועריכת סרטונים, העלאה שוטפת, מענה לגולשים וקמפיינים ממומנים. אתם מתמקדים בעסק, ואנחנו בכל השאר.",
+      unit: "לחודש",
+      setup: { name: "הקמה מאפס (תשלום חד־פעמי)", price: 2900, bullets: ["פתיחת חשבונות אינסטגרם, פייסבוק וטיקטוק, חשבון עסקי ומנהל מודעות.", "מיתוג הפרופילים: תמונת פרופיל וקאבר, ביוגרפיה, קישורים וכפתור וואטסאפ.", "עיצוב בסיס: כיסויי הייליטס ותבניות קבועות לפוסטים ולסרטונים.", "אסטרטגיה ותוכנית תוכן: פגישת אפיון, קהל יעד, בדיקת מתחרים ותוכנית לחודש הראשון."] },
+      options: [
+        { name: "בסיס", price: 2400, recommended: false, bullets: ["אינסטגרם ופייסבוק", "8 פוסטים מעוצבים בחודש", "4 סרטוני רילס ערוכים", "3 סטוריז בשבוע", "מענה לתגובות והודעות א׳–ה׳", "דו״ח ביצועים חודשי"] },
+        { name: "צמיחה", price: 3900, recommended: true, bullets: ["אינסטגרם, פייסבוק וטיקטוק", "יום צילום בעסק פעם בחודש", "12 פוסטים מעוצבים", "8 סרטוני רילס ערוכים", "5 סטוריז בשבוע", "מענה לתגובות והודעות א׳–ו׳", "עד 3 קמפיינים ממומנים", "דו״ח ביצועים חודשי ופגישה"] },
+        { name: "פרימיום", price: 6500, recommended: false, bullets: ["אינסטגרם, פייסבוק, טיקטוק ויוטיוב שורטס", "2 ימי צילום בחודש", "16 פוסטים מעוצבים", "12 סרטוני רילס ערוכים", "סטוריז כל יום", "מענה לתגובות והודעות א׳–ו׳", "עד 5 קמפיינים ממומנים", "דו״ח שבועי ופגישה חודשית"] },
+      ],
+      note: "תקציב הפרסום עצמו משולם ישירות למטא או לטיקטוק, ואינו כלול במחיר החבילה.",
+    },
+    fr: {
+      title: "Gestion des réseaux sociaux", intro: "Tout ce qu’il faut pour que votre activité existe et vende sur les réseaux : création et image des comptes, rédaction, tournage et montage vidéo, publication régulière, réponses aux abonnés et campagnes sponsorisées. Vous vous concentrez sur votre activité, nous nous occupons du reste.",
+      unit: "par mois",
+      setup: { name: "Mise en place (paiement unique)", price: 2900, bullets: ["Création des comptes Instagram, Facebook et TikTok, compte professionnel et gestionnaire de publicités.", "Image des profils : photo, couverture, bio, liens et bouton WhatsApp.", "Design de base : couvertures des stories à la une et modèles de publications et vidéos.", "Stratégie et plan de contenu : rendez-vous de lancement, cible, analyse de la concurrence et plan du premier mois."] },
+      options: [
+        { name: "Essentiel", price: 2400, recommended: false, bullets: ["Instagram et Facebook", "8 publications par mois", "4 reels montés", "3 stories par semaine", "Réponses aux commentaires et messages du dimanche au jeudi", "Rapport mensuel"] },
+        { name: "Croissance", price: 3900, recommended: true, bullets: ["Instagram, Facebook et TikTok", "Une journée de tournage par mois", "12 publications", "8 reels montés", "5 stories par semaine", "Réponses du dimanche au vendredi", "Jusqu’à 3 campagnes sponsorisées", "Rapport mensuel et rendez-vous"] },
+        { name: "Premium", price: 6500, recommended: false, bullets: ["Instagram, Facebook, TikTok et YouTube Shorts", "2 journées de tournage par mois", "16 publications", "12 reels montés", "Stories tous les jours", "Réponses du dimanche au vendredi", "Jusqu’à 5 campagnes sponsorisées", "Rapport hebdomadaire et rendez-vous mensuel"] },
+      ],
+      note: "Le budget publicitaire est payé directement à Meta ou TikTok et n’est pas inclus dans le prix du forfait.",
+    },
   },
   sections: [
     {

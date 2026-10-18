@@ -94,7 +94,7 @@ async function api(req, res, p) {
     if (view) {
       const q = all.find(x => x.id === view);
       if (!q || u.searchParams.get("t") !== tok(view)) return json(res, 404, { error: "not-found" });
-      if (req.method === "POST") { const b = JSON.parse((await body(req)).toString() || "{}"); if (!b.name) return json(res, 400, { error: "name" }); if (q.status !== "accepted") { q.status = "accepted"; q.accepted = { name: b.name, at: new Date().toISOString() }; saveAll(all); } }
+      if (req.method === "POST") { const b = JSON.parse((await body(req)).toString() || "{}"); if (!b.name) return json(res, 400, { error: "name" }); if (q.status !== "accepted") { q.status = "accepted"; const pk = q.packages && q.packages.options.find(o => o.name === b.package); q.accepted = { name: b.name, at: new Date().toISOString(), ...(pk ? { package: pk.name, packagePrice: pk.price } : {}) }; saveAll(all); } }
       const { createdBy, updatedBy, leadId, ...rest } = q; return json(res, 200, rest);
     }
     const me = authed(req);

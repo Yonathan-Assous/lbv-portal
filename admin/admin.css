@@ -387,3 +387,36 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
   .qline__tot { padding-bottom: 0; text-align: start; }
   .qbar .btn { flex: 1 1 auto; }
 }
+/* Quote editor: one list of services, a tick and a price each */
+.qbar__total { font-weight: 800; color: #8A6413; background: #FBF0D6; padding: 4px 12px; border-radius: 99px; font-variant-numeric: tabular-nums; }
+.svcs { display: grid; gap: 8px; margin-bottom: 12px; }
+.svc { display: grid; grid-template-columns: minmax(0, 1fr) 170px auto; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.svc.is-on { border-color: var(--gold); background: #FFFCF4; box-shadow: 0 0 0 3px rgba(227,182,92,.12); }
+.svc__pick { display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 700; min-width: 0; }
+.svc__pick input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--gold-d); flex: none; }
+.svc__name { min-width: 0; }
+.svc__name input, .svc__free { width: 100%; min-height: 40px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); font: inherit; }
+.svc__price { display: flex; align-items: center; gap: 6px; }
+.svc__price input { width: 100%; min-height: 40px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); font: 700 1rem var(--body, inherit); text-align: end; }
+.svc__price input:disabled { background: var(--bg); opacity: .5; }
+.svc__price span { font-weight: 800; color: var(--ink-2); }
+.svc__more { border: 0; background: none; color: #2B4A9B; font: inherit; font-weight: 700; font-size: .85rem; cursor: pointer; white-space: nowrap; }
+.svc__more:hover { text-decoration: underline; }
+.svc__det { margin: -2px 0 6px; padding: 12px 14px; border-radius: 0 0 12px 12px; background: #F7F9FC; border: 1px solid var(--line); border-top: 0; }
+.extras .svc { grid-template-columns: minmax(0, 1fr) 170px 34px; }
+.extras h3 { margin: 18px 0 8px; font-size: 1rem; }
+.extras h3 small { font-weight: 600; color: var(--ink-3); }
+.extras .svc + .svc { margin-top: 8px; }
+.pkbox { margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: grid; gap: 12px; }
+.pkbox.is-on { border-color: var(--gold); background: #FFFCF4; }
+.pkgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pk { padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+.pk.is-rec { border-color: var(--night); box-shadow: inset 0 3px 0 var(--gold); }
+.pk__rec { display: inline-flex; gap: 6px; align-items: center; font-weight: 800; font-size: .85rem; color: var(--ink-2); margin-bottom: 6px; cursor: pointer; }
+.qmoney { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); }
+@media (max-width: 860px) {
+  .svc { grid-template-columns: 1fr 130px; }
+  .svc__more { grid-column: 1 / -1; justify-self: start; }
+  .pkgrid, .grid3 { grid-template-columns: 1fr; }
+  .qbar__total { order: 5; width: 100%; text-align: center; }
+}
