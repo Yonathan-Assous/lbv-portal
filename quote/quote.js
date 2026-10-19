@@ -19,7 +19,7 @@
       okTitle: 'אישור ההצעה', okText: 'מתאים לכם? כתבו את השם המלא ולחצו על האישור. נקבל הודעה ונחזור אליכם.', okPick: 'איזו חבילה מתאימה לכם?',
       okName: 'השם המלא', okBtn: 'אני מאשר/ת את ההצעה', okDone: 'ההצעה אושרה', okBy: (n, d, p) => `אושרה על ידי ${n}, ב־${d}${p ? `, בחבילת ${p}` : ''}. תודה! נחזור אליכם בהקדם.`,
       okErr: 'לא הצלחנו לשמור את האישור. נסו שוב, או כתבו לנו בוואטסאפ.', print: 'הורדה כ־PDF / הדפסה',
-      extras: 'תוספות לפי בחירה', signName: 'שם', signDate: 'תאריך וחתימה', notFound: 'ההצעה לא נמצאה. ודאו שהקישור שלם, או פנו אלינו.', clientDefault: 'המוסד', cont: '(המשך)',
+      extras: 'תוספות לפי בחירה', rep: 'איש קשר', phone: 'טלפון', mail: 'מייל', hours: 'שעות', signRole: 'תפקיד', signName: 'שם', signDate: 'תאריך וחתימה', notFound: 'ההצעה לא נמצאה. ודאו שהקישור שלם, או פנו אלינו.', clientDefault: 'המוסד', cont: '(המשך)',
     },
     fr: {
       kind: 'Devis', page: (i, n) => `Page ${i} / ${n}`,
@@ -31,7 +31,7 @@
       okTitle: 'Bon pour accord', okText: 'Cela vous convient ? Indiquez votre nom complet et validez. Nous serons prévenus et reviendrons vers vous.', okPick: 'Quel forfait vous convient ?',
       okName: 'Nom complet', okBtn: 'J’accepte ce devis', okDone: 'Devis accepté', okBy: (n, d, p) => `Accepté par ${n}, le ${d}${p ? `, forfait ${p}` : ''}. Merci ! Nous revenons vers vous rapidement.`,
       okErr: 'L’accord n’a pas pu être enregistré. Réessayez, ou écrivez-nous sur WhatsApp.', print: 'Télécharger en PDF / imprimer',
-      extras: 'Options au choix', signName: 'Nom', signDate: 'Date et signature', notFound: 'Devis introuvable. Vérifiez le lien complet, ou contactez-nous.', clientDefault: 'votre institution', cont: '(suite)',
+      extras: 'Options au choix', rep: 'Représentant', phone: 'Téléphone', mail: 'E-mail', hours: 'Horaires', signRole: 'Fonction', signName: 'Nom', signDate: 'Date et signature', notFound: 'Devis introuvable. Vérifiez le lien complet, ou contactez-nous.', clientDefault: 'votre institution', cont: '(suite)',
     },
   };
   const CONTACT0 = { whatsapp: '058-518-2655', phone: '058-518-2655', phone2: '058-555-1826', email: 'LBV0585551826@gmail.com' };
@@ -70,25 +70,52 @@
 
     out.push(`<div class="q-title"><h1>${esc(q.title || t.kind)}</h1>${q.subtitle ? `<p>${esc(q.subtitle)}</p>` : ''}
       <div class="q-meta"><span>${t.number} <b>${esc(q.number || '')}</b></span><span>${t.issued}: ${dateStr(issued, lang)}</span><span>${t.valid}: ${dateStr(until, lang)}</span></div></div>`);
+    const full = !!q.fullDetails;
     out.push(`<div class="q-parts">
       <div class="q-box"><h2>${t.to}</h2><p class="big">${q.client?.name ? esc(q.client.name) : tbd('')}</p>
-        ${q.client?.phone ? `<p><bdi dir="ltr">${esc(q.client.phone)}</bdi></p>` : ''}${q.client?.email ? `<p><bdi dir="ltr">${esc(q.client.email)}</bdi></p>` : ''}</div>
+        ${full ? `<p>${t.rep}: ${tbd(q.client?.contact)}</p><p>${t.phone}: ${q.client?.phone ? `<bdi dir="ltr">${esc(q.client.phone)}</bdi>` : tbd('')}</p><p>${t.mail}: ${q.client?.email ? `<bdi dir="ltr">${esc(q.client.email)}</bdi>` : tbd('')}</p>`
+          : `${q.client?.phone ? `<p><bdi dir="ltr">${esc(q.client.phone)}</bdi></p>` : ''}${q.client?.email ? `<p><bdi dir="ltr">${esc(q.client.email)}</bdi></p>` : ''}`}</div>
       <div class="q-box"><h2>${t.event}</h2>${q.event?.type ? `<p class="big">${esc(q.event.type)}</p>` : ''}
-        <p>${t.date}: ${tbd(q.event?.date)} · ${t.place}: ${tbd(q.event?.place)}</p><p>${t.guests}: ${tbd(q.event?.guests)}</p></div></div>`);
-    if (q.intro) out.push(`<p class="q-intro">${fill(q.intro)}</p>`);
+        ${full ? `<p>${t.date}: ${tbd(q.event?.date)}</p><p>${t.place}: ${tbd(q.event?.place)}</p><p>${t.guests}: ${tbd(q.event?.guests)}</p><p>${t.hours}: ${tbd(q.event?.hours)}</p>`
+          : `<p>${t.date}: ${tbd(q.event?.date)} · ${t.place}: ${tbd(q.event?.place)}</p><p>${t.guests}: ${tbd(q.event?.guests)}</p>`}</div></div>`);
+    if (q.introTitle && q.intro) out.push(`<h2 class="q-h">${fill(q.introTitle)}</h2>`);
+    String(q.intro || '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean).forEach(x => out.push(`<p class="q-intro">${fill(x)}</p>`));
 
     const secs = q.sections || [];
-    if (secs.length) {
-      out.push(`<h2 class="q-h">${t.included}</h2>`);
-      secs.forEach((s, i) => {
-        const price = Number(s.price) && !q.hidePrices ? `<span class="q-price">${cur(Number(s.price))}${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}</span>` : '';
-        const head = cont => `<h3><span class="q-num">${i + 1}</span>${fill(s.title)}${cont ? ` <small>${t.cont}</small>` : price}</h3>`;
-        const bl = s.bullets || [];
-        // Long chapters are split in two so a page never overflows.
-        const part = (from, to, cont) => `<section class="q-sec">${head(cont)}<ul>${bl.slice(from, to).map(fill).filter(Boolean).map(b => `<li>${b}</li>`).join('')}</ul></section>`;
-        if (bl.length > 7) out.push({ html: part(0, bl.length), split: [part(0, Math.ceil(bl.length / 2)), part(Math.ceil(bl.length / 2), bl.length, true)] });
-        else out.push(part(0, bl.length));
-      });
+    // A chapter's lines: "# " is a sub-heading, "> " a short paragraph, anything else a bullet.
+    const body = arr => {
+      let h = '', open = false;
+      for (const raw of (arr || []).map(String)) {
+        const kind = raw.startsWith('# ') ? 'h' : raw.startsWith('> ') ? 'p' : 'li';
+        const text = fill(kind === 'li' ? raw : raw.slice(2));
+        if (!text) continue;
+        if (kind === 'li') { if (!open) { h += '<ul>'; open = true; } h += `<li>${text}</li>`; continue; }
+        if (open) { h += '</ul>'; open = false; }
+        h += kind === 'h' ? `<h4 class="q-sub">${text}</h4>` : `<p class="q-p">${text}</p>`;
+      }
+      return h + (open ? '</ul>' : '');
+    };
+    let num = 0;
+    const secBlock = s => {
+      const n = ++num;
+      const price = Number(s.price) && !q.hidePrices ? `<span class="q-price">${cur(Number(s.price))}${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}</span>` : '';
+      const head = cont => `<h3><span class="q-num">${n}</span>${fill(s.title)}${cont ? ` <small>${t.cont}</small>` : price}</h3>`;
+      const bl = (s.bullets || []).map(String);
+      const whole = `<section class="q-sec">${head(false)}${body(bl)}</section>`;
+      if (bl.length <= 8) return whole;
+      // A long chapter can continue on the next page, never leaving a sub-heading alone at the bottom.
+      const parts = [];
+      for (let i = 0; i < bl.length;) {
+        let j = Math.min(bl.length, i + 8);
+        while (j < bl.length && j > i + 1 && bl[j - 1].startsWith('# ')) j--;
+        parts.push(bl.slice(i, j)); i = j;
+      }
+      return { html: whole, split: parts.map((p, k) => `<section class="q-sec">${head(k > 0)}${body(p)}</section>`) };
+    };
+    const before = secs.filter(s => !s.afterPrice), after = secs.filter(s => s.afterPrice);
+    if (before.length) {
+      if (q.sectionsTitle !== '-') out.push(`<h2 class="q-h">${q.sectionsTitle ? fill(q.sectionsTitle) : t.included}</h2>`);
+      before.forEach(s => out.push(secBlock(s)));
     }
 
     const pk = q.packages;
@@ -110,23 +137,42 @@
     // Chapters appear in the table only when some of them have their own price (otherwise they are described above).
     const secPriced = secs.some(s => Number(s.price));
     secs.forEach((s, i) => { if (secPriced) rows.push([`<b>${i + 1}. ${fill(s.title)}</b>${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}`, Number(s.price) ? cur(Number(s.price)) : (anyPrice ? t.incl : '______')]); });
-    (q.items || []).forEach(it => { const v = (Number(it.qty) || 1) * (Number(it.price) || 0); rows.push([`<b>${fill(it.name)}</b>${(Number(it.qty) || 1) !== 1 ? ` <small>× ${it.qty}</small>` : ''}${it.unit ? ` <small>${esc(it.unit)}</small>` : ''}`, v ? cur(v) : '______']); });
+    let group = 0;
+    (q.items || []).forEach(it => {
+      const name = String(it.name || '');
+      if (name.startsWith('# ')) { rows.push({ head: fill(name.slice(2)) }); group = 0; return; }
+      if (name.startsWith('= ')) { rows.push({ sub: fill(name.slice(2)), v: group }); group = 0; return; }
+      const v = (Number(it.qty) || 1) * (Number(it.price) || 0);
+      group += v;
+      rows.push([`<b>${fill(name)}</b>${(Number(it.qty) || 1) !== 1 ? ` <small>× ${it.qty}</small>` : ''}${it.unit ? ` <small>${esc(it.unit)}</small>` : ''}`, v ? cur(v) : '______']);
+    });
     if (pk && pk.setup) rows.push([`<b>${fill(pk.setup.name)}</b>`, Number(pk.setup.price) ? cur(Number(pk.setup.price)) : '______']);
     if ((rows.length || pk) && !q.hidePrices) {
-      out.push(`<div><h2 class="q-h">${t.fin}</h2>
-        ${rows.length ? `<table class="q-table"><thead><tr><th>${t.item}</th><th class="n">${t.amount}</th></tr></thead>
-          <tbody>${rows.map(r => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td></tr>`).join('')}</tbody></table>` : ''}
-        <div class="q-sum"><dl>
+      const finHead = cont => `<h2 class="q-h">${after.length ? `<span class="q-num">${finNum}</span>` : ''}${q.finTitle ? fill(q.finTitle) : t.fin}${cont ? ` <small>${t.cont}</small>` : ''}</h2>`;
+      const finNum = after.length ? ++num : 0;
+      const rowHtml = r => r.head ? `<tr class="q-grp"><td colspan="2">${r.head}</td></tr>`
+        : r.sub ? `<tr class="q-subt"><td>${r.sub}</td><td class="n">${r.v ? cur(r.v) : '______'}</td></tr>`
+        : `<tr><td>${r[0]}</td><td class="n">${r[1]}</td></tr>`;
+      const table = list => list.length ? `<table class="q-table"><thead><tr><th>${t.item}</th><th class="n">${t.amount}</th></tr></thead><tbody>${list.map(rowHtml).join('')}</tbody></table>` : '';
+      const sums = `<div class="q-sum"><dl>
           ${Number(q.discount) ? `<dt>${t.subtotal}</dt><dd>${cur(tot.sub)}</dd><dt>${t.discount}</dt><dd>− ${cur(Number(q.discount))}</dd>` : ''}
           ${q.vat === 'plus' && anyPrice ? `<dt>${t.subtotal}</dt><dd>${cur(tot.after)}</dd><dt>${t.vat} ${q.vatRate}%</dt><dd>${cur(tot.vat)}</dd>` : ''}
           ${rows.length ? `<dt class="total">${t.total}</dt><dd class="total">${anyPrice ? cur(tot.total) : '______'}</dd>` : ''}
           ${pk ? `<dt class="monthly">${t.monthly}</dt><dd class="monthly">${esc(pk.unit || '')}</dd>` : ''}
-        </dl></div></div>`);
+        </dl></div>${q.finNote ? `<div class="q-finnote">${body(String(q.finNote).split('\n').map(x => x.trim()).filter(Boolean).map(x => '> ' + x))}</div>` : ''}`;
+      const whole = `<div>${finHead(false)}${table(rows)}${sums}</div>`;
+      if (rows.length <= 12) out.push(whole);
+      else {
+        const parts = [];
+        for (let i = 0; i < rows.length; i += 12) parts.push(rows.slice(i, i + 12));
+        out.push({ html: whole, split: parts.map((part, k) => `<div>${finHead(k > 0)}${table(part)}${k === parts.length - 1 ? sums : ''}</div>`) });
+      }
     }
+    after.forEach(s => out.push(secBlock(s)));
 
     const vatLine = q.vat === 'incl' ? `${t.vatIncl}${anyPrice ? ` (${t.vatPart} ${q.vatRate}%: ${cur(tot.vat)})` : ''}` : q.vat === 'none' ? t.vatNone : q.vat === 'note' ? `${t.vat}: ${esc(q.vatNote || t.tbd)}` : '';
     out.push(`<div class="q-terms">${vatLine && !q.hidePrices ? `<p>${vatLine}</p>` : ''}
-      <div><h3>${t.payment}</h3><p>${q.payment ? esc(q.payment) : `<span class="tbd">${t.tbd}</span>`}</p></div>
+      ${q.payment ? `<div><h3>${t.payment}</h3><p>${esc(q.payment)}</p></div>` : ''}
       <div><h3>${t.validity}</h3><p>${t.validText(q.validDays || 14, dateStr(until, lang))}</p></div>
       ${q.closing ? `<p>${fill(q.closing)}</p>` : ''}</div>`);
     if (q.tagline) out.push(`<p class="q-tag"><b>LA BELLE VIE</b>${esc(q.tagline)}</p>`);
@@ -139,7 +185,7 @@
             ${pk ? `<p>${t.okPick}</p><div class="q-choose">${pk.options.map((o, i) => `<label><input type="radio" name="pkg" value="${esc(o.name)}" ${o.recommended || (!pk.options.some(x => x.recommended) && !i) ? 'checked' : ''}>${esc(o.name)}</label>`).join('')}</div>` : ''}
             <div class="row"><input type="text" name="name" required autocomplete="name" placeholder="${t.okName}" aria-label="${t.okName}"><button class="act act--gold" type="submit">${t.okBtn}</button></div>
           </form>
-          <div class="q-sign"><span>${t.signName}: ____________________</span><span>${t.signDate}: ____________________</span></div>`}</div>`);
+          <div class="q-sign"><span>${t.signName}: ____________________</span>${full ? `<span>${t.signRole}: ____________________</span>` : ''}<span>${t.signDate}: ____________________</span></div>`}</div>`);
     return out;
   }
 

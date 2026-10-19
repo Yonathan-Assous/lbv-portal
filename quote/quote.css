@@ -121,3 +121,15 @@ html, body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #1B2A5C, 
 .q-extras h3 { margin: 0 0 6px; font: 700 1rem var(--display); color: var(--navy); }
 .q-extras ul { margin: 0; padding-inline-start: 18px; display: grid; gap: 2px; color: var(--ink-2); font-size: .88rem; }
 .q-extras li::marker { color: var(--gold); }
+/* Sub-headings and short paragraphs inside a chapter; grouped price table */
+.q-intro { white-space: pre-line; }
+.q-sub { margin: 10px 0 4px; font: 800 .78rem var(--body); letter-spacing: .06em; color: var(--gold-t); }
+.q-p { margin: 6px 0 2px; font-size: .9rem; color: var(--ink); white-space: pre-line; }
+.q-sec ul + .q-p, .q-sec .q-p + .q-p { margin-top: 6px; }
+.q-sec .q-p { padding-inline-start: 40px; }
+.q-sec .q-sub { padding-inline-start: 40px; }
+.q-table .q-grp td { padding-top: 16px; font: 800 .8rem var(--body); letter-spacing: .06em; color: var(--gold-t); border-bottom: 1px solid var(--gold); }
+.q-table .q-subt td { font-weight: 800; color: var(--navy); background: var(--cream); }
+.q-finnote { margin-top: 12px; display: grid; gap: 4px; }
+.q-finnote .q-p { font-size: .86rem; color: var(--ink-2); }
+.q-h .q-num { margin-inline-end: 2px; }

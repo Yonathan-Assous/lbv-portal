@@ -1316,9 +1316,13 @@ function quoteEditor(pg) {
     field('סוג האירוע', q.event.type, v => { q.event.type = v; dirty(); }),
     field('תאריך', q.event.date, v => { q.event.date = v; dirty(); }, { placeholder: 'למשל 12.03.2027' }),
     field('מקום', q.event.place, v => { q.event.place = v; dirty(); }),
-    field('משתתפים', q.event.guests, v => { q.event.guests = v; dirty(); }));
+    field('משתתפים', q.event.guests, v => { q.event.guests = v; dirty(); }),
+    field('איש קשר אצל הלקוח', q.client.contact || '', v => { q.client.contact = v; dirty(); }),
+    field('שעות', q.event.hours || '', v => { q.event.hours = v; dirty(); }));
   $('input', g1.children[3]).setAttribute('list', 'qTypes');
-  c1.append(lang, g1, dl);
+  const fd = html(`<label class="np"><input type="checkbox" ${q.fullDetails ? 'checked' : ''}> להציג את כל פרטי הלקוח והאירוע, גם מה שעוד חסר ("להשלמה")</label>`);
+  $('input', fd).addEventListener('change', e => { q.fullDetails = e.target.checked; dirty(); });
+  c1.append(lang, g1, dl, fd);
 
   // 2. Services and prices: one list, a tick and a price for each
   const c2 = card('2. השירותים והמחירים', 'מסמנים מה כלול, וכותבים מחיר ליד כל שירות. שירות בלי מחיר יופיע בהצעה כ"כלול". הסה״כ מתעדכן לבד.');
@@ -1349,8 +1353,11 @@ function quoteEditor(pg) {
     const wrap = html('<div></div>'); wrap.append(row);
     if (on && qOpen.has(key)) {
       const det = html('<div class="svc__det"></div>');
-      det.append(field('מה כלול (כל שורה בשורה נפרדת)', (s.bullets || []).join('\n'), v => { s.bullets = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 4 }),
+      det.append(field('מה כלול (כל שורה בשורה נפרדת; # בתחילת שורה = כותרת משנה, > = פסקה)', (s.bullets || []).join('\n'), v => { s.bullets = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 6 }),
         field('יחידה (לא חובה)', s.unit, v => { s.unit = v; dirty(); }, { placeholder: 'למשל: לאדם, לחודש, לאירוע' }));
+      const ap = html(`<label class="np"><input type="checkbox" ${s.afterPrice ? 'checked' : ''}> להציג את הפרק הזה אחרי המחירים (למשל תנאים)</label>`);
+      $('input', ap).addEventListener('change', e => { s.afterPrice = e.target.checked; dirty(); });
+      det.append(ap);
       wrap.append(det);
     }
     return wrap;
@@ -1396,7 +1403,7 @@ function quoteEditor(pg) {
   }
 
   // Extra lines (e.g. the external suppliers' budget)
-  const ex = html('<div class="extras"><h3>שורות נוספות <small>(לא חובה)</small></h3></div>');
+  const ex = html('<div class="extras"><h3>שורות נוספות <small>(לא חובה. שורה שמתחילה ב־# היא כותרת קבוצה, וב־= היא סיכום של הקבוצה)</small></h3></div>');
   q.items.forEach((it, i) => {
     const row = html('<div class="svc is-on"></div>');
     const nm = html('<input type="text" class="svc__free" placeholder="פירוט">'); nm.value = it.name;
@@ -1438,9 +1445,13 @@ function quoteEditor(pg) {
   const c3 = card('3. נוסחים ותנאים', 'כבר מלא בנוסח של La Belle Vie. פותחים רק אם רוצים לשנות להצעה הזאת.');
   const det = html('<details class="qcat"><summary>לפתוח ולשנות נוסחים</summary></details>');
   const g4 = html('<div class="grid2"></div>');
-  g4.append(field('כותרת', q.title, v => { q.title = v; dirty(); }), field('כותרת משנה', q.subtitle, v => { q.subtitle = v; dirty(); }));
+  g4.append(field('כותרת', q.title, v => { q.title = v; dirty(); }), field('כותרת משנה', q.subtitle, v => { q.subtitle = v; dirty(); }),
+    field('כותרת מעל פסקת הפתיחה (לא חובה)', q.introTitle || '', v => { q.introTitle = v; dirty(); }),
+    field('כותרת מעל הפרקים (ריק = רגיל, - = בלי כותרת)', q.sectionsTitle || '', v => { q.sectionsTitle = v; dirty(); }),
+    field('כותרת של טבלת המחיר (לא חובה)', q.finTitle || '', v => { q.finTitle = v; dirty(); }));
   det.append(g4,
     field('פסקת פתיחה', q.intro, v => { q.intro = v; dirty(); }, { multi: true, rows: 3 }),
+    field('הערות מתחת לטבלת המחיר (כל שורה פסקה)', q.finNote || '', v => { q.finNote = v; dirty(); }, { multi: true, rows: 3 }),
     field('תנאי תשלום', q.payment, v => { q.payment = v; dirty(); }, { multi: true, rows: 2, placeholder: 'למשל: 30% מקדמה באישור ההצעה, והיתרה עד שבוע לפני האירוע' }),
     field('תוקף ההצעה (ימים)', q.validDays, v => { q.validDays = Number(v) || 14; dirty(); }, { type: 'number', dir: 'ltr' }),
     field('פסקת סיום', q.closing, v => { q.closing = v; dirty(); }, { multi: true, rows: 3 }),
