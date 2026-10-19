@@ -83,7 +83,7 @@ function cleanQuote(b) {
     title: str(b.title, 160), subtitle: str(b.subtitle, 160),
     client: { name: str(b.client?.name, 120), contact: str(b.client?.contact, 120), phone: str(b.client?.phone, 40), email: str(b.client?.email, 160) },
     event: { type: str(b.event?.type, 80), date: str(b.event?.date, 60), guests: str(b.event?.guests, 40), place: str(b.event?.place, 120), hours: str(b.event?.hours, 80) },
-    fullDetails: b.fullDetails === true,
+    fullDetails: b.fullDetails === true, brandLine: str(b.brandLine, 160), okNote: str(b.okNote, 1000),
     introTitle: str(b.introTitle, 160), sectionsTitle: str(b.sectionsTitle, 160), finTitle: str(b.finTitle, 160), finNote: str(b.finNote, 3000),
     intro: str(b.intro, 6000),
     sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 30).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 60, 600), price: num(x.price), unit: str(x.unit, 40), afterPrice: x.afterPrice === true })),

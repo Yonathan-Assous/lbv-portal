@@ -12,7 +12,7 @@
     he: {
       kind: 'הצעת מחיר', page: (i, n) => `עמוד ${i} מתוך ${n}`,
       to: 'לכבוד', event: 'האירוע', date: 'תאריך', place: 'מקום', guests: 'משתתפים', tbd: 'להשלמה',
-      number: 'הצעה מס׳', issued: 'תאריך', valid: 'בתוקף עד', included: 'מה כלול בהצעה', fin: 'הצעה כספית', item: 'פירוט', amount: 'סכום',
+      number: 'הצעה מס׳', issued: 'תאריך', valid: 'בתוקף עד', validFor: d => `תוקף ההצעה: ${d} ימים`, dateFull: () => 'תאריך האירוע', guestsFull: 'מספר משתתפים משוער', hoursFull: 'שעות העבודה ביום האירוע', totalHT: 'סה״כ לפני מע״מ', vatApp: 'מע״מ', totalTTC: 'סה״כ כולל מע״מ', included: 'מה כלול בהצעה', fin: 'הצעה כספית', item: 'פירוט', amount: 'סכום',
       qty: 'כמות', incl: 'כלול', subtotal: 'סה״כ', discount: 'הנחה', vat: 'מע״מ', total: 'סה״כ לתשלום', monthly: 'ובנוסף, החבילה החודשית שתבחרו',
       vatIncl: 'המחירים כוללים מע״מ.', vatNone: 'ללא מע״מ.', vatPart: 'מתוכו מע״מ', payment: 'תנאי תשלום', validity: 'תוקף ההצעה',
       validText: (d, date) => `ההצעה בתוקף ${d} ימים, עד ${date}.`, rec: 'מומלץ',
@@ -24,7 +24,7 @@
     fr: {
       kind: 'Devis', page: (i, n) => `Page ${i} / ${n}`,
       to: 'À l’attention de', event: 'L’événement', date: 'Date', place: 'Lieu', guests: 'Participants', tbd: 'À compléter',
-      number: 'Devis n°', issued: 'Date', valid: 'Valable jusqu’au', included: 'Ce que comprend la prestation', fin: 'Proposition financière', item: 'Désignation', amount: 'Montant',
+      number: 'Devis n°', issued: 'Date d’émission', valid: 'Valable jusqu’au', validFor: d => `Validité du devis : ${d} jours`, dateFull: ev => (/gala/i.test(ev || '') ? 'Date du gala' : 'Date de l’événement'), guestsFull: 'Nombre prévisionnel de participants', hoursFull: 'Horaires de la prestation le jour de l’événement', totalHT: 'Total HT', vatApp: 'TVA applicable', totalTTC: 'TOTAL TTC', included: 'Ce que comprend la prestation', fin: 'Proposition financière', item: 'Désignation', amount: 'Montant',
       qty: 'Qté', incl: 'Inclus', subtotal: 'Total', discount: 'Remise', vat: 'TVA', total: 'Total à payer', monthly: 'Puis le forfait mensuel choisi',
       vatIncl: 'Prix TTC.', vatNone: 'Hors TVA.', vatPart: 'dont TVA', payment: 'Modalités de paiement', validity: 'Validité du devis',
       validText: (d, date) => `Devis valable ${d} jours, jusqu’au ${date}.`, rec: 'Recommandé',
@@ -68,15 +68,15 @@
     const tot = totals(q);
     const out = [];
 
-    out.push(`<div class="q-title"><h1>${esc(q.title || t.kind)}</h1>${q.subtitle ? `<p>${esc(q.subtitle)}</p>` : ''}
-      <div class="q-meta"><span>${t.number} <b>${esc(q.number || '')}</b></span><span>${t.issued}: ${dateStr(issued, lang)}</span><span>${t.valid}: ${dateStr(until, lang)}</span></div></div>`);
+    out.push(`<div class="q-title">${q.brandLine ? `<p class="q-brand"><b>LA BELLE VIE</b> ${esc(q.brandLine)}</p>` : ''}<h1>${esc(q.title || t.kind)}</h1>${q.subtitle ? `<p>${esc(q.subtitle)}</p>` : ''}
+      <div class="q-meta"><span>${t.number} <b>${esc(q.number || '')}</b></span><span>${t.issued}: ${dateStr(issued, lang)}</span><span>${q.fullDetails ? t.validFor(q.validDays || 14) : `${t.valid}: ${dateStr(until, lang)}`}</span></div></div>`);
     const full = !!q.fullDetails;
     out.push(`<div class="q-parts">
       <div class="q-box"><h2>${t.to}</h2><p class="big">${q.client?.name ? esc(q.client.name) : tbd('')}</p>
         ${full ? `<p>${t.rep}: ${tbd(q.client?.contact)}</p><p>${t.phone}: ${q.client?.phone ? `<bdi dir="ltr">${esc(q.client.phone)}</bdi>` : tbd('')}</p><p>${t.mail}: ${q.client?.email ? `<bdi dir="ltr">${esc(q.client.email)}</bdi>` : tbd('')}</p>`
           : `${q.client?.phone ? `<p><bdi dir="ltr">${esc(q.client.phone)}</bdi></p>` : ''}${q.client?.email ? `<p><bdi dir="ltr">${esc(q.client.email)}</bdi></p>` : ''}`}</div>
       <div class="q-box"><h2>${t.event}</h2>${q.event?.type ? `<p class="big">${esc(q.event.type)}</p>` : ''}
-        ${full ? `<p>${t.date}: ${tbd(q.event?.date)}</p><p>${t.place}: ${tbd(q.event?.place)}</p><p>${t.guests}: ${tbd(q.event?.guests)}</p><p>${t.hours}: ${tbd(q.event?.hours)}</p>`
+        ${full ? `<p>${t.dateFull(q.event?.type)}: ${tbd(q.event?.date)}</p><p>${t.place}: ${tbd(q.event?.place)}</p><p>${t.guestsFull}: ${tbd(q.event?.guests)}</p><p>${t.hoursFull}: ${tbd(q.event?.hours)}</p>`
           : `<p>${t.date}: ${tbd(q.event?.date)} · ${t.place}: ${tbd(q.event?.place)}</p><p>${t.guests}: ${tbd(q.event?.guests)}</p>`}</div></div>`);
     if (q.introTitle && q.intro) out.push(`<h2 class="q-h">${fill(q.introTitle)}</h2>`);
     String(q.intro || '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean).forEach(x => out.push(`<p class="q-intro">${fill(x)}</p>`));
@@ -156,8 +156,8 @@
       const table = list => list.length ? `<table class="q-table"><thead><tr><th>${t.item}</th><th class="n">${t.amount}</th></tr></thead><tbody>${list.map(rowHtml).join('')}</tbody></table>` : '';
       const sums = `<div class="q-sum"><dl>
           ${Number(q.discount) ? `<dt>${t.subtotal}</dt><dd>${cur(tot.sub)}</dd><dt>${t.discount}</dt><dd>− ${cur(Number(q.discount))}</dd>` : ''}
-          ${q.vat === 'plus' && anyPrice ? `<dt>${t.subtotal}</dt><dd>${cur(tot.after)}</dd><dt>${t.vat} ${q.vatRate}%</dt><dd>${cur(tot.vat)}</dd>` : ''}
-          ${rows.length ? `<dt class="total">${t.total}</dt><dd class="total">${anyPrice ? cur(tot.total) : '______'}</dd>` : ''}
+          ${q.vat === 'plus' ? `<dt>${t.totalHT}</dt><dd>${anyPrice ? cur(tot.after) : '______'}</dd><dt>${t.vatApp}</dt><dd>${anyPrice ? cur(tot.vat) : '______'}</dd>` : ''}
+          ${rows.length ? `<dt class="total">${q.vat === 'plus' ? t.totalTTC : t.total}</dt><dd class="total">${anyPrice ? cur(tot.total) : '______'}</dd>` : ''}
           ${pk ? `<dt class="monthly">${t.monthly}</dt><dd class="monthly">${esc(pk.unit || '')}</dd>` : ''}
         </dl></div>${q.finNote ? `<div class="q-finnote">${body(String(q.finNote).split('\n').map(x => x.trim()).filter(Boolean).map(x => '> ' + x))}</div>` : ''}`;
       const whole = `<div>${finHead(false)}${table(rows)}${sums}</div>`;
@@ -174,11 +174,10 @@
     out.push(`<div class="q-terms">${vatLine && !q.hidePrices ? `<p>${vatLine}</p>` : ''}
       ${q.payment ? `<div><h3>${t.payment}</h3><p>${esc(q.payment)}</p></div>` : ''}
       <div><h3>${t.validity}</h3><p>${t.validText(q.validDays || 14, dateStr(until, lang))}</p></div>
-      ${q.closing ? `<p>${fill(q.closing)}</p>` : ''}</div>`);
-    if (q.tagline) out.push(`<p class="q-tag"><b>LA BELLE VIE</b>${esc(q.tagline)}</p>`);
+      </div>`);
 
     const done = q.status === 'accepted';
-    out.push(`<div class="q-ok ${done ? 'is-done' : ''}" id="ok"><h2>${done ? t.okDone : t.okTitle}</h2>
+    out.push(`<div class="q-ok ${done ? 'is-done' : ''}" id="ok"><h2>${after.length ? `<span class="q-num">${++num}</span>` : ''}${done ? t.okDone : t.okTitle}</h2>${q.okNote ? `<p>${fill(q.okNote)}</p>` : ''}
       ${done ? `<p>${esc(t.okBy(q.accepted?.name || '', dateStr(new Date(q.accepted?.at || Date.now()), lang), q.accepted?.package))}</p>`
         : `<p class="no-print">${t.okText}</p>
           <form id="okForm">
@@ -186,6 +185,8 @@
             <div class="row"><input type="text" name="name" required autocomplete="name" placeholder="${t.okName}" aria-label="${t.okName}"><button class="act act--gold" type="submit">${t.okBtn}</button></div>
           </form>
           <div class="q-sign"><span>${t.signName}: ____________________</span>${full ? `<span>${t.signRole}: ____________________</span>` : ''}<span>${t.signDate}: ____________________</span></div>`}</div>`);
+    if (q.tagline) out.push(`<p class="q-tag"><b>LA BELLE VIE</b>${esc(q.tagline)}</p>`);
+    if (q.closing) out.push(`<div class="q-terms q-close"><p>${fill(q.closing)}</p></div>`);
     return out;
   }
 

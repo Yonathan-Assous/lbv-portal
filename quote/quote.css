@@ -133,3 +133,6 @@ html, body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #1B2A5C, 
 .q-finnote { margin-top: 12px; display: grid; gap: 4px; }
 .q-finnote .q-p { font-size: .86rem; color: var(--ink-2); }
 .q-h .q-num { margin-inline-end: 2px; }
+.q-brand { margin: 0 0 6px; font-size: .8rem; letter-spacing: .08em; color: var(--ink-2); }
+.q-brand b { color: var(--gold-t); letter-spacing: .18em; margin-inline-end: 6px; }
+.q-close { margin-top: 4px; text-align: center; }

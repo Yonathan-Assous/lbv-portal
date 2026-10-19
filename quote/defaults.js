@@ -54,7 +54,7 @@ export const QUOTE_DEFAULTS = {
     fr: {
       title: "Gestion des réseaux sociaux", intro: "Tout ce qu’il faut pour que votre activité existe et vende sur les réseaux : création et image des comptes, rédaction, tournage et montage vidéo, publication régulière, réponses aux abonnés et campagnes sponsorisées. Vous vous concentrez sur votre activité, nous nous occupons du reste.",
       unit: "par mois",
-      setup: { name: "Mise en place de zéro (paiement unique)", price: 2900, bullets: [
+      setup: { name: "Mise en place clé en main (paiement unique)", price: 2900, bullets: [
         "Création des comptes : Instagram, Facebook, TikTok + compte professionnel et gestionnaire de publicités (Meta Business) – 600 ₪",
         "Image des profils : photo de profil, couverture, bio, liens, bouton WhatsApp – 700 ₪",
         "Design de base : stories à la une, modèles fixes pour les publications et vidéos, palette de couleurs et typographies – 800 ₪",
