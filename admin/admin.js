@@ -1195,7 +1195,11 @@ async function loadQuotes() {
 }
 async function loadQuoteCatalog() {
   if (quoteCat) return quoteCat;
-  try { const r = await fetch('/api/quotes?catalog', { cache: 'no-store' }); const j = r.ok ? await r.json() : {}; quoteCat = j.sections ? j : clone(QUOTE_DEFAULTS); }
+  try {
+    const r = await fetch('/api/quotes?catalog', { cache: 'no-store' }); const j = r.ok ? await r.json() : {};
+    // A template saved before the current version (the company's full devis) is replaced by it; saved packages are kept.
+    quoteCat = j.sections && (j.version || 0) >= QUOTE_DEFAULTS.version ? j : { ...clone(QUOTE_DEFAULTS), ...(j.social?.he?.extras ? { social: j.social } : {}) };
+  }
   catch (e) { quoteCat = clone(QUOTE_DEFAULTS); }
   // Packages saved before the exact list (with add-ons) existed are replaced by it.
   if (!quoteCat.social?.he?.extras) quoteCat.social = clone(QUOTE_DEFAULTS.social);
@@ -1209,8 +1213,12 @@ function newQuote(lead) {
     title: D.title + (lead?.service ? ` — ${lead.service}` : ''), subtitle: D.subtitle,
     client: { name: lead?.name || '', phone: lead?.phone || '', email: lead?.email || '' },
     event: { type: lead?.service || '', date: lead?.date || '', place: '', guests: lead?.guests || '' },
-    intro: D.intro, sections: [], items: [], packages: null,
-    discount: 0, vat: 'incl', vatRate: quoteCat.vatRate || 18, vatNote: '', payment: D.payment || '', validDays: 14,
+    intro: D.intro, introTitle: D.introTitle || '', brandLine: D.brandLine || '', sectionsTitle: '-', fullDetails: true,
+    finTitle: D.finTitle || '', finNote: D.finNote || '', okNote: D.okNote || '',
+    // The chapters that come after the prices (collaboration, payment terms) are in every quote from the start.
+    sections: quoteCat.sections.filter(s => s.afterPrice && s[lang]?.title).map(s => ({ title: s[lang].title, bullets: [...s[lang].bullets], price: 0, unit: '', afterPrice: true })),
+    items: (D.items || []).map(n => ({ name: n, qty: 1, price: 0 })), packages: null,
+    discount: 0, vat: 'plus', vatRate: quoteCat.vatRate || 18, vatNote: '', payment: D.payment || '', validDays: 30,
     closing: D.closing, tagline: D.tagline, leadId: lead?.id || '',
   };
 }
@@ -1304,7 +1312,9 @@ function quoteEditor(pg) {
     if (b.dataset.l === q.lang) return;
     if ((q.sections.length || q.packages) && !confirm('להחליף את שפת ההצעה? השירותים שבחרתם יוסרו ותבחרו אותם שוב בשפה החדשה.')) return;
     const D = quoteCat[b.dataset.l];
-    Object.assign(q, { lang: b.dataset.l, title: D.title, subtitle: D.subtitle, intro: D.intro, closing: D.closing, tagline: D.tagline, payment: D.payment || '', sections: [], packages: null });
+    const fresh = newQuote({ lang: b.dataset.l });
+    Object.assign(q, { lang: b.dataset.l, title: D.title, subtitle: D.subtitle, intro: D.intro, introTitle: fresh.introTitle, brandLine: fresh.brandLine, finTitle: fresh.finTitle, finNote: fresh.finNote, okNote: fresh.okNote,
+      closing: D.closing, tagline: D.tagline, payment: D.payment || '', sections: fresh.sections, items: fresh.items, packages: null });
     dirty(); reDraw();
   }));
   const g1 = html('<div class="grid3"></div>');
@@ -1327,7 +1337,7 @@ function quoteEditor(pg) {
   // 2. Services and prices: one list, a tick and a price for each
   const c2 = card('2. השירותים והמחירים', 'מסמנים מה כלול, וכותבים מחיר ליד כל שירות. שירות בלי מחיר יופיע בהצעה כ"כלול". הסה״כ מתעדכן לבד.');
   const list = html('<div class="svcs"></div>');
-  const catSecs = quoteCat.sections.map(s => ({ ...(s[q.lang] || s.he), price: s.price || 0, unit: s.unit || '' })).filter(s => s.title);
+  const catSecs = quoteCat.sections.map(s => ({ ...(s[q.lang] || s.he), price: s.price || 0, unit: s.unit || '', afterPrice: !!s.afterPrice })).filter(s => s.title);
   const custom = q.sections.filter(x => !catSecs.some(c => c.title === x.title));
   const svcRow = (base, isCustom) => {
     const cur = () => q.sections.find(x => x === base || x.title === base.title);
@@ -1345,7 +1355,7 @@ function quoteEditor(pg) {
     price.disabled = !on;
     price.addEventListener('input', () => { const x = cur(); if (x) { x.price = Number(price.value) || 0; dirty(); drawTotal(); } });
     $('input[type=checkbox]', row).addEventListener('change', e => {
-      if (e.target.checked) q.sections.push(isCustom ? base : { title: base.title, bullets: [...(base.bullets || [])], price: base.price || 0, unit: base.unit || '' });
+      if (e.target.checked) q.sections.push(isCustom ? base : { title: base.title, bullets: [...(base.bullets || [])], price: base.price || 0, unit: base.unit || '', afterPrice: !!base.afterPrice });
       else q.sections.splice(q.sections.indexOf(cur()), 1);
       dirty(); reDraw();
     });

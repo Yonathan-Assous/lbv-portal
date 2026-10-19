@@ -144,10 +144,12 @@ export default async function handler(req, res) {
     if (req.method === 'PUT') {
       let b;
       try { b = await readBody(req); } catch (e) { return res.status(400).json({ error: 'bad-json' }); }
-      const sec = arr => (Array.isArray(arr) ? arr : []).slice(0, 40).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 40, 400) }));
-      const txt = o => ({ title: str(o?.title, 160), subtitle: str(o?.subtitle, 160), intro: str(o?.intro, 3000), closing: str(o?.closing, 3000), tagline: str(o?.tagline, 200), payment: str(o?.payment, 1000), lines: lines(o?.lines, 20, 300) });
+      const sec = arr => (Array.isArray(arr) ? arr : []).slice(0, 40).map(x => ({ title: str(x.title, 160), bullets: lines(x.bullets, 60, 600) }));
+      const txt = o => ({ title: str(o?.title, 160), subtitle: str(o?.subtitle, 160), intro: str(o?.intro, 6000), closing: str(o?.closing, 3000), tagline: str(o?.tagline, 200), payment: str(o?.payment, 1000), lines: lines(o?.lines, 20, 300),
+        brandLine: str(o?.brandLine, 160), introTitle: str(o?.introTitle, 160), finTitle: str(o?.finTitle, 160), finNote: str(o?.finNote, 3000), okNote: str(o?.okNote, 1000), items: lines(o?.items, 60, 300) });
       const cat = {
-        sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 40).map(x => ({ he: sec([x.he])[0] || { title: "", bullets: [] }, fr: sec([x.fr])[0] || { title: "", bullets: [] }, price: num(x.price), unit: str(x.unit, 40) })),
+        sections: (Array.isArray(b.sections) ? b.sections : []).slice(0, 40).map(x => ({ he: sec([x.he])[0] || { title: "", bullets: [] }, fr: sec([x.fr])[0] || { title: "", bullets: [] }, price: num(x.price), unit: str(x.unit, 40), afterPrice: x.afterPrice === true })),
+        version: num(b.version),
         he: txt(b.he), fr: txt(b.fr), vatRate: num(b.vatRate) || 18,
         social: b.social ? { he: cleanPackages(b.social.he), fr: cleanPackages(b.social.fr) } : null,
       };
