@@ -19,7 +19,7 @@
       okTitle: 'אישור ההצעה', okText: 'מתאים לכם? כתבו את השם המלא ולחצו על האישור. נקבל הודעה ונחזור אליכם.', okPick: 'איזו חבילה מתאימה לכם?',
       okName: 'השם המלא', okBtn: 'אני מאשר/ת את ההצעה', okDone: 'ההצעה אושרה', okBy: (n, d, p) => `אושרה על ידי ${n}, ב־${d}${p ? `, בחבילת ${p}` : ''}. תודה! נחזור אליכם בהקדם.`,
       okErr: 'לא הצלחנו לשמור את האישור. נסו שוב, או כתבו לנו בוואטסאפ.', print: 'הורדה כ־PDF / הדפסה',
-      extras: 'תוספות לפי בחירה', rep: 'איש קשר', phone: 'טלפון', mail: 'מייל', hours: 'שעות', signRole: 'תפקיד', signName: 'שם', signDate: 'תאריך וחתימה', notFound: 'ההצעה לא נמצאה. ודאו שהקישור שלם, או פנו אלינו.', clientDefault: 'המוסד', cont: '(המשך)',
+      extras: 'תוספות לפי בחירה', services: 'השירותים שלנו', svcIncludes: 'השירות כולל:', toDefine: 'יתומחר', external: 'ספקים חיצוניים (הערכה)', letters: 'אבגדהוזחטיכלמנ', rep: 'איש קשר', phone: 'טלפון', mail: 'מייל', hours: 'שעות', signRole: 'תפקיד', signName: 'שם', signDate: 'תאריך וחתימה', notFound: 'ההצעה לא נמצאה. ודאו שהקישור שלם, או פנו אלינו.', clientDefault: 'המוסד', cont: '(המשך)',
     },
     fr: {
       kind: 'Devis', page: (i, n) => `Page ${i} / ${n}`,
@@ -31,7 +31,7 @@
       okTitle: 'Bon pour accord', okText: 'Cela vous convient ? Indiquez votre nom complet et validez. Nous serons prévenus et reviendrons vers vous.', okPick: 'Quel forfait vous convient ?',
       okName: 'Nom complet', okBtn: 'J’accepte ce devis', okDone: 'Devis accepté', okBy: (n, d, p) => `Accepté par ${n}, le ${d}${p ? `, forfait ${p}` : ''}. Merci ! Nous revenons vers vous rapidement.`,
       okErr: 'L’accord n’a pas pu être enregistré. Réessayez, ou écrivez-nous sur WhatsApp.', print: 'Télécharger en PDF / imprimer',
-      extras: 'Options au choix', rep: 'Représentant', phone: 'Téléphone', mail: 'E-mail', hours: 'Horaires', signRole: 'Fonction', signName: 'Nom', signDate: 'Date et signature', notFound: 'Devis introuvable. Vérifiez le lien complet, ou contactez-nous.', clientDefault: 'votre institution', cont: '(suite)',
+      extras: 'Options au choix', services: 'Nos prestations', svcIncludes: 'Cette prestation comprend :', toDefine: 'À définir', external: 'Prestations externes (estimation)', letters: 'ABCDEFGHIJKLMN', rep: 'Représentant', phone: 'Téléphone', mail: 'E-mail', hours: 'Horaires', signRole: 'Fonction', signName: 'Nom', signDate: 'Date et signature', notFound: 'Devis introuvable. Vérifiez le lien complet, ou contactez-nous.', clientDefault: 'votre institution', cont: '(suite)',
     },
   };
   const CONTACT0 = { whatsapp: '058-518-2655', phone: '058-518-2655', phone2: '058-555-1826', email: 'LBV0585551826@gmail.com' };
@@ -41,6 +41,7 @@
   /** Totals, the same way the admin computes them: priced chapters + extra lines + the packages' setup. */
   function totals(q) {
     const sub = (q.sections || []).reduce((s, x) => s + (Number(x.price) || 0), 0)
+      + (q.services || []).reduce((s, x) => s + (Number(x.price) || 0), 0)
       + (q.items || []).reduce((s, it) => s + (Number(it.qty) || 1) * (Number(it.price) || 0), 0)
       + (q.packages && q.packages.setup ? Number(q.packages.setup.price) || 0 : 0);
     const after = Math.max(0, sub - (Number(q.discount) || 0));
@@ -113,7 +114,20 @@
       return { html: whole, split: parts.map((p, k) => `<section class="q-sec">${head(k > 0)}${body(p)}</section>`) };
     };
     const before = secs.filter(s => !s.afterPrice), after = secs.filter(s => s.afterPrice);
-    if (before.length) {
+    const svcs = (q.services || []).filter(v => v.name);
+    const letter = k => (t.letters || '')[k] || String(k + 1);
+    if (svcs.length) {
+      // Each service: one overall price, then everything it includes, in detail.
+      out.push(`<h2 class="q-h">${t.services}</h2>`);
+      svcs.forEach((v, k) => {
+        const chs = before.filter(x => x.svc === v.id);
+        const price = Number(v.price) && !q.hidePrices ? `<b class="q-svc__price">${cur(Number(v.price))}${v.unit ? ` <small>${esc(v.unit)}</small>` : ''}</b>` : '';
+        out.push(`<div class="q-svc"><span class="q-svc__k">${letter(k)}</span><div class="q-svc__t"><h3>${fill(v.name)}</h3>${v.note ? `<p>${fill(v.note)}</p>` : ''}${chs.length ? `<p class="q-svc__inc">${t.svcIncludes}</p>` : ''}</div>${price}</div>`);
+        chs.forEach(x => out.push(secBlock(x)));
+      });
+      const loose = before.filter(x => !svcs.some(v => v.id === x.svc));
+      if (loose.length) { out.push(`<h2 class="q-h">${t.included}</h2>`); loose.forEach(x => out.push(secBlock(x))); }
+    } else if (before.length) {
       if (q.sectionsTitle !== '-') out.push(`<h2 class="q-h">${q.sectionsTitle ? fill(q.sectionsTitle) : t.included}</h2>`);
       before.forEach(s => out.push(secBlock(s)));
     }
@@ -135,11 +149,14 @@
     const rows = [];
     const anyPrice = tot.sub > 0;
     // Chapters appear in the table only when some of them have their own price (otherwise they are described above).
-    const secPriced = secs.some(s => Number(s.price));
+    const secPriced = !svcs.length && secs.some(s => Number(s.price));
+    svcs.forEach((v, k) => rows.push([`<b>${letter(k)}. ${fill(v.name)}</b>${v.unit ? ` <small>${esc(v.unit)}</small>` : ''}`, Number(v.price) ? cur(Number(v.price)) : t.toDefine]));
+    if (svcs.length && (q.items || []).some(it => Number(it.price) && !/^[#=] /.test(it.name || ''))) rows.push({ head: t.external });
     secs.forEach((s, i) => { if (secPriced) rows.push([`<b>${i + 1}. ${fill(s.title)}</b>${s.unit ? ` <small>${esc(s.unit)}</small>` : ''}`, Number(s.price) ? cur(Number(s.price)) : (anyPrice ? t.incl : '______')]); });
     let group = 0;
     (q.items || []).forEach(it => {
       const name = String(it.name || '');
+      if (svcs.length && (/^[#=] /.test(name) || !Number(it.price))) return;   // with services: only priced external lines
       if (name.startsWith('# ')) { rows.push({ head: fill(name.slice(2)) }); group = 0; return; }
       if (name.startsWith('= ')) { rows.push({ sub: fill(name.slice(2)), v: group }); group = 0; return; }
       const v = (Number(it.qty) || 1) * (Number(it.price) || 0);
@@ -223,7 +240,7 @@
         return b.split.forEach(place);
       }
       // Keep a heading with what follows it.
-      if (/^<h2 class="q-h"/.test(b) && list[i + 1]) {
+      if (/^<(h2 class="q-h"|div class="q-svc")/.test(b) && list[i + 1]) {
         const next = typeof list[i + 1] === 'object' ? list[i + 1].split[0] : list[i + 1];
         if (used + height(b) + height(next) > room && pages[pages.length - 1].length) { pages.push([]); used = 0; }
       }

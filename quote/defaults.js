@@ -2,7 +2,27 @@
 // OHEL NAFTALIE), with "{client}" where the client's name goes; the Hebrew says the same in the same register.
 // Chapter lines: "# " is a sub-heading, "> " a short paragraph, anything else a bullet. The admin can edit all of it.
 export const QUOTE_DEFAULTS = {
-  version: 2,
+  version: 3,
+  // The services a quote is built from: each has one overall price and includes some of the chapters below
+  // (by their position in "sections"). External suppliers are listed only when they have a price.
+  services: {
+    he: [
+      { name: "הפקת האירוע", chapters: [0, 1, 2, 8, 9, 10, 11, 12, 13] },
+      { name: "זהות חזותית והזמנות", chapters: [3, 4] },
+      { name: "תקשורת דיגיטלית ורשתות חברתיות", chapters: [5] },
+      { name: "הרשמה, שותפים ותרומות", chapters: [6, 7] },
+    ],
+    fr: [
+      { name: "Organisation et production du gala", chapters: [0, 1, 2, 8, 9, 10, 11, 12, 13] },
+      { name: "Identité visuelle et invitations", chapters: [3, 4] },
+      { name: "Communication digitale et réseaux sociaux", chapters: [5] },
+      { name: "Inscriptions, partenaires et dons", chapters: [6, 7] },
+    ],
+  },
+  external: {
+    he: ["השכרת המקום", "קייטרינג", "עיצוב ותפאורה", "הגברה, תאורה והקרנה", "הופעות ותוכנית אמנותית", "צילום ווידאו", "הדפסות ושילוט", "מתנות ואריזה", "כוח אדם נוסף", "הובלה ולוגיסטיקה"],
+    fr: ["Location du lieu", "Restauration", "Décoration et scénographie", "Sonorisation, éclairage et projection", "Animation et prestations artistiques", "Photographie et vidéo", "Impression et signalétique", "Cadeaux et conditionnement", "Personnel complémentaire", "Transport et logistique"],
+  },
   vatRate: 18,
   he: {
     title: 'הצעת מחיר', subtitle: 'ליווי מלא מקצה לקצה', brandLine: 'יצירה • תקשורת • הפקת אירועים',

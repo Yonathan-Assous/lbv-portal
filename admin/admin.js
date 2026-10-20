@@ -1180,6 +1180,7 @@ const qMoney = (v, cur) => new Intl.NumberFormat('he-IL', { style: 'currency', c
 /** Priced services + extra lines + the packages' setup; then discount and VAT. */
 function qTotals(q) {
   const sub = (q.sections || []).reduce((s, x) => s + (Number(x.price) || 0), 0)
+    + (q.services || []).reduce((s, x) => s + (Number(x.price) || 0), 0)
     + (q.items || []).reduce((s, it) => s + (Number(it.qty) || 1) * (Number(it.price) || 0), 0)
     + (q.packages?.setup ? Number(q.packages.setup.price) || 0 : 0);
   const after = Math.max(0, sub - (Number(q.discount) || 0));
@@ -1208,6 +1209,7 @@ async function loadQuoteCatalog() {
 /** A new quote in the company's template, optionally filled from a request that came from the site. */
 function newQuote(lead) {
   const lang = lead?.lang === 'fr' ? 'fr' : 'he', D = quoteCat[lang] || QUOTE_DEFAULTS[lang];
+  const services = (QUOTE_DEFAULTS.services?.[lang] || []).map((v, k) => ({ id: 's' + k + Date.now().toString(36), name: v.name, price: 0, unit: '', note: '' }));
   return {
     lang, currency: 'ILS', status: 'draft',
     title: D.title + (lead?.service ? ` — ${lead.service}` : ''), subtitle: D.subtitle,
@@ -1215,9 +1217,12 @@ function newQuote(lead) {
     event: { type: lead?.service || '', date: lead?.date || '', place: '', guests: lead?.guests || '' },
     intro: D.intro, introTitle: D.introTitle || '', brandLine: D.brandLine || '', sectionsTitle: '-', fullDetails: true,
     finTitle: D.finTitle || '', finNote: D.finNote || '', okNote: D.okNote || '',
-    // The chapters that come after the prices (collaboration, payment terms) are in every quote from the start.
-    sections: quoteCat.sections.filter(s => s.afterPrice && s[lang]?.title).map(s => ({ title: s[lang].title, bullets: [...s[lang].bullets], price: 0, unit: '', afterPrice: true })),
-    items: (D.items || []).map(n => ({ name: n, qty: 1, price: 0 })), packages: null,
+    services, sections: [
+      ...services.flatMap((v, k) => (QUOTE_DEFAULTS.services?.[lang]?.[k]?.chapters || []).map(i => quoteCat.sections[i]?.[lang]).filter(Boolean)
+        .map(c => ({ title: c.title, bullets: [...c.bullets], price: 0, unit: '', svc: v.id }))),
+      // The chapters that come after the prices (collaboration, payment terms) are in every quote from the start.
+      ...quoteCat.sections.filter(s => s.afterPrice && s[lang]?.title).map(s => ({ title: s[lang].title, bullets: [...s[lang].bullets], price: 0, unit: '', afterPrice: true }))],
+    items: [], packages: null,
     discount: 0, vat: 'plus', vatRate: quoteCat.vatRate || 18, vatNote: '', payment: D.payment || '', validDays: 30,
     closing: D.closing, tagline: D.tagline, leadId: lead?.id || '',
   };
@@ -1271,13 +1276,13 @@ function quoteEditor(pg) {
   const dirty = () => { qDirty = true; };
   const reDraw = () => { const y = scrollY; render(); scrollTo({ top: y }); };
   const head = html(`<div class="qbar">
-    <button type="button" class="btn btn--line" data-back>→ לרשימה</button>
+    <button type="button" class="btn btn--line" data-back>→<span class="dsk"> לרשימה</span></button>
     <b>${q.id ? `הצעה ${esc(q.number)}` : 'הצעת מחיר חדשה'}</b>
     <span class="qbar__total" data-total></span>
     <span class="qbar__sp"></span>
     <button type="button" class="btn btn--line" data-save>שמירה</button>
-    <button type="button" class="btn btn--dark" data-view>לראות את ההצעה</button>
-    <button type="button" class="btn btn--gold" data-wa>שליחה בוואטסאפ</button></div>`);
+    <button type="button" class="btn btn--dark" data-view><span class="dsk">לראות את </span>ההצעה</button>
+    <button type="button" class="btn btn--gold" data-wa><span class="dsk">שליחה ב</span>וואטסאפ</button></div>`);
   const totalEls = [];
   const drawTotal = () => {
     const t = qTotals(q);
@@ -1314,7 +1319,7 @@ function quoteEditor(pg) {
     const D = quoteCat[b.dataset.l];
     const fresh = newQuote({ lang: b.dataset.l });
     Object.assign(q, { lang: b.dataset.l, title: D.title, subtitle: D.subtitle, intro: D.intro, introTitle: fresh.introTitle, brandLine: fresh.brandLine, finTitle: fresh.finTitle, finNote: fresh.finNote, okNote: fresh.okNote,
-      closing: D.closing, tagline: D.tagline, payment: D.payment || '', sections: fresh.sections, items: fresh.items, packages: null });
+      closing: D.closing, tagline: D.tagline, payment: D.payment || '', services: fresh.services, sections: fresh.sections, items: fresh.items, packages: null });
     dirty(); reDraw();
   }));
   const g1 = html('<div class="grid3"></div>');
@@ -1334,49 +1339,137 @@ function quoteEditor(pg) {
   $('input', fd).addEventListener('change', e => { q.fullDetails = e.target.checked; dirty(); });
   c1.append(lang, g1, dl, fd);
 
-  // 2. Services and prices: one list, a tick and a price for each
-  const c2 = card('2. השירותים והמחירים', 'מסמנים מה כלול, וכותבים מחיר ליד כל שירות. שירות בלי מחיר יופיע בהצעה כ"כלול". הסה״כ מתעדכן לבד.');
-  const list = html('<div class="svcs"></div>');
-  const catSecs = quoteCat.sections.map(s => ({ ...(s[q.lang] || s.he), price: s.price || 0, unit: s.unit || '', afterPrice: !!s.afterPrice })).filter(s => s.title);
-  const custom = q.sections.filter(x => !catSecs.some(c => c.title === x.title));
-  const svcRow = (base, isCustom) => {
-    const cur = () => q.sections.find(x => x === base || x.title === base.title);
-    let s = cur();
-    const on = !!s, key = base.title || ('c' + q.sections.indexOf(base));
-    const row = html(`<div class="svc ${on ? 'is-on' : ''}">
-      <label class="svc__pick"><input type="checkbox" ${on ? 'checked' : ''}><span class="svc__name"></span></label>
-      <div class="svc__price"><input type="number" inputmode="decimal" dir="ltr" placeholder="מחיר" aria-label="מחיר"><span>${q.currency === 'EUR' ? '€' : '₪'}</span></div>
-      <button type="button" class="svc__more" ${on ? '' : 'hidden'}>${qOpen.has(key) ? 'לסגור פירוט' : 'פירוט'}</button></div>`);
-    const name = $('.svc__name', row);
-    if (isCustom) { name.innerHTML = '<input type="text" placeholder="שם השירות">'; $('input', name).value = base.title; $('input', name).addEventListener('input', e => { base.title = e.target.value; dirty(); }); }
-    else name.textContent = base.title;
-    const price = $('.svc__price input', row);
-    price.value = on && s.price ? s.price : '';
-    price.disabled = !on;
-    price.addEventListener('input', () => { const x = cur(); if (x) { x.price = Number(price.value) || 0; dirty(); drawTotal(); } });
-    $('input[type=checkbox]', row).addEventListener('change', e => {
-      if (e.target.checked) q.sections.push(isCustom ? base : { title: base.title, bullets: [...(base.bullets || [])], price: base.price || 0, unit: base.unit || '', afterPrice: !!base.afterPrice });
-      else q.sections.splice(q.sections.indexOf(cur()), 1);
-      dirty(); reDraw();
+  // 2. Services and prices: each service has one overall price, and inside it the chapters it includes
+  // (quotes made before services keep the older list, with a button to rebuild them).
+  let c2;
+  const svcMode = Array.isArray(q.services) && q.services.length > 0;
+  if (svcMode) {
+    c2 = card('2. השירותים והמחירים', 'לכל שירות מחיר אחד כולל. בתוך כל שירות מסמנים מה הוא כולל, והלקוח רואה הכול מפורט מתחת למחיר.');
+    const L = 'אבגדהוזחטיכלמנ';
+    const svcName = id => q.services.find(v => v.id === id)?.name || '';
+    const chapters = quoteCat.sections.filter(s => !s.afterPrice).map(s => s[q.lang] || s.he).filter(s => s && s.title);
+    (q.services || []).forEach((v, i) => {
+      const box = html(`<div class="svcbox"><div class="svcbox__head"><span class="svcbox__k">${L[i] || i + 1}</span></div></div>`);
+      const head = $('.svcbox__head', box);
+      const nm = html('<input type="text" class="svcbox__name" placeholder="שם השירות, למשל: הפקת האירוע" aria-label="שם השירות">');
+      nm.value = v.name || '';
+      nm.addEventListener('input', () => { v.name = nm.value; dirty(); });
+      const pr = html(`<div class="svc__price svcbox__price"><input type="number" inputmode="decimal" dir="ltr" placeholder="מחיר כולל" aria-label="מחיר כולל לשירות"><span>${q.currency === 'EUR' ? '€' : '₪'}</span></div>`);
+      $('input', pr).value = v.price || '';
+      $('input', pr).addEventListener('input', e => { v.price = Number(e.target.value) || 0; dirty(); drawTotal(); });
+      const del = html('<button type="button" class="icon icon--del" title="להסיר את השירות">✕</button>');
+      del.addEventListener('click', () => {
+        if (!confirm(`להסיר את השירות "${v.name || ''}" וכל מה שבתוכו?`)) return;
+        q.sections = q.sections.filter(x => x.svc !== v.id); q.services.splice(i, 1); dirty(); reDraw();
+      });
+      head.append(nm, pr, del);
+      const inc = html('<div class="svcbox__inc"><p>מה כלול בשירות הזה:</p><div class="incs"></div></div>');
+      const incs = $('.incs', inc);
+      // Only what this service includes, each removable…
+      q.sections.filter(x => x.svc === v.id).forEach(x => {
+        const known = chapters.some(c => c.title === x.title);
+        const row = html(`<div class="incl is-on">${known ? '<span></span>' : '<input type="text" placeholder="שם הפריט">'}<button type="button" class="icon icon--del" title="להוציא מהשירות">✕</button></div>`);
+        if (known) $('span', row).textContent = x.title;
+        else { $('input', row).value = x.title; $('input', row).addEventListener('input', e => { x.title = e.target.value; dirty(); }); }
+        $('button', row).addEventListener('click', () => { q.sections.splice(q.sections.indexOf(x), 1); dirty(); reDraw(); });
+        incs.append(row);
+      });
+      if (!q.sections.some(x => x.svc === v.id)) incs.append(html('<p class="hint">עוד לא נבחר כלום. מוסיפים מהרשימה למטה.</p>'));
+      // …and one short list to add more (taken from another service if it is there).
+      const pick = html('<select class="incpick" aria-label="להוסיף לשירות הזה"><option value="">+ להוסיף לשירות הזה…</option></select>');
+      chapters.filter(c => !q.sections.some(x => x.title === c.title && x.svc === v.id)).forEach(c => {
+        const other = q.sections.find(x => x.title === c.title && x.svc && x.svc !== v.id);
+        const o = document.createElement('option'); o.value = c.title; o.textContent = c.title + (other ? `  (יעבור מ"${svcName(other.svc)}")` : '');
+        pick.append(o);
+      });
+      pick.addEventListener('change', () => {
+        const c = chapters.find(x => x.title === pick.value); if (!c) return;
+        const other = q.sections.find(x => x.title === c.title && x.svc && x.svc !== v.id);
+        if (other) other.svc = v.id; else q.sections.push({ title: c.title, bullets: [...(c.bullets || [])], price: 0, unit: '', svc: v.id });
+        dirty(); reDraw();
+      });
+      inc.append(pick);
+      const tools2 = html('<div class="row-tools"></div>');
+      const addOwn = html('<button type="button" class="btn btn--line btn--sm">+ פריט משלי</button>');
+      addOwn.addEventListener('click', () => { q.sections.push({ title: '', bullets: [], price: 0, unit: '', svc: v.id }); dirty(); reDraw(); });
+      const key = 'svc:' + v.id;
+      const more = html(`<button type="button" class="btn btn--line btn--sm">${qOpen.has(key) ? 'לסגור את הפירוט' : 'לערוך את הפירוט של כל פריט'}</button>`);
+      more.addEventListener('click', () => { qOpen.has(key) ? qOpen.delete(key) : qOpen.add(key); reDraw(); });
+      tools2.append(addOwn, more);
+      inc.append(tools2);
+      if (qOpen.has(key)) {
+        q.sections.filter(x => x.svc === v.id).forEach(x => {
+          inc.append(field(`${x.title || 'פריט'}: מה כלול (שורה לכל דבר; # = כותרת משנה, > = פסקה)`, (x.bullets || []).join('\n'), val => { x.bullets = val.split('\n').map(y => y.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 4 }));
+        });
+        inc.append(field('הערה קצרה מתחת לשם השירות (לא חובה)', v.note || '', val => { v.note = val; dirty(); }));
+      }
+      box.append(inc);
+      c2.append(box);
     });
-    $('.svc__more', row).addEventListener('click', () => { qOpen.has(key) ? qOpen.delete(key) : qOpen.add(key); reDraw(); });
-    const wrap = html('<div></div>'); wrap.append(row);
-    if (on && qOpen.has(key)) {
-      const det = html('<div class="svc__det"></div>');
-      det.append(field('מה כלול (כל שורה בשורה נפרדת; # בתחילת שורה = כותרת משנה, > = פסקה)', (s.bullets || []).join('\n'), v => { s.bullets = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 6 }),
-        field('יחידה (לא חובה)', s.unit, v => { s.unit = v; dirty(); }, { placeholder: 'למשל: לאדם, לחודש, לאירוע' }));
-      const ap = html(`<label class="np"><input type="checkbox" ${s.afterPrice ? 'checked' : ''}> להציג את הפרק הזה אחרי המחירים (למשל תנאים)</label>`);
-      $('input', ap).addEventListener('change', e => { s.afterPrice = e.target.checked; dirty(); });
-      det.append(ap);
-      wrap.append(det);
+    if (Array.isArray(q.services) && q.services.length) {
+      const addS = html('<button type="button" class="btn btn--line">+ שירות נוסף</button>');
+      addS.addEventListener('click', () => { q.services.push({ id: 's' + Date.now().toString(36), name: '', price: 0, unit: '', note: '' }); dirty(); reDraw(); });
+      c2.append(addS);
     }
-    return wrap;
-  };
-  catSecs.forEach(s => list.append(svcRow(s, false)));
-  custom.forEach(s => list.append(svcRow(s, true)));
-  const addSvc = html('<button type="button" class="btn btn--line btn--sm">+ שירות אחר</button>');
-  addSvc.addEventListener('click', () => { const s = { title: '', bullets: [], price: 0, unit: '' }; q.sections.push(s); dirty(); reDraw(); });
-  c2.append(list, addSvc);
+
+  } else {
+    c2 = card('2. השירותים והמחירים', 'מסמנים מה כלול, וכותבים מחיר ליד כל שירות. הסה״כ מתעדכן לבד.');
+    const list = html('<div class="svcs"></div>');
+    const catSecs = quoteCat.sections.map(s => ({ ...(s[q.lang] || s.he), price: s.price || 0, unit: s.unit || '', afterPrice: !!s.afterPrice })).filter(s => s.title);
+    const custom = q.sections.filter(x => !catSecs.some(c => c.title === x.title));
+    const svcRow = (base, isCustom) => {
+      const cur = () => q.sections.find(x => x === base || x.title === base.title);
+      let s = cur();
+      const on = !!s, key = base.title || ('c' + q.sections.indexOf(base));
+      const row = html(`<div class="svc ${on ? 'is-on' : ''}">
+        <label class="svc__pick"><input type="checkbox" ${on ? 'checked' : ''}><span class="svc__name"></span></label>
+        <div class="svc__price"><input type="number" inputmode="decimal" dir="ltr" placeholder="מחיר" aria-label="מחיר"><span>${q.currency === 'EUR' ? '€' : '₪'}</span></div>
+        <button type="button" class="svc__more" ${on ? '' : 'hidden'}>${qOpen.has(key) ? 'לסגור פירוט' : 'פירוט'}</button></div>`);
+      const name = $('.svc__name', row);
+      if (isCustom) { name.innerHTML = '<input type="text" placeholder="שם השירות">'; $('input', name).value = base.title; $('input', name).addEventListener('input', e => { base.title = e.target.value; dirty(); }); }
+      else name.textContent = base.title;
+      const price = $('.svc__price input', row);
+      price.value = on && s.price ? s.price : '';
+      price.disabled = !on;
+      price.addEventListener('input', () => { const x = cur(); if (x) { x.price = Number(price.value) || 0; dirty(); drawTotal(); } });
+      $('input[type=checkbox]', row).addEventListener('change', e => {
+        if (e.target.checked) q.sections.push(isCustom ? base : { title: base.title, bullets: [...(base.bullets || [])], price: base.price || 0, unit: base.unit || '', afterPrice: !!base.afterPrice });
+        else q.sections.splice(q.sections.indexOf(cur()), 1);
+        dirty(); reDraw();
+      });
+      $('.svc__more', row).addEventListener('click', () => { qOpen.has(key) ? qOpen.delete(key) : qOpen.add(key); reDraw(); });
+      const wrap = html('<div></div>'); wrap.append(row);
+      if (on && qOpen.has(key)) {
+        const det = html('<div class="svc__det"></div>');
+        det.append(field('מה כלול (כל שורה בשורה נפרדת; # בתחילת שורה = כותרת משנה, > = פסקה)', (s.bullets || []).join('\n'), v => { s.bullets = v.split('\n').map(x => x.trim()).filter(Boolean); dirty(); }, { multi: true, rows: 6 }),
+          field('יחידה (לא חובה)', s.unit, v => { s.unit = v; dirty(); }, { placeholder: 'למשל: לאדם, לחודש, לאירוע' }));
+        const ap = html(`<label class="np"><input type="checkbox" ${s.afterPrice ? 'checked' : ''}> להציג את הפרק הזה אחרי המחירים (למשל תנאים)</label>`);
+        $('input', ap).addEventListener('change', e => { s.afterPrice = e.target.checked; dirty(); });
+        det.append(ap);
+        wrap.append(det);
+      }
+      return wrap;
+    };
+    catSecs.forEach(s => list.append(svcRow(s, false)));
+    custom.forEach(s => list.append(svcRow(s, true)));
+    const addSvc = html('<button type="button" class="btn btn--line btn--sm">+ שירות אחר</button>');
+    addSvc.addEventListener('click', () => { const s = { title: '', bullets: [], price: 0, unit: '' }; q.sections.push(s); dirty(); reDraw(); });
+    c2.append(list, addSvc);
+
+
+      // A quote from before services existed: one click turns it into services.
+      const conv = html('<div class="hint hint--box">ההצעה הזאת נבנתה בשיטה הקודמת. <button type="button" class="btn btn--gold btn--sm">לבנות אותה מחדש לפי שירותים עם מחיר כולל</button></div>');
+      $('button', conv).addEventListener('click', () => {
+        const fresh = newQuote({ lang: q.lang });
+        q.services = fresh.services;
+        q.sections = [...fresh.sections.filter(x => !x.afterPrice), ...q.sections.filter(x => x.afterPrice)];
+        q.items = (q.items || []).filter(it => Number(it.price) && !/^[#=] /.test(it.name || ''));
+        dirty(); reDraw();
+      });
+      c2.append(conv);
+
+    c2.prepend(conv);
+  }
 
   // Social media: a setup + monthly packages the client chooses from
   const soc = quoteCat.social?.[q.lang];
@@ -1413,8 +1506,10 @@ function quoteEditor(pg) {
   }
 
   // Extra lines (e.g. the external suppliers' budget)
-  const ex = html('<div class="extras"><h3>שורות נוספות <small>(לא חובה. שורה שמתחילה ב־# היא כותרת קבוצה, וב־= היא סיכום של הקבוצה)</small></h3></div>');
+  const ex = html(svcMode ? '<div class="extras"><h3>ספקים חיצוניים <small>(לא חובה. מופיעים בהצעה רק עם מחיר)</small></h3></div>'
+    : '<div class="extras"><h3>שורות נוספות <small>(לא חובה. שורה שמתחילה ב־# היא כותרת קבוצה, וב־= היא סיכום של הקבוצה)</small></h3></div>');
   q.items.forEach((it, i) => {
+    if (svcMode && /^[#=] /.test(it.name || '')) return;
     const row = html('<div class="svc is-on"></div>');
     const nm = html('<input type="text" class="svc__free" placeholder="פירוט">'); nm.value = it.name;
     nm.addEventListener('input', () => { it.name = nm.value; dirty(); });
@@ -1426,7 +1521,7 @@ function quoteEditor(pg) {
     row.append(nm, pr, del); ex.append(row);
   });
   const quick = html('<div class="row-tools"></div>');
-  (quoteCat[q.lang]?.lines || []).forEach(n => { const b = html(`<button type="button" class="btn btn--line btn--sm">+ ${esc(n.length > 40 ? n.slice(0, 40) + '…' : n)}</button>`); b.addEventListener('click', () => { q.items.push({ name: n, qty: 1, price: 0 }); dirty(); reDraw(); }); quick.append(b); });
+  (svcMode ? (QUOTE_DEFAULTS.external?.[q.lang] || []) : (quoteCat[q.lang]?.lines || [])).forEach(n => { const b = html(`<button type="button" class="btn btn--line btn--sm">+ ${esc(n.length > 40 ? n.slice(0, 40) + '…' : n)}</button>`); b.addEventListener('click', () => { q.items.push({ name: n, qty: 1, price: 0 }); dirty(); reDraw(); }); quick.append(b); });
   const addLine = html('<button type="button" class="btn btn--line btn--sm">+ שורה</button>');
   addLine.addEventListener('click', () => { q.items.push({ name: '', qty: 1, price: 0 }); dirty(); reDraw(); });
   quick.append(addLine); ex.append(quick); c2.append(ex);

@@ -136,3 +136,11 @@ html, body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #1B2A5C, 
 .q-brand { margin: 0 0 6px; font-size: .8rem; letter-spacing: .08em; color: var(--ink-2); }
 .q-brand b { color: var(--gold-t); letter-spacing: .18em; margin-inline-end: 6px; }
 .q-close { margin-top: 4px; text-align: center; }
+/* A service: one overall price, then what it includes */
+.q-svc { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 16px 20px; border-radius: 14px; background: linear-gradient(180deg, #16203a, #0a1120 70%, #060b16); color: #fff; box-shadow: inset 0 0 0 1px rgba(214,165,77,.55); margin-top: 6px; }
+.q-svc__k { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(180deg, #f7e6c0, #d4af6a 45%, #8a6a32); color: #1d1405; font: 900 1.15rem var(--display); }
+.q-svc__t h3 { margin: 0; font: 700 1.3rem/1.25 var(--display); color: var(--gold-2); }
+.q-svc__t p { margin: 4px 0 0; color: #C7D3E4; font-size: .9rem; }
+.q-svc__t .q-svc__inc { color: var(--gold); font-weight: 700; font-size: .82rem; letter-spacing: .03em; }
+.q-svc__price { font: 900 1.45rem var(--display); color: #fff; white-space: nowrap; text-align: end; }
+.q-svc__price small { display: block; font: 600 .75rem var(--body); color: #B6C4DA; }
