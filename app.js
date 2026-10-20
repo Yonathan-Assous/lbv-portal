@@ -956,4 +956,34 @@
     }).catch(() => {});
     window.open(`https://wa.me/${WA}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
   });
+
+  /* ---------- Visit and click counts (anonymous: a random id on this browser, no cookies, no names) ---------- */
+  if (!PREVIEW) {
+    let vid = '';
+    try { vid = localStorage.getItem('lbv-vid') || ''; if (!vid) { vid = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('lbv-vid', vid); } }
+    catch (e) { vid = Math.random().toString(36).slice(2); }
+    const send = o => {
+      try {
+        const body = JSON.stringify({ v: vid, ...o });
+        if (!(navigator.sendBeacon && navigator.sendBeacon('/api/track', body))) fetch('/api/track', { method: 'POST', body, keepalive: true }).catch(() => {});
+      } catch (e) {}
+    };
+    let ref = '';
+    try { const r = new URL(document.referrer); if (r.host !== location.host) ref = r.hostname; } catch (e) {}
+    send({ t: 'view', lang: LANG, dev: matchMedia('(max-width: 760px)').matches ? 'mobile' : 'desktop', ref });
+    addEventListener('sheet:change', e => { if (e.detail) send({ t: 'win', id: e.detail }); });
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a, button');
+      if (!a) return;
+      const h = a.getAttribute('href') || '';
+      const k = /wa.me|whatsapp/i.test(h) ? 'whatsapp' : h.startsWith('tel:') ? 'phone' : h.startsWith('mailto:') ? 'email'
+        : /instagram.com/.test(h) ? 'instagram' : /tiktok.com/.test(h) ? 'tiktok' : /facebook.com/.test(h) ? 'facebook' : /youtube.com|youtu.be/.test(h) ? 'youtube'
+        : a.matches('.vthumb') ? 'video' : /#contact$/.test(h) ? 'quote_open' : /gala./.test(h) ? 'gala_demo' : '';
+      if (k) send({ t: 'click', k });
+    }, true);
+    document.addEventListener('submit', e => {
+      if (e.target.id === 'quote') send({ t: 'click', k: 'quote_send' });
+      else if (e.target === suForm) send({ t: 'click', k: 'signup_send' });
+    }, true);
+  }
 })();

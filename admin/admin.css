@@ -459,3 +459,12 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
   .qbar__total { order: -1; width: 100%; padding: 3px 10px; font-size: .9rem; }
 }
 @media (max-width: 860px) { .qbar .dsk { display: none; } }
+/* Visitors */
+.toplist { display: grid; gap: 8px; }
+.toplist > div { display: grid; grid-template-columns: minmax(0, 1.2fr) 2fr auto; gap: 10px; align-items: center; font-size: .9rem; }
+.toplist span { font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toplist i { display: block; height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--gold), var(--gold-d)); min-width: 4px; }
+.toplist b { font-variant-numeric: tabular-nums; min-width: 2.5em; text-align: end; }
+.bars--days { grid-template-columns: repeat(30, 1fr); gap: 3px; margin-top: 14px; }
+.bars--days small { font-size: .62rem; }
+.banner--link { display: block; width: 100%; text-align: start; cursor: pointer; border: 0; font: inherit; }

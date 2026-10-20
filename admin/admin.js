@@ -434,6 +434,13 @@ function dashboard(pg) {
     <button class="stat" data-go="inbox"><b>${q.length}</b><span>בקשות להצעת מחיר</span></button>
     <button class="stat" data-go="inbox"><b>${s.length}</b><span>נרשמים לעדכונים</span></button>
     <button class="stat" data-go="stats"><b>${thisMonth}</b><span>פניות החודש</span></button></div>`));
+  if (!visits) loadVisits().then(() => page === 'dashboard' && render());
+  else if (visits.ready) pg.append(html(`<div class="stats">
+    <button class="stat" data-go="stats"><b>${nf(visits.today?.visitors)}</b><span>מבקרים היום</span></button>
+    <button class="stat" data-go="stats"><b>${nf(visits.week)}</b><span>מבקרים ב־7 ימים</span></button>
+    <button class="stat" data-go="stats"><b>${nf(visits.period?.visitors)}</b><span>מבקרים ב־30 יום</span></button>
+    <button class="stat stat--gold" data-go="stats"><b>${nf(Object.values(visits.clicks || {}).reduce((a, b) => a + b, 0))}</b><span>לחיצות חשובות ב־30 יום</span></button></div>`));
+  else pg.append(html('<button class="banner banner--link" data-go="stats">כדי לראות כאן כמה אנשים נכנסו לאתר ועל מה לחצו, צריך לחבר פעם אחת את המונה. לחצו כאן להסבר.</button>'));
   const two = html('<div class="dash2"></div>');
   const recent = card('הפניות האחרונות', leadsReady ? '' : 'טוען…', '<button class="btn btn--line btn--sm" data-go="inbox">לכל הפניות</button>');
   const box = html('<div class="leads"></div>');
@@ -971,10 +978,58 @@ function stats(pg) {
   a.append(html(`<div>${Object.entries(ints).map(([k, n]) => `<p><b>${n}</b> · ${esc(k)}</p>`).join('') || '<p class="hint">עוד אין.</p>'}</div>`));
   b.append(html(`<div>${Object.entries(svc).map(([k, n]) => `<p><b>${n}</b> · ${esc(k)}</p>`).join('') || '<p class="hint">עוד אין.</p>'}</div>`));
   two.append(a, b);
-  const v = card('מבקרים באתר', 'כמה אנשים נכנסו, מאיזו מדינה, מטלפון או ממחשב, ואילו חלונות פתחו. בלי שמות ובלי עוגיות.');
-  v.append(html(`<div><p class="hint">הנתונים נאספים על ידי שירות האחסון של האתר (Vercel), ומוצגים שם בגרפים. מפעילים פעם אחת: נכנסים לקישור, לוחצים <b>Enable</b>, וזהו. מאותו רגע כל ביקור נספר.</p>
-    <a class="btn btn--dark" href="https://vercel.com/yichai/lbv-portal/analytics" target="_blank" rel="noopener">לפתוח את נתוני המבקרים ↗</a></div>`));
-  pg.append(c, two, v);
+  pg.append(...visitsCards(), c, two);
+}
+
+/* ---------- visitors and clicks (our own anonymous counter; see api/track.js) ---------- */
+let visits = null;
+const CLK = {
+  whatsapp: 'לחיצה על וואטסאפ', phone: 'לחיצה על טלפון', email: 'לחיצה על מייל', quote_open: 'פתיחת טופס הצעת מחיר', quote_send: 'שליחת בקשה להצעת מחיר',
+  signup_send: 'הרשמה לעדכונים', video: 'צפייה בסרטון', instagram: 'מעבר לאינסטגרם', tiktok: 'מעבר לטיקטוק', facebook: 'מעבר לפייסבוק',
+  youtube: 'מעבר ליוטיוב', booking: 'הזמנת חדר', gala_demo: 'כניסה למערכת הגאלה',
+};
+async function loadVisits() {
+  try { const r = await fetch('/api/visits?days=30', { cache: 'no-store' }); visits = r.ok ? await r.json() : { ready: false }; }
+  catch (e) { visits = { ready: false }; }
+}
+const nf = n => new Intl.NumberFormat('he-IL').format(n || 0);
+const top = (obj, label, n = 8) => {
+  const all = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, n);
+  const max = Math.max(1, ...all.map(x => x[1]));
+  return all.length ? `<div class="toplist">${all.map(([k, v]) => `<div><span>${esc(label(k))}</span><i style="width:${v / max * 100}%"></i><b>${nf(v)}</b></div>`).join('')}</div>` : '<p class="hint">עוד אין נתונים.</p>';
+};
+function visitsCards() {
+  const v = card('מבקרים באתר', 'נספר אצלנו, בלי שמות ובלי עוגיות: כמה אנשים נכנסו, על מה לחצו ומאיפה הגיעו. 30 הימים האחרונים.');
+  if (!visits) { v.append(html('<p class="hint">טוען…</p>')); loadVisits().then(() => ['stats', 'dashboard'].includes(page) && render()); return [v]; }
+  if (!visits.ready) {
+    v.append(html(`<div class="hint hint--box"><b>צריך לחבר פעם אחת מונה קטן (חינם), ואז כל ביקור וכל לחיצה נספרים:</b><ol>
+      <li>נכנסים ל־Vercel, לפרויקט <b>lbv-portal</b> ← לשונית <b>Storage</b>.</li>
+      <li><b>Create Database</b> ← בוחרים <b>Upstash for Redis</b> (או Redis) ← התוכנית החינמית ← <b>Create</b>.</li>
+      <li>מחברים אותו לפרויקט <b>lbv-portal</b> (Connect), ואז <b>Redeploy</b>.</li></ol>
+      <a class="btn btn--dark btn--sm" href="https://vercel.com/yichai/lbv-portal/stores" target="_blank" rel="noopener">לפתוח את Storage ב־Vercel ↗</a></div>`));
+    return [v];
+  }
+  const d = visits.days || [];
+  const max = Math.max(1, ...d.map(x => x.visitors));
+  v.append(html(`<div class="stats">
+      <div class="stat"><b>${nf(visits.today?.visitors)}</b><span>מבקרים היום</span></div>
+      <div class="stat"><b>${nf(visits.week)}</b><span>מבקרים ב־7 ימים</span></div>
+      <div class="stat stat--gold"><b>${nf(visits.period?.visitors)}</b><span>מבקרים ב־30 יום</span></div>
+      <div class="stat"><b>${nf(visits.period?.views)}</b><span>כניסות לדפים ב־30 יום</span></div></div>`),
+    html(`<div class="bars bars--days">${d.map(x => `<div title="${x.d}: ${x.visitors} מבקרים"><small>${x.visitors || ''}</small><i style="height:${x.visitors / max * 100}%"></i><small>${x.d.slice(8)}</small></div>`).join('')}</div>`));
+  const winName = id => docs.he?.getElementById(id)?.dataset.title || SCOPE_NAME[id] || id;
+  const two = html('<div class="grid2"></div>');
+  const c1 = card('על מה לחצו', 'לחיצות שמראות עניין אמיתי'); c1.append(html(top(visits.clicks, k => CLK[k] || k, 13)));
+  const c2 = card('אילו חלונות פתחו', ''); c2.append(html(top(visits.windows, winName)));
+  const c3 = card('מאיפה הגיעו', ''); c3.append(html(top(visits.refs, k => (k === 'direct' ? 'כניסה ישירה / וואטסאפ' : k))));
+  const dev = visits.devices || {}, all = (dev.mobile || 0) + (dev.desktop || 0) || 1, lg = visits.langs || {};
+  const c4 = card('טלפון או מחשב, ובאיזו שפה', '');
+  c4.append(html(`<div class="toplist">
+      <div><span>טלפון</span><i style="width:${(dev.mobile || 0) / all * 100}%"></i><b>${Math.round((dev.mobile || 0) / all * 100)}%</b></div>
+      <div><span>מחשב</span><i style="width:${(dev.desktop || 0) / all * 100}%"></i><b>${Math.round((dev.desktop || 0) / all * 100)}%</b></div></div>`),
+    html(top(lg, k => ({ he: 'עברית', fr: 'צרפתית', en: 'אנגלית' })[k] || k)));
+  two.append(c1, c2, c3, c4);
+  return [v, two];
 }
 
 /* ---------- 11. guide, tech support and the first-visit tour ---------- */

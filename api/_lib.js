@@ -12,7 +12,7 @@ import crypto from 'node:crypto';
 
 export const CONTENT_KEY = 'site/content.json';
 const COOKIE = 'lbv_admin';
-const SESSION_HOURS = 12;
+const SESSION_HOURS = 24 * 30;   // a login lasts 30 days on that browser
 
 const secret = () => (process.env.ADMIN_PASSWORD || '') + '|' + (process.env.ADMIN_SECRET || '');
 

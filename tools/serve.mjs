@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const port = Number(process.env.PORT) || 5190;
 const PASSWORD = process.env.ADMIN_PASSWORD || '';
+const STATS = {};   // local visit counts (/api/track)
 const sessions = new Map(); // session id → { n: name, r: role }
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp4': 'video/mp4', '.svg': 'image/svg+xml' };
 
@@ -114,6 +115,25 @@ async function api(req, res, p) {
       else { q = { ...data, id: "q-" + crypto.randomBytes(8).toString("hex"), number: "LBV-" + now.slice(0, 4) + "-" + String(all.length + 1).padStart(3, "0"), status: b.status === "sent" ? "sent" : "draft", createdAt: now, createdBy: me.n }; all.push(q); }
       saveAll(all); return json(res, 200, { ...q, token: tok(q.id) });
     }
+  }
+  // Local stand-in for the visit counter (kept in memory while the server runs).
+  if (p === "/api/track") {
+    const b = JSON.parse((await body(req)).toString() || "{}"), d = new Date().toISOString().slice(0, 10);
+    const day = (STATS[d] ??= { u: new Set(), pv: 0, clk: {}, win: {}, dev: {}, lang: {}, ref: {} });
+    const inc = (o, k) => { o[k] = (o[k] || 0) + 1; };
+    if (b.t === "view") { day.u.add(b.v); day.pv++; inc(day.dev, b.dev === "mobile" ? "mobile" : "desktop"); inc(day.lang, b.lang || "he"); inc(day.ref, b.ref || "direct"); }
+    else if (b.t === "win" && b.id) inc(day.win, b.id);
+    else if (b.t === "click" && b.k) inc(day.clk, b.k);
+    res.writeHead(204); return res.end();
+  }
+  if (p === "/api/visits") {
+    if (!authed(req)) return json(res, 401, { error: "login" });
+    const dates = [...Array(30)].map((_, i) => new Date(Date.now() - (29 - i) * 86400000).toISOString().slice(0, 10));
+    const all = { clicks: {}, windows: {}, devices: {}, langs: {}, refs: {} }, U = new Set(), W = new Set(); let views = 0;
+    const add = (t, o) => Object.entries(o || {}).forEach(([k, v]) => { t[k] = (t[k] || 0) + v; });
+    const days = dates.map((d, i) => { const x = STATS[d]; if (!x) return { d, visitors: 0, views: 0 }; x.u.forEach(v => { U.add(v); if (i >= 23) W.add(v); }); views += x.pv;
+      add(all.clicks, x.clk); add(all.windows, x.win); add(all.devices, x.dev); add(all.langs, x.lang); add(all.refs, x.ref); return { d, visitors: x.u.size, views: x.pv }; });
+    return json(res, 200, { ready: true, days, period: { visitors: U.size, views }, week: W.size, today: days[29], ...all });
   }
   if (p === '/api/send') {
     // Local stand-in: counts who would receive it, sends nothing.
