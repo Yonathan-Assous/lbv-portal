@@ -96,6 +96,8 @@ function cleanQuote(b) {
     vatRate: num(b.vatRate) || 18,
     vatNote: str(b.vatNote, 300),
     payment: str(b.payment, 1000),
+    cancellation: str(b.cancellation, 1500),
+    included: lines(b.included, 30, 300), excluded: lines(b.excluded, 30, 300),
     validDays: Math.max(1, Math.min(365, Math.round(num(b.validDays) || 14))),
     closing: str(b.closing, 3000), tagline: str(b.tagline, 200),
     leadId: str(b.leadId, 200),

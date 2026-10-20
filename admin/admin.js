@@ -1277,7 +1277,7 @@ function newQuote(lead) {
         .map(c => ({ title: c.title, bullets: [...c.bullets], price: 0, unit: '', svc: v.id }))),
       // The chapters that come after the prices (collaboration, payment terms) are in every quote from the start.
       ...quoteCat.sections.filter(s => s.afterPrice && s[lang]?.title).map(s => ({ title: s[lang].title, bullets: [...s[lang].bullets], price: 0, unit: '', afterPrice: true }))],
-    items: [], packages: null,
+    items: [], packages: null, included: [], excluded: [], cancellation: '',
     discount: 0, vat: 'plus', vatRate: quoteCat.vatRate || 18, vatNote: '', payment: D.payment || '', validDays: 30,
     closing: D.closing, tagline: D.tagline, leadId: lead?.id || '',
   };
@@ -1366,7 +1366,7 @@ function quoteEditor(pg) {
   });
 
   // 1. Client and event
-  const c1 = card('1. הלקוח והאירוע', 'מה שעוד לא ידוע יופיע בהצעה כ"להשלמה".');
+  const c1 = card('1. הלקוח והאירוע', 'מופיע בהצעה תחת "לכבוד". שדה ריק לא מופיע. השפה קובעת את כל הכותרות בהצעה.');
   const lang = html(`<div class="seg" role="group" aria-label="שפת ההצעה"><button type="button" data-l="he" aria-pressed="${he}">ההצעה בעברית</button><button type="button" data-l="fr" aria-pressed="${!he}">L’offre en français</button></div>`);
   $$('[data-l]', lang).forEach(b => b.addEventListener('click', () => {
     if (b.dataset.l === q.lang) return;
@@ -1384,15 +1384,12 @@ function quoteEditor(pg) {
     field('טלפון', q.client.phone, v => { q.client.phone = v; dirty(); }, { dir: 'ltr' }),
     field('מייל', q.client.email, v => { q.client.email = v; dirty(); }, { dir: 'ltr' }),
     field('סוג האירוע', q.event.type, v => { q.event.type = v; dirty(); }),
-    field('תאריך', q.event.date, v => { q.event.date = v; dirty(); }, { placeholder: 'למשל 12.03.2027' }),
-    field('מקום', q.event.place, v => { q.event.place = v; dirty(); }),
-    field('משתתפים', q.event.guests, v => { q.event.guests = v; dirty(); }),
-    field('איש קשר אצל הלקוח', q.client.contact || '', v => { q.client.contact = v; dirty(); }),
-    field('שעות', q.event.hours || '', v => { q.event.hours = v; dirty(); }));
+    field('תאריך האירוע', q.event.date, v => { q.event.date = v; dirty(); }, { placeholder: 'למשל 12.03.2027' }),
+    );
   $('input', g1.children[3]).setAttribute('list', 'qTypes');
   const fd = html(`<label class="np"><input type="checkbox" ${q.fullDetails ? 'checked' : ''}> להציג את כל פרטי הלקוח והאירוע, גם מה שעוד חסר ("להשלמה")</label>`);
   $('input', fd).addEventListener('change', e => { q.fullDetails = e.target.checked; dirty(); });
-  c1.append(lang, g1, dl, fd);
+  c1.append(lang, g1, dl);
 
   // 2. Services and prices: each service has one overall price, and inside it the chapters it includes
   // (quotes made before services keep the older list, with a button to rebuild them).
@@ -1561,19 +1558,22 @@ function quoteEditor(pg) {
   }
 
   // Extra lines (e.g. the external suppliers' budget)
-  const ex = html(svcMode ? '<div class="extras"><h3>ספקים חיצוניים <small>(לא חובה. מופיעים בהצעה רק עם מחיר)</small></h3></div>'
-    : '<div class="extras"><h3>שורות נוספות <small>(לא חובה. שורה שמתחילה ב־# היא כותרת קבוצה, וב־= היא סיכום של הקבוצה)</small></h3></div>');
+  const ex = html(svcMode ? '<div class="extras"><h3>שורות נוספות בטבלה <small>(לא חובה: תיאור, כמות ומחיר ליחידה. מופיעות בהצעה רק עם מחיר)</small></h3></div>'
+    : '<div class="extras"><h3>שורות נוספות בטבלה <small>(תיאור, כמות ומחיר ליחידה. שורה שמתחילה ב־# היא כותרת קבוצה, וב־= היא סיכום של הקבוצה)</small></h3></div>');
   q.items.forEach((it, i) => {
     if (svcMode && /^[#=] /.test(it.name || '')) return;
     const row = html('<div class="svc is-on"></div>');
-    const nm = html('<input type="text" class="svc__free" placeholder="פירוט">'); nm.value = it.name;
+    const nm = html('<input type="text" class="svc__free" placeholder="תיאור">'); nm.value = it.name; nm.dir = he ? 'rtl' : 'ltr';
     nm.addEventListener('input', () => { it.name = nm.value; dirty(); });
-    const pr = html(`<div class="svc__price"><input type="number" dir="ltr" placeholder="מחיר" aria-label="מחיר"><span>${q.currency === 'EUR' ? '€' : '₪'}</span></div>`);
+    const qt = html('<input type="number" class="svc__qty" inputmode="numeric" min="1" dir="ltr" placeholder="כמות" aria-label="כמות" title="כמות">');
+    qt.value = it.qty || 1;
+    qt.addEventListener('input', () => { it.qty = Math.max(1, Number(qt.value) || 1); dirty(); drawTotal(); });
+    const pr = html(`<div class="svc__price"><input type="number" dir="ltr" placeholder="מחיר ליחידה" aria-label="מחיר ליחידה"><span>${q.currency === 'EUR' ? '€' : '₪'}</span></div>`);
     $('input', pr).value = it.price || '';
     $('input', pr).addEventListener('input', e => { it.price = Number(e.target.value) || 0; dirty(); drawTotal(); });
     const del = html('<button type="button" class="icon icon--del" title="מחיקה">✕</button>');
     del.addEventListener('click', () => { q.items.splice(i, 1); dirty(); reDraw(); });
-    row.append(nm, pr, del); ex.append(row);
+    row.append(nm, qt, pr, del); ex.append(row);
   });
   const quick = html('<div class="row-tools"></div>');
   (svcMode ? (QUOTE_DEFAULTS.external?.[q.lang] || []) : (quoteCat[q.lang]?.lines || [])).forEach(n => { const b = html(`<button type="button" class="btn btn--line btn--sm">+ ${esc(n.length > 40 ? n.slice(0, 40) + '…' : n)}</button>`); b.addEventListener('click', () => { q.items.push({ name: n, qty: 1, price: 0 }); dirty(); reDraw(); }); quick.append(b); });
@@ -1601,8 +1601,26 @@ function quoteEditor(pg) {
   $('input', np).addEventListener('change', e => { q.hidePrices = e.target.checked; dirty(); });
   c2.append(g3, np, sum);
 
-  // 3. Wording (already filled; open only to change)
-  const c3 = card('3. נוסחים ותנאים', 'כבר מלא בנוסח של La Belle Vie. פותחים רק אם רוצים לשנות להצעה הזאת.');
+  // 3. What is included, what is not, and the terms (shown on the first page of the quote)
+  const c4 = card('3. מה כלול ותנאים', 'רשימות קצרות, שורה לכל דבר. מה שנשאר ריק לא מופיע בהצעה.');
+  const qDir = he ? 'rtl' : 'ltr';
+  const lst = v => v.split('\n').map(x => x.trim()).filter(Boolean);
+  const g5 = html('<div class="grid2"></div>');
+  g5.append(field(he ? 'ההצעה כוללת' : 'ההצעה כוללת (Inclus)', (q.included || []).join('\n'), v => { q.included = lst(v); dirty(); }, { multi: true, rows: 5, dir: qDir, placeholder: he ? 'למשל: תכנון והפקה מלאים' : 'par ex. : Conception et coordination' }),
+    field(he ? 'ההצעה אינה כוללת' : 'ההצעה אינה כוללת (Non inclus)', (q.excluded || []).join('\n'), v => { q.excluded = lst(v); dirty(); }, { multi: true, rows: 5, dir: qDir, placeholder: he ? 'למשל: אולם וקייטרינג' : 'par ex. : Location de la salle' }),
+    field('תנאי תשלום', q.payment, v => { q.payment = v; dirty(); }, { multi: true, rows: 3, dir: qDir, placeholder: he ? 'למשל: 30% מקדמה באישור ההצעה, והיתרה עד שבוע לפני האירוע' : 'par ex. : Acompte de 30 % à la signature' }),
+    field('תנאי ביטול', q.cancellation || '', v => { q.cancellation = v; dirty(); }, { multi: true, rows: 3, dir: qDir }));
+  const fromSvc = html('<button type="button" class="btn btn--line btn--sm">למלא את "ההצעה כוללת" מהשירותים שנבחרו</button>');
+  fromSvc.addEventListener('click', () => {
+    const names = svcMode ? (q.services || []).map(v => v.name) : (q.sections || []).filter(x => !x.afterPrice).map(x => x.title);
+    q.included = [...new Set([...(q.included || []), ...names.map(x => String(x || '').trim()).filter(Boolean)])];
+    dirty(); reDraw();
+  });
+  c4.append(g5, html('<div class="row-tools"></div>'), field('תוקף ההצעה (ימים)', q.validDays, v => { q.validDays = Number(v) || 30; dirty(); }, { type: 'number', dir: 'ltr' }));
+  $('.row-tools', c4).append(fromSvc);
+
+  // 4. Wording (already filled; open only to change)
+  const c3 = card('4. נוסחים נוספים', 'הפירוט של כל שירות מופיע בעמודים שאחרי הסיכום. פותחים רק אם רוצים לשנות.');
   const det = html('<details class="qcat"><summary>לפתוח ולשנות נוסחים</summary></details>');
   const g4 = html('<div class="grid2"></div>');
   g4.append(field('כותרת', q.title, v => { q.title = v; dirty(); }), field('כותרת משנה', q.subtitle, v => { q.subtitle = v; dirty(); }),
@@ -1612,12 +1630,10 @@ function quoteEditor(pg) {
   det.append(g4,
     field('פסקת פתיחה', q.intro, v => { q.intro = v; dirty(); }, { multi: true, rows: 3 }),
     field('הערות מתחת לטבלת המחיר (כל שורה פסקה)', q.finNote || '', v => { q.finNote = v; dirty(); }, { multi: true, rows: 3 }),
-    field('תנאי תשלום', q.payment, v => { q.payment = v; dirty(); }, { multi: true, rows: 2, placeholder: 'למשל: 30% מקדמה באישור ההצעה, והיתרה עד שבוע לפני האירוע' }),
-    field('תוקף ההצעה (ימים)', q.validDays, v => { q.validDays = Number(v) || 14; dirty(); }, { type: 'number', dir: 'ltr' }),
     field('פסקת סיום', q.closing, v => { q.closing = v; dirty(); }, { multi: true, rows: 3 }),
     field('שורת הסיום (מתחת לשם La Belle Vie)', q.tagline, v => { q.tagline = v; dirty(); }));
   c3.append(det);
-  pg.append(head, c1, c2, c3);
+  pg.append(head, c1, c2, c4);
   drawTotal();
 }
 

@@ -403,7 +403,8 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
 .svc__more { border: 0; background: none; color: #2B4A9B; font: inherit; font-weight: 700; font-size: .85rem; cursor: pointer; white-space: nowrap; }
 .svc__more:hover { text-decoration: underline; }
 .svc__det { margin: -2px 0 6px; padding: 12px 14px; border-radius: 0 0 12px 12px; background: #F7F9FC; border: 1px solid var(--line); border-top: 0; }
-.extras .svc { grid-template-columns: minmax(0, 1fr) 170px 34px; }
+.extras .svc { grid-template-columns: minmax(0, 1fr) 76px 170px 34px; }
+.svc__qty { width: 100%; min-height: 40px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line); font: inherit; text-align: center; }
 .extras h3 { margin: 18px 0 8px; font-size: 1rem; }
 .extras h3 small { font-weight: 600; color: var(--ink-3); }
 .extras .svc + .svc { margin-top: 8px; }
@@ -444,9 +445,10 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--g
   .svcbox__head .svcbox__price { grid-column: 1 / -1; order: 5; }
   .incs { grid-template-columns: 1fr; }
   /* extra lines on a phone: the name gets the whole width, the price below it */
-  .extras .svc { grid-template-columns: minmax(0, 1fr) 34px; }
+  .extras .svc { grid-template-columns: 70px minmax(0, 1fr) 34px; }
   .extras .svc .svc__free { grid-column: 1 / -1; }
-  .extras .svc .svc__price { grid-column: 1; }
+  .extras .svc .svc__qty { grid-column: 1; }
+  .extras .svc .svc__price { grid-column: 2; }
 }
 .incl span { flex: 1; }
 .incl .icon { margin-inline-start: auto; width: 28px; height: 28px; }
