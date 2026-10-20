@@ -74,7 +74,12 @@
     const svcs = (q.services || []).filter(v => v.name);
     const rows = [];
     const line = (desc, note, qty, unit) => rows.push({ desc, note, qty: Number(qty) || 1, unit: Number(unit) || 0 });
-    if (svcs.length) svcs.forEach(v => line(fill(v.name), [v.note, v.unit].filter(Boolean).map(fill).join(' · '), 1, v.price));
+    if (svcs.length) {
+      // A service's price is its own overall price plus any price written on the chapters inside it.
+      const own = v => (Number(v.price) || 0) + (q.sections || []).filter(x => x.svc === v.id).reduce((t, x) => t + (Number(x.price) || 0), 0);
+      svcs.forEach(v => line(fill(v.name), [v.note, v.unit].filter(Boolean).map(fill).join(' · '), 1, own(v)));
+      (q.sections || []).filter(x => Number(x.price) && x.title && !svcs.some(v => v.id === x.svc)).forEach(x => line(fill(x.title), fill(x.unit), 1, x.price));
+    }
     else (q.sections || []).filter(s => !s.afterPrice && s.title).forEach(s => line(fill(s.title), fill(s.unit), 1, s.price));
     let group = 0;
     (q.items || []).forEach(it => {
