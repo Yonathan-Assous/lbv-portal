@@ -1,5 +1,5 @@
 // The ready-made La Belle Vie quote, in Hebrew and French. The French is the company's own devis (gala
-// OHEL NAFTALIE), with "{client}" where the client's name goes; the Hebrew says the same in the same register.
+// OHEL NAFTALI), with "{client}" where the client's name goes; the Hebrew says the same in the same register.
 // Chapter lines: "# " is a sub-heading, "> " a short paragraph, anything else a bullet. The admin can edit all of it.
 export const QUOTE_DEFAULTS = {
   version: 3,

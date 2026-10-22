@@ -174,8 +174,10 @@
       if (pk.note) annex.push({ html: `<section class="q-ch"><p>${fill(pk.note)}</p></section>` });
     }
     secs.filter(s => s.afterPrice && withBody(s)).forEach(s => annex.push(...chapter(s)));
-    if (annex.length) out.push({ html: `<h2 class="q-annex">${t.details}</h2>`, keep: true, newPage: true }, ...annex);
-    return out;
+    // With a detail of the services: it comes right after "To", and the prices start on a page of their own at the end.
+    if (!annex.length) return out;
+    const [meta, to, ...priced] = out;
+    return [meta, to, { html: `<h2 class="q-annex">${t.details}</h2>`, keep: true }, ...annex, { ...priced[0], newPage: true }, ...priced.slice(1)];
   }
 
   /** Lays the blocks out on A4 pages: as many as fit, then a new page. */
