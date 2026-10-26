@@ -20,8 +20,9 @@
       prizes: ['סוף שבוע זוגי במלון', 'נופש פסח למשפחה', 'ארוחה זוגית במסעדה', 'סט כלי כסף לשבת'],
       ticket: 'כרטיס מס׳ ',
       nextPrize: 'להגרלת הפרס הבא',
-      seat: 'לסדר את השולחנות',
-      seated: 'כל האורחים הושבו. לאפס',
+      seat: 'להושיב את המשפחות',
+      seated: 'כל המשפחות הושבו. לאפס',
+      mechitza: 'מחיצה',
       fields: { service: 'שירות', name: 'שם', phone: 'טלפון' },
       missing: list => 'חסר: ' + list.join(', ') + '. מלאו ונסו שוב.',
       msg: ['שלום La Belle Vie, אשמח להצעת מחיר.', 'שירות: ', 'שם: ', 'טלפון: ', 'תאריך: ', 'מספר אנשים: ', 'הערות: '],
@@ -32,8 +33,9 @@
       prizes: ['Un week-end en couple à l’hôtel', 'Un séjour de Pessah en famille', 'Un dîner pour deux au restaurant', 'Un service en argent pour Chabbat'],
       ticket: 'Billet n° ',
       nextPrize: 'Tirer le lot suivant',
-      seat: 'Placer les invités',
-      seated: 'Tous les invités sont placés. Recommencer',
+      seat: 'Placer les familles',
+      seated: 'Toutes les familles sont placées. Recommencer',
+      mechitza: 'Mehitsa',
       fields: { service: 'service', name: 'nom', phone: 'téléphone' },
       missing: list => 'Il manque : ' + list.join(', ') + '. Complétez puis réessayez.',
       msg: ['Bonjour La Belle Vie, je souhaite recevoir un devis.', 'Service : ', 'Nom : ', 'Téléphone : ', 'Date : ', 'Nombre de personnes : ', 'Remarques : '],
@@ -44,8 +46,9 @@
       prizes: ['A weekend for two at a hotel', 'A family Pesach stay', 'Dinner for two', 'A silver Shabbat set'],
       ticket: 'Ticket no. ',
       nextPrize: 'Draw the next prize',
-      seat: 'Seat the guests',
-      seated: 'All guests seated. Reset',
+      seat: 'Seat the families',
+      seated: 'All families seated. Reset',
+      mechitza: 'Mechitza',
       fields: { service: 'service', name: 'name', phone: 'phone' },
       missing: list => 'Missing: ' + list.join(', ') + '. Please fill in and try again.',
       msg: ['Hello La Belle Vie, I would like a quote.', 'Service: ', 'Name: ', 'Phone: ', 'Date: ', 'Number of people: ', 'Notes: '],
@@ -806,40 +809,48 @@
     });
   }
 
-  /* ---------- Wedding seating demo ---------- */
+  /* ---------- Wedding seating demo: like the real plan in Simha, each family is dragged to its table,
+     men (blue) and women (pink) on either side of the mechitza; every table shows seated / places. ---------- */
   const hall = $('#hall');
-  const TABLES = 9, SEATS = 10;
-  for (let t = 0; t < TABLES; t++) {
+  const SEATS = 10;
+  // Six tables: men on one side of the mechitza, women on the other; families of 2 to 5 people.
+  const SIDES = [['m', [4, 3, 3], [5, 2, 3], [2, 4]], ['f', [3, 4, 3], [2, 5, 3], [4, 2]]];
+  const tables = [];
+  const mkTable = (n, g, fams) => {
     const el = document.createElement('div');
     el.className = 'table';
     let seats = '';
     for (let s = 0; s < SEATS; s++) seats += `<i class="seat" style="--a:${s * 360 / SEATS}deg"></i>`;
-    el.innerHTML = seats + `<span class="table__top">${t + 1}</span>`;
-    hall.appendChild(el);
-  }
-  // Table groups: groom's family, bride's family, friends.
-  const plan = ['g1', 'g1', 'g1', 'g2', 'g2', 'g2', 'g3', 'g3', 'g3'];
+    el.innerHTML = seats + `<span class="table__top"><b>${n}</b><small>0/${SEATS}</small></span>`;
+    tables.push({ el, g, fams });
+    return el;
+  };
+  const side = (g, list, from) => { const col = document.createElement('div'); col.className = 'hall__side'; list.forEach((f, i) => col.append(mkTable(from + i, g, f))); return col; };
+  const mz = document.createElement('div');
+  mz.className = 'hall__mz';
+  mz.innerHTML = `<span>${esc(T.mechitza)}</span>`;
+  hall.append(side('m', SIDES[0].slice(1), 1), mz, side('f', SIDES[1].slice(1), 4));
   const seatBtn = $('#seatBtn');
   let seated = false, seating = false;
+  const count = t => { const k = $$('.seat.m, .seat.f', t.el).length; $('small', t.el).textContent = `${k}/${SEATS}`; t.el.classList.toggle('is-full', k >= SEATS); };
   seatBtn.addEventListener('click', () => {
     if (seating) return;
-    const all = $$('.table', hall);
     if (seated) {
       $$('.seat', hall).forEach(s => s.className = 'seat');
+      tables.forEach(count);
       seated = false; seatBtn.textContent = T.seat;
       return;
     }
     seating = true;
+    // One family at a time lands on its table, all its people together.
+    const moves = [];
+    tables.forEach(t => { let at = 0; t.fams.forEach(size => { moves.push([t, at, size]); at += size; }); });
     let i = 0;
-    const order = [];
-    all.forEach((t, ti) => $$('.seat', t).forEach((s, si) => { if (!(ti === 8 && si > 5)) order.push([s, plan[ti]]); }));
     const step = () => {
-      for (let k = 0; k < 3 && i < order.length; k++, i++) {
-        const [s, g] = order[i];
-        s.classList.add(g, 'is-in');
-        setTimeout(() => s.classList.remove('is-in'), 300);
-      }
-      if (i < order.length) setTimeout(step, reduced ? 0 : 28);
+      const [t, at, size] = moves[i++];
+      $$('.seat', t.el).slice(at, at + size).forEach(s => { s.classList.add(t.g, 'is-in'); setTimeout(() => s.classList.remove('is-in'), 300); });
+      count(t);
+      if (i < moves.length) setTimeout(step, reduced ? 0 : 170);
       else { seating = false; seated = true; seatBtn.textContent = T.seated; }
     };
     step();
