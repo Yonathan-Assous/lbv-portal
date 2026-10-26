@@ -764,8 +764,6 @@
             <div class="gr__yn"><button type="button" class="is-on" data-yn="yes">${esc(W.yes)}</button><button type="button" data-yn="no">${esc(W.no)}</button></div></fieldset>
           <fieldset class="gr__q" data-only-yes><legend>${esc(W.how)}</legend>
             <div class="gr__step"><button type="button" data-step="-1" aria-label="-">−</button><output>2</output><button type="button" data-step="1" aria-label="+">+</button></div></fieldset>
-          <fieldset class="gr__q" data-only-yes><legend>${esc(W.food)}</legend>
-            <div class="gr__chips">${W.foods.map((f, i) => `<button type="button" class="${i ? '' : 'is-on'}">${esc(f)}</button>`).join('')}</div></fieldset>
           <button class="btn btn--sun btn--block" type="submit">${esc(W.send)}</button>
         </form>
         <div class="gr__done" hidden><span class="gr__check"></span><b></b><p>${esc(W.got)}</p><button class="btn btn--lake btn--block" type="button" data-go="tables">${esc(W.see)}</button></div>
