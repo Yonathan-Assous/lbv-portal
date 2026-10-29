@@ -160,6 +160,8 @@
     };
     const annex = [];
     const withBody = s => s.title && (s.bullets || []).length;
+    // Chapters outside any service (a presentation, the options) come first, before the services.
+    if (svcs.length) secs.filter(s => !s.afterPrice && !svcs.some(v => v.id === s.svc) && withBody(s)).forEach(s => annex.push(...chapter(s)));
     if (svcs.length) svcs.forEach(v => {
       const chs = secs.filter(s => !s.afterPrice && s.svc === v.id && withBody(s));
       if (!chs.length) return;
