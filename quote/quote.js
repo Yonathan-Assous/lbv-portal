@@ -153,7 +153,8 @@
     const chapter = (s, svcName) => {
       const bl = (s.bullets || []).map(String);
       const title = String(s.title).trim() === String(svcName || '').trim() ? '' : fill(s.title);   // no repeat of the service's own name
-      const part = (a, b, cont) => `<section class="q-ch">${title ? `<h4>${title}${cont ? ` <small>${t.continued}</small>` : ''}</h4>` : ''}${body(bl.slice(a, b))}</section>`;
+      // On the next page the chapter always says what it continues, even when its title was the service's name.
+      const part = (a, b, cont) => `<section class="q-ch">${cont ? `<h4>${title || fill(s.title)} <small>${t.continued}</small></h4>` : title ? `<h4>${title}</h4>` : ''}${body(bl.slice(a, b))}</section>`;
       // where a page may end: never right after a sub-heading
       const cuts = bl.map((x, i) => i + 1).filter(i => i < bl.length && !bl[i - 1].startsWith('# ') && i >= 2 && bl.length - i >= 2);
       return [{ html: part(0, bl.length), part, n: bl.length, cuts }];
