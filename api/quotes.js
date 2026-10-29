@@ -184,11 +184,13 @@ export default async function handler(req, res) {
       if (!old) return res.status(404).json({ error: 'not-found' });
       q = { ...old, ...cleanQuote(b), updatedAt: now, updatedBy: s.n };
       if (b.status === 'sent' && old.status === 'draft') q.status = 'sent';
+      // The number can be changed by hand (LBV-2026-472).
+      if (typeof b.number === 'string' && /^LBV-\d{4}-\d{3,6}$/.test(b.number)) q.number = b.number;
     } else {
-      // A running number per year: LBV-2026-001, LBV-2026-002, …
+      // A running number per year, starting at 472: LBV-2026-472, LBV-2026-473, …
       const year = now.slice(0, 4);
       const nums = (await listQuotes()).map(x => String(x.number || '')).filter(n => n.startsWith(`LBV-${year}-`)).map(n => Number(n.split('-')[2]) || 0);
-      const number = `LBV-${year}-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(3, '0')}`;
+      const number = `LBV-${year}-${String(Math.max(471, ...nums) + 1).padStart(3, '0')}`;
       q = { id: 'q-' + crypto.randomBytes(8).toString('hex'), number, status: b.status === 'sent' ? 'sent' : 'draft', createdAt: now, createdBy: s.n, ...cleanQuote(b) };
     }
     await writeDoc(`quotes/${q.id}`, q);
