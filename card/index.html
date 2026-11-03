@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Belle Vie – מי אנחנו</title>
+<meta name="description" content="נופש בחגים, אירועים, ערבי גאלה, ערבי חברה וימי גיבוש. כל הסרטונים שלנו במקום אחד.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="only light">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta property="og:title" content="La Belle Vie – מי אנחנו">
+<meta property="og:description" content="נופש בחגים, אירועים, ערבי גאלה, ערבי חברה וימי גיבוש. כל הסרטונים שלנו במקום אחד.">
+<meta property="og:image" content="https://lbv-portal-phi.vercel.app/card/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="icon" type="image/png" href="/media/icon-gold.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/card/card.css">
+</head>
+<body>
+
+<div class="page">
+  <!-- The first screen: who we are in one line, and the choices -->
+  <main id="home">
+    <header class="top">
+      <img class="top__logo" src="/media/logo-color.png" alt="La Belle Vie" width="96" height="92">
+      <h1>נופש בחגים והפקת אירועים</h1>
+      <p>15 שנות ניסיון, באווירה משפחתית.</p>
+    </header>
+    <h2 class="choose">במה אפשר לעזור לכם?</h2>
+    <ul class="cards" id="cards"><!-- built by card.js --></ul>
+    <footer class="foot">
+      <ul class="foot__links">
+        <li><a href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener">אינסטגרם</a></li>
+        <li><a href="https://www.tiktok.com/@la.belle.vie.event" target="_blank" rel="noopener">טיקטוק</a></li>
+        <li><a href="https://www.facebook.com/share/1JXfFgiY9Y/" target="_blank" rel="noopener">פייסבוק</a></li>
+        <li><a href="https://youtube.com/@lbv-la_belle_vie" target="_blank" rel="noopener">יוטיוב</a></li>
+        <li><a href="/">לאתר המלא</a></li>
+      </ul>
+      <button class="foot__share" id="share" type="button">שליחת הכרטיס לחבר</button>
+      <p class="foot__copied" id="copied" role="status" hidden>הקישור הועתק</p>
+      <figure class="foot__qr">
+        <img src="/card/qr.png" alt="קוד QR לפתיחת הכרטיס בטלפון" width="108" height="108">
+        <figcaption>לפתיחה בטלפון, סרקו את הקוד</figcaption>
+      </figure>
+    </footer>
+  </main>
+
+  <!-- One topic: its videos -->
+  <section id="topic" hidden>
+    <a class="back" href="#">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      חזרה לכל הנושאים
+    </a>
+    <h2 class="topic__name" id="topicName" tabindex="-1"></h2>
+    <p class="topic__text" id="topicText"></p>
+    <p class="topic__note" id="topicNote" hidden></p>
+    <ul class="videos" id="videos"></ul>
+    <a class="ask" id="topicAsk" target="_blank" rel="noopener">לשאול אותנו בוואטסאפ</a>
+  </section>
+</div>
+
+<nav class="dock" aria-label="יצירת קשר">
+  <a class="dock__wa" id="waDock" href="https://wa.me/972585182655" target="_blank" rel="noopener">וואטסאפ</a>
+  <a class="dock__tel" href="tel:+972585182655">חיוג: <bdi>058-518-2655</bdi></a>
+</nav>
+
+<dialog class="player" id="player" aria-labelledby="playerTitle">
+  <div class="player__top">
+    <h3 id="playerTitle"></h3>
+    <button class="player__close" id="playerClose" type="button" aria-label="סגירה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+  </div>
+  <video class="player__video" id="playerVideo" controls playsinline></video>
+  <div class="player__nav">
+    <button class="player__step" id="playerPrev" type="button">הקודם</button>
+    <a class="player__wa" id="playerWa" href="https://wa.me/972585182655" target="_blank" rel="noopener">לשאול אותנו</a>
+    <button class="player__step" id="playerNext" type="button">הבא</button>
+  </div>
+</dialog>
+
+<script src="/card/card.js"></script>
+</body>
+</html>
