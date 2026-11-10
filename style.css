@@ -1238,3 +1238,28 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
 .lbv-al-right { text-align: right !important; }
 .lbv-al-center { text-align: center !important; }
 .lbv-al-left { text-align: left !important; }
+/* ---------- Clearer paths for a first-time visitor (round 2026-11-10) ---------- */
+.btn--wa { background: #1FA855; color: #fff; }
+.btn--wa:hover { background: #1B944B; }
+/* Every window ends with a way to reach us */
+.sheet-cta { margin-top: 36px; }
+.contact__call { margin-top: 14px; font-size: var(--step-1, 1.1rem); }
+.contact__call a { font-weight: 700; color: inherit; text-underline-offset: 4px; white-space: nowrap; }
+/* Comfortable taps */
+.langs-switch .bar__lang { height: 44px; min-width: 44px; }
+.foot__legal a { display: inline-flex; align-items: center; min-height: 44px; }
+/* WhatsApp, phone and Instagram stay reachable over an open window on desktop */
+body.has-sheet .float-stack { z-index: 70; }
+@media (max-width: 760px) {
+  /* The reassuring facts sit above the bottom dock, not under it */
+  .hero__facts { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+  /* One line under each door says what it is */
+  .door:not(.door--hero) p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 2px 0 0; font-size: .86rem; line-height: 1.35; opacity: .85; }
+}
+.langs-switch { padding: 0; }
+@media (max-width: 760px) {
+  .door--gala { grid-column: 1 / -1; flex-direction: row !important; align-items: center; gap: 16px; }
+}
+/* Line icons in the gold of the logo, instead of emoji */
+.modules__ic svg, .gala-cta__ic svg { display: block; width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.modules__ic, .gala-cta__ic { color: var(--sun); }

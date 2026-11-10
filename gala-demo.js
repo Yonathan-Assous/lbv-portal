@@ -29,7 +29,7 @@
     },
     fr: {
       title: 'Le tableau de bord de la soirée', gala: 'Gala 2026', cause: 'Au profit des enfants de la communauté',
-      intro: 'Voici ce que voient les organisateurs : chaque billet, chaque paiement et chaque ambassadeur, sur un seul écran. Essayez.',
+      intro: 'Voici ce que voient les organisateurs : chaque billet, chaque paiement et chaque ambassadeur, sur un seul écran. Essayez-le.',
       sale: 'Nouvelle vente', reset: 'Réinitialiser', live: 'Démo',
       k: ['Collecte', 'Billets', 'Participants', 'Tombolas', 'Payé', 'Ambassadeurs'], of: 'sur un objectif de', men: 'Hommes', women: 'Femmes',
       evo: 'Évolution des ventes', evoSub: 'Montant cumulé par jour', amb: 'Top ambassadeurs', sales: 'ventes',
@@ -39,7 +39,7 @@
       tiers: ['Bronze', 'Argent', 'Or', 'Diamant'], methods: ['Virement', 'Bit', 'Espèces', 'Chèque', 'Promesse'],
       status: ['Payé', 'En attente', 'Chez l’ambassadeur'],
       actions: ['Vente manuelle', 'Vendre des tombolas', 'Suivi des arrivées', 'Export Excel'],
-      raffleSold: n => `${n} tickets de tombola vendus`, arrivals: (a, b) => `${a} invités sur ${b} sont déjà arrivés`, exported: 'Le fichier est téléchargé',
+      raffleSold: n => `${n} billets de tombola vendus`, arrivals: (a, b) => `${a} invités sur ${b} sont déjà arrivés`, exported: 'Le fichier est téléchargé',
       newSale: (n, t) => `${n} a acheté un billet ${t}`,
       note: 'Tous les noms et montants sont des exemples. Dans le vrai système, tout se met à jour en direct, depuis le téléphone de chaque ambassadeur.',
       cta: 'Un tableau comme celui-ci pour votre soirée ?', ctaBtn: 'Parlons-en',

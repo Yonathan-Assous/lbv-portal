@@ -21,7 +21,7 @@
       ticket: 'כרטיס מס׳ ',
       nextPrize: 'להגרלת הפרס הבא',
       seat: 'להושיב את המשפחות',
-      seated: 'כל המשפחות הושבו. לאפס',
+      seated: 'כל המשפחות הושבו. להתחיל מחדש',
       mechitza: 'מחיצה',
       fields: { service: 'שירות', name: 'שם', phone: 'טלפון' },
       missing: list => 'חסר: ' + list.join(', ') + '. מלאו ונסו שוב.',
@@ -372,8 +372,19 @@
     document.body.classList.remove('has-sheet');
     openSheetEl = null;
     dispatchEvent(new CustomEvent('sheet:change', { detail: null }));
-    if (clearHash) history.replaceState(null, '', location.pathname + location.search);
+    if (clearHash) {
+      // Opened from inside the site: step back through history, so the phone's Back button never hits a dead step.
+      if (depth > 0) { const n = depth; depth = 0; history.go(-n); }
+      else history.replaceState({ lbvDepth: 0 }, '', location.pathname + location.search);
+    }
     scrollTo({ top: pageY, behavior: 'instant' });
+  }
+  // How many in-site steps (opened windows) lie on top of the page itself in the browser history.
+  let depth = 0;
+  function trackDepth() {
+    const st = history.state;
+    if (st && typeof st.lbvDepth === 'number') depth = st.lbvDepth;
+    else { depth = location.hash ? depth + 1 : 0; try { history.replaceState({ ...(st || {}), lbvDepth: depth }, ''); } catch (e) {} }
   }
   function route() {
     const id = decodeURIComponent(location.hash.slice(1));
@@ -382,8 +393,9 @@
     if (sheet) openSheet(sheet, target);
     else if (openSheetEl) { closeSheet(false); if (target) target.scrollIntoView({ behavior: 'instant' }); }
   }
-  addEventListener('hashchange', route);
+  addEventListener('hashchange', () => { trackDepth(); route(); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) goBack(); });
+  try { history.replaceState({ ...(history.state || {}), lbvDepth: 0 }, ''); } catch (e) {}
   route();
 
   /* ---------- Phone hero: vertical poster to match the vertical video ---------- */
@@ -735,7 +747,7 @@
   /* ---------- Wedding app: three screens (WhatsApp invite → guest confirms → seating) ---------- */
   const W = {
     he: { tabs: ['ההזמנה בוואטסאפ', 'אישור הגעה', 'סידור שולחנות'], couple: 'נועה ואריאל', online: 'מקוון', cardTop: 'בשמחה ובהתרגשות', cardMid: 'מתכבדים להזמינכם לחתונתם', date: 'יום חמישי · 11.3.2027 · 19:00', venue: 'אולמי הגן, ירושלים', msg: 'שלום משפחת כהן! נשמח מאוד לראותכם איתנו. לאישור הגעה לחצו כאן:', open: 'לאישור הגעה', hello: 'שלום משפחת כהן', q: 'תגיעו לשמוח איתנו?', yes: 'נגיע בשמחה', no: 'לא נוכל להגיע', how: 'מספר אנשים', food: 'העדפות אוכל', foods: ['רגיל', 'צמחוני', 'טבעוני', 'ללא גלוטן'], send: 'שליחת התשובה', thanks: 'תודה! נתראה בשמחה', thanksNo: 'תודה שעדכנתם', got: 'האישור הגיע ישר לנועה ולאריאל', see: 'לראות את זה אצל הזוג', try: 'נסו בעצמכם' },
-    fr: { tabs: ['L’invitation WhatsApp', 'Confirmation', 'Plan de table'], couple: 'Noa et Ariel', online: 'en ligne', cardTop: 'Avec joie et émotion', cardMid: 'ont le plaisir de vous convier à leur mariage', date: 'Jeudi · 11.3.2027 · 19h00', venue: 'Salles HaGan, Jérusalem', msg: 'Bonjour famille Cohen ! Nous serions si heureux de vous avoir avec nous. Pour confirmer votre venue :', open: 'Confirmer ma venue', hello: 'Bonjour famille Cohen', q: 'Serez-vous des nôtres ?', yes: 'Nous serons là', no: 'Nous ne pourrons pas venir', how: 'Nombre de personnes', food: 'Préférences de repas', foods: ['Standard', 'Végétarien', 'Végan', 'Sans gluten'], send: 'Envoyer ma réponse', thanks: 'Merci ! À très bientôt', thanksNo: 'Merci de nous avoir prévenus', got: 'La réponse arrive directement chez Noa et Ariel', see: 'Voir côté mariés', try: 'Essayez vous-même' },
+    fr: { tabs: ['L’invitation WhatsApp', 'Confirmation', 'Plan de table'], couple: 'Noa et Ariel', online: 'en ligne', cardTop: 'Avec joie et émotion', cardMid: 'ont le plaisir de vous convier à leur mariage', date: 'Jeudi 11 mars 2027 · 19 h 00', venue: 'Salles HaGan, Jérusalem', msg: 'Bonjour famille Cohen ! Nous serions si heureux de vous compter parmi nous. Pour confirmer votre venue :', open: 'Confirmer ma venue', hello: 'Bonjour famille Cohen', q: 'Serez-vous des nôtres ?', yes: 'Nous serons là', no: 'Nous ne pourrons pas venir', how: 'Nombre de personnes', food: 'Préférences de repas', foods: ['Standard', 'Végétarien', 'Végan', 'Sans gluten'], send: 'Envoyer ma réponse', thanks: 'Merci ! À très bientôt', thanksNo: 'Merci de nous avoir prévenus', got: 'La réponse arrive directement chez Noa et Ariel', see: 'Voir le côté des mariés', try: 'Essayez-le vous-même' },
     en: { tabs: ['WhatsApp invite', 'Guest RSVP', 'Seating plan'], couple: 'Noa & Ariel', online: 'online', cardTop: 'With joy and love', cardMid: 'invite you to celebrate their wedding', date: 'Thursday · 11.3.2027 · 7 pm', venue: 'HaGan Halls, Jerusalem', msg: 'Hello Cohen family! We would love to have you with us. To confirm, tap here:', open: 'RSVP now', hello: 'Hello Cohen family', q: 'Will you join us?', yes: 'Yes, we’ll be there', no: 'We can’t make it', how: 'How many of you?', food: 'Meal preferences', foods: ['Regular', 'Vegetarian', 'Vegan', 'Gluten-free'], send: 'Send my answer', thanks: 'Thank you! See you there', thanksNo: 'Thanks for letting us know', got: 'The answer goes straight to Noa and Ariel', see: 'See it on the couple’s side', try: 'Try it yourself' },
   }[LANG];
   const screen = $('#wedding .phone__screen');
@@ -856,8 +868,8 @@
 
   /* ---------- Sign-up for updates (Pesach first, or all news) → saved for the admin ---------- */
   const SU = {
-    he: { title: 'רוצים לשמוע ראשונים?', lead: 'השאירו פרטים, ונעדכן אתכם על נופשים חדשים, פסח, ואירועים מיוחדים.', name: 'שם מלא', phone: 'טלפון', email: 'מייל', interest: 'מה מעניין אתכם?', opts: { pesach: 'נופש פסח', sukkot: 'נופש סוכות', all: 'כל הנופשים והאירועים' }, consent: 'אני מאשר/ת לקבל עדכונים ופרסומים מ-La Belle Vie. אפשר להסיר בכל רגע.', send: 'הרשמה לעדכונים', thanks: 'תודה! נרשמתם, ונעדכן אתכם ראשונים.', err: 'משהו לא נשלח. בדקו שם, טלפון או מייל, ואישור לקבלת עדכונים.', strip: 'רוצים לשמוע ראשונים על נופשים ואירועים חדשים?', stripBtn: 'להרשמה לעדכונים', close: 'סגירה' },
-    fr: { title: 'Être informé en premier', lead: 'Laissez vos coordonnées, nous vous informerons des nouveaux séjours, de Pessah et des événements spéciaux.', name: 'Nom complet', phone: 'Téléphone', email: 'E-mail', interest: 'Ce qui vous intéresse', opts: { pesach: 'Séjour de Pessah', sukkot: 'Séjour de Souccot', all: 'Tous les séjours et événements' }, consent: 'J’accepte de recevoir des nouvelles et des offres de La Belle Vie. Désinscription à tout moment.', send: 'M’inscrire', thanks: 'Merci ! Vous êtes inscrit, vous serez informé en premier.', err: 'L’envoi a échoué. Vérifiez le nom, le téléphone ou l’e-mail, et l’accord.', strip: 'Envie d’être informé en premier des nouveaux séjours et événements ?', stripBtn: 'Recevoir les nouvelles', close: 'Fermer' },
+    he: { title: 'רוצים לשמוע ראשונים?', lead: 'השאירו פרטים, ונעדכן אתכם על נופשים חדשים, על פסח ועל אירועים מיוחדים.', name: 'שם מלא', phone: 'טלפון', email: 'מייל', interest: 'מה מעניין אתכם?', opts: { pesach: 'נופש פסח', sukkot: 'נופש סוכות', all: 'כל הנופשים והאירועים' }, consent: 'מאשרים קבלת עדכונים ופרסומים מ-La Belle Vie. אפשר להסיר בכל רגע.', send: 'הרשמה לעדכונים', thanks: 'תודה! נרשמתם, ונעדכן אתכם ראשונים.', err: 'משהו לא נשלח. בדקו שם, טלפון או מייל, ואישור לקבלת עדכונים.', strip: 'רוצים לשמוע ראשונים על נופשים ואירועים חדשים?', stripBtn: 'להרשמה לעדכונים', close: 'סגירה' },
+    fr: { title: 'Être informé en premier', lead: 'Laissez vos coordonnées, nous vous informerons des nouveaux séjours, de Pessah et des événements spéciaux.', name: 'Nom complet', phone: 'Téléphone', email: 'E-mail', interest: 'Ce qui vous intéresse', opts: { pesach: 'Séjour de Pessah', sukkot: 'Séjour de Souccot', all: 'Tous les séjours et événements' }, consent: 'J’accepte de recevoir des nouvelles et des offres de La Belle Vie. Désinscription à tout moment.', send: 'M’inscrire', thanks: 'Merci ! Vous êtes inscrit, vous serez informé en premier.', err: 'L’envoi a échoué. Vérifiez le nom, le téléphone ou l’e-mail, et cochez la case de consentement.', strip: 'Envie d’être informé en premier des nouveaux séjours et événements ?', stripBtn: 'Recevoir les nouvelles', close: 'Fermer' },
     en: { title: 'Be the first to know', lead: 'Leave your details and we will tell you about new holidays, Pesach and special events.', name: 'Full name', phone: 'Phone', email: 'Email', interest: 'What interests you?', opts: { pesach: 'Pesach stay', sukkot: 'Sukkot stay', all: 'All holidays and events' }, consent: 'I agree to receive news and offers from La Belle Vie. Unsubscribe any time.', send: 'Sign me up', thanks: 'Thank you! You are signed up and will hear first.', err: 'That didn’t go through. Check your name, phone or email, and the consent box.', strip: 'Want to hear first about new holidays and events?', stripBtn: 'Get updates', close: 'Close' },
   }[LANG];
   const su = document.createElement('dialog');
