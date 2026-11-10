@@ -137,9 +137,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__line--gold { color: #F0D48E; margin-top: .1em; }
 .hero__line--soft { font-weight: 300; color: #DCE7F5; font-size: .62em; margin-top: .25em; letter-spacing: 0; }
 .hero__lead { font-size: var(--step-1); font-weight: 300; max-width: 36ch; color: #D6E1EF; margin: 0 0 1.6em; }
-.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; max-width: 520px; }
+.hero__actions { display: flex; gap: 10px; max-width: 520px; }
 /* The two first doors weigh the same: the visitor picks the one that is about them */
-.hero__actions .btn { flex: 1 1 0; min-width: 140px; }
+.hero__actions .btn { flex: 1 1 0; min-width: 0; padding-inline: .6em; }
 
 /* The horizon: the logo's sun rising on a gold line. The one orchestrated motion on the page. */
 .horizon { position: relative; width: min(100% - 2 * var(--gutter), var(--max)); margin: 56px auto 0; height: 70px; }
