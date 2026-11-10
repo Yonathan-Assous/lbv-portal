@@ -1177,7 +1177,7 @@ body.has-sheet::before { content: ""; position: fixed; inset: 0; z-index: 59; ba
 @media (max-width: 760px) {
   .float-stack { display: none; }
   .dock {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
     position: fixed; z-index: 45; inset: auto 0 0; padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
     background: rgba(11,20,48,.96); backdrop-filter: blur(12px); box-shadow: 0 -1px 0 rgba(255,255,255,.08);
   }

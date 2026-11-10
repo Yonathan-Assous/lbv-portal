@@ -712,7 +712,7 @@ function faqEditor(key) {
 const STATIC_WIN = id => !!docs.he.getElementById(id)?.classList.contains('sheet');
 /** A holiday's card. In the "Holidays" list it is short with a button to its tab; in its own tab it also has the page switch. */
 function tripCard(t, i, inTab) {
-  const ST = { open: ['ההרשמה פתוחה', 'tag--ok'], soon: ['בקרוב', 'tag--gold'], hidden: ['מוסתר', 'tag--muted'] };
+  const ST = { open: ['ההרשמה פתוחה', 'tag--ok'], soon: ['בקרוב', 'tag--gold'], ended: ['הסתיים', 'tag--muted'], hidden: ['מוסתר', 'tag--muted'] };
   const tr = t[lang] || {}, W = () => (t[lang] ??= {});
   const el = html(`<article class="ecard ${t.status === 'hidden' ? 'is-hidden' : ''}"><div class="ecard__bar"><span class="ecard__title">${esc(t.he?.name || 'נופש')} <span class="tag ${ST[t.status]?.[1] || ''}">${ST[t.status]?.[0] || ''}</span></span></div><div class="ecard__body"></div></article>`);
   const bar = $('.ecard__bar', el);
@@ -728,7 +728,7 @@ function tripCard(t, i, inTab) {
     bar.append(del);
   }
   const body = $('.ecard__body', el);
-  const st = html(`<label class="field"><span>מצב</span><select><option value="open">ההרשמה פתוחה</option><option value="soon">בקרוב</option><option value="hidden">מוסתר מהאתר</option></select></label>`);
+  const st = html(`<label class="field"><span>מצב</span><select><option value="open">ההרשמה פתוחה</option><option value="soon">בקרוב</option><option value="ended">הסתיים</option><option value="hidden">מוסתר מהאתר</option></select></label>`);
   $('select', st).value = t.status || 'soon';
   $('select', st).addEventListener('change', e => { t.status = e.target.value; touch(); render(); });
   const g = html('<div class="grid2"></div>');

@@ -99,9 +99,12 @@
     });
     const trips = (c.trips || []).filter(t => t.status !== 'hidden');
     const OPEN = { he: 'ההרשמה פתוחה', fr: 'Réservations ouvertes', en: 'Booking open' }, SOON = { he: 'בקרוב', fr: 'Bientôt', en: 'Coming soon' };
+    const ENDED = { he: 'הסתיים', fr: 'Terminé', en: 'Ended' };
     const badge = t => t.status === 'open'
       ? `<span class="badge">${OPEN[L]}</span>`
-      : `<span class="badge badge--soft">${SOON[L]}</span>`;
+      : `<span class="badge badge--soft">${(t.status === 'ended' ? ENDED : SOON)[L]}</span>`;
+    // A stay that has ended moves to the end of the list; the coming one leads.
+    trips.sort((a, b) => (a.status === 'ended') - (b.status === 'ended'));
     const subs = $('.door__subs');
     if (subs) subs.innerHTML = trips.map(t => `<li><b>${esc(tr(t).name)}</b> ${esc(tr(t).subline || '')} ${badge(t)}</li>`).join('');
     const cards = $('.trips');
