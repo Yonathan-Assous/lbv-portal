@@ -1353,3 +1353,11 @@ html[dir="rtl"] .path__go { transform: rotate(-135deg); }
   /* The opening on the phone: slogan and line only; the paths live in the bar below */
   .hero .paths { display: none; }
 }
+@media (min-width: 761px) {
+  /* Desktop: small, tidy squares (owner 18.11: the big ones looked heavy) */
+  .paths { grid-template-columns: repeat(3, 128px); gap: 12px; max-width: none; width: max-content; }
+  .path { aspect-ratio: auto; width: 128px; height: 112px; padding: 12px 8px; gap: 8px; border-radius: 14px; }
+  .path__ic { width: 38px; height: 38px; }
+  .path__ic svg { width: 20px; height: 20px; }
+  .path__txt b { font-size: .9rem; }
+}
