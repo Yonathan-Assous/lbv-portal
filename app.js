@@ -397,6 +397,16 @@
     else if (openSheetEl) { closeSheet(false); if (target) target.scrollIntoView({ behavior: 'instant' }); }
   }
   addEventListener('hashchange', () => { trackDepth(); route(); });
+  // Bottom bar on the phone: the tab of the window you are in shows in gold.
+  addEventListener('sheet:change', e => {
+    const sheet = e.detail && document.getElementById(e.detail);
+    const ids = sheet ? [sheet.id, sheet.dataset.parent] : [];
+    document.querySelectorAll('.dock__tab').forEach(t => {
+      const on = ids.includes(t.dataset.tab);
+      t.classList.toggle('is-on', on);
+      if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
+  });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) goBack(); });
   try { history.replaceState({ ...(history.state || {}), lbvDepth: 0 }, ''); } catch (e) {}
   route();
