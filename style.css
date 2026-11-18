@@ -1263,3 +1263,20 @@ body.has-sheet .float-stack { z-index: 70; }
 /* Line icons in the gold of the logo, instead of emoji */
 .modules__ic svg, .gala-cta__ic svg { display: block; width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .modules__ic, .gala-cta__ic { color: var(--sun); }
+.form__hint { margin: 10px 0 0; font-size: .9rem; opacity: .75; text-align: center; }
+
+/* ---------- Homepage round 2026-11-18: owner's slogan, three paths, four cards ---------- */
+.hero__actions--3 { max-width: 660px; }
+.door__tag { color: #F0D48E !important; font-weight: 700; margin: 0 0 .4em !important; }
+.door__more { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; margin-top: 4px; border-radius: 99px; background: rgba(227,182,92,.14); box-shadow: inset 0 0 0 1.5px rgba(227,182,92,.55); }
+.door--hero .door__more { background: var(--sun); color: var(--night); box-shadow: none; }
+.door--gala { padding-top: 0; overflow: hidden; }
+.door__thumb { display: block; width: calc(100% + 56px); max-width: none; margin: 0 -28px 18px; height: 150px; object-fit: cover; }
+@media (max-width: 760px) {
+  .hero__actions--3 { flex-direction: column; gap: 10px; }
+  .hero__actions--3 .btn { flex: none; width: 100%; min-height: 50px; }
+  .door--gala { flex-direction: column !important; align-items: stretch !important; padding: 0 16px 18px; }
+  .door__thumb { width: calc(100% + 32px); margin: 0 -16px 14px; height: 130px; }
+  .door:not(.door--hero) p.door__tag { display: block; -webkit-line-clamp: unset; font-size: .95rem; opacity: 1; }
+  .door__more { min-height: 44px; }
+}
