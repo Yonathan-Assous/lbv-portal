@@ -1280,3 +1280,45 @@ body.has-sheet .float-stack { z-index: 70; }
   .door:not(.door--hero) p.door__tag { display: block; -webkit-line-clamp: unset; font-size: .95rem; opacity: 1; }
   .door__more { min-height: 44px; }
 }
+
+/* Hero paths: one quiet glass list instead of three heavy buttons */
+.paths { display: grid; max-width: 460px; border-radius: 18px; overflow: hidden;
+  background: rgba(9, 16, 40, .52); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px rgba(240, 212, 142, .32), 0 18px 40px -18px rgba(0, 0, 0, .6); }
+.path { display: grid; grid-template-columns: 40px 1fr 18px; align-items: center; gap: 14px;
+  min-height: 68px; padding: 10px 18px; color: #fff; text-decoration: none; transition: background-color .2s; }
+.path + .path { box-shadow: inset 0 1px 0 rgba(240, 212, 142, .18); }
+.path:hover, .path:focus-visible { background: rgba(240, 212, 142, .12); }
+.path:focus-visible { outline: 2px solid #F0D48E; outline-offset: -4px; }
+.path__ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(240, 212, 142, .12); }
+.path__ic svg { width: 22px; height: 22px; fill: none; stroke: #F0D48E; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.path__txt { display: grid; gap: 1px; min-width: 0; }
+.path__txt b { font-size: 1.08rem; font-weight: 700; line-height: 1.25; }
+.path__txt small { font-size: .86rem; color: #C9D5E6; line-height: 1.3; }
+.path__go { width: 10px; height: 10px; justify-self: end; border-top: 2px solid #F0D48E; border-right: 2px solid #F0D48E; transform: rotate(45deg); }
+html[dir="rtl"] .path__go { transform: rotate(-135deg); }
+@media (prefers-reduced-motion: reduce) { .path { transition: none; } }
+@media (max-width: 760px) {
+  /* The slogan is longer now: two calm lines rather than three shouting ones */
+  .hero__title { font-size: clamp(2rem, 8.6vw, 2.6rem); line-height: 1.08; text-wrap: balance; }
+  .hero__lead { font-size: 1.02rem; margin-bottom: 1.2em; }
+  .paths { max-width: none; }
+}
+/* Phone: every card opens with a picture, so the four read as one family */
+.door__thumb--m { display: none; }
+@media (max-width: 760px) {
+  .door__thumb--m { display: block; }
+  .doors .door--events, .doors .door--wide, .doors .door--gala { flex-direction: column !important; align-items: stretch !important; gap: 0; padding: 0 18px 20px; overflow: hidden; }
+  .doors .door--events .door__icon, .doors .door--wide .door__icon { display: none; }
+  .doors .door__thumb { width: calc(100% + 36px); margin: 0 -18px 16px; height: 150px; object-fit: cover; object-position: center 30%; }
+  .doors .door--wide .door__body { display: block; }
+  .doors .door--wide p { margin: 0 0 12px; }
+  .doors .door h3 { font-size: 1.3rem; }
+  .doors { gap: 14px; }
+}
+@media (min-width: 761px) {
+  /* Wide screens: the three paths sit side by side */
+  .paths { grid-template-columns: repeat(3, 1fr); max-width: 900px; }
+  .path + .path { box-shadow: none; border-inline-start: 1px solid rgba(240, 212, 142, .18); }
+  .path { min-height: 84px; }
+}
