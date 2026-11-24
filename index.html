@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>La Belle Vie – נופש בחגים, הפקות וערבי גאלה</title>
-<meta name="description" content="La Belle Vie: נופש מאורגן בחגים בכשרות מהדרין, הפקת חתונות, בר מצוות וערבי גאלה, ומערכת דיגיטלית להגרלות, התרמות ואישורי הגעה.">
+<title>La Belle Vie | נופש בחגים, הפקת אירועים וערבי גאלה</title>
+<meta name="description" content="La Belle Vie: נופש בחגים בכשרות מהדרין, הפקת חתונות, בר ובת מצווה וערבי גאלה, ומערכת להגרלות, התרמות ואישורי הגעה.">
 <meta name="theme-color" content="#0B1430">
 <meta name="color-scheme" content="only light">
 <link rel="alternate" hreflang="fr" href="fr/">
@@ -19,7 +19,7 @@
 <link rel="icon" type="image/png" href="media/icon-gold.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@300;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@300;500;700;900&family=Noto+Serif+Hebrew:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="gala-demo.css">
 </head>
@@ -60,14 +60,16 @@
 
   <div class="hero__inner">
     <h1 class="hero__title">
-      <span class="hero__line">לא רק אירוע.</span>
-      <span class="hero__line hero__line--gold">חוויה שנשארת לתמיד.</span>
+      <span class="hero__line"><bdi>La Belle Vie</bdi></span>
+      <span class="hero__line hero__line--gold">יוצרים רגעים שלא שוכחים</span>
     </h1>
-    <p class="hero__lead">נופשים, אירועים ורגעים מיוחדים – עם הקפדה על כל פרט, מהחלום ועד לחוויה.</p>
-    <div class="hero__actions">
-      <a class="btn btn--sun" href="#contact">לבקשת הצעת מחיר</a>
-      <a class="btn btn--ghost" href="#watch">לצפייה בסרטונים</a>
-    </div>
+    <p class="hero__lead">אירועים, ערבי גאלה, נופשים וטיולים: אנחנו דואגים לכל, ואתם נהנים עד הסוף.</p>
+    <nav class="paths" aria-label="במה נוכל לעזור לכם?">
+      <a class="path" href="#events"><span class="path__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h4l-.5 5a1.5 1.5 0 0 1-3 0zM9 9.5V19M6.5 19h5M13 3h4l-.5 5a1.5 1.5 0 0 1-3 0zM15 9.5V19M12.5 19h5"/></svg></span><span class="path__txt"><b>אירועים</b><small>חתונות, בר מצווה וערבי גאלה</small></span><span class="path__go" aria-hidden="true"></span></a>
+      <a class="path" href="#gala"><span class="path__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></span><span class="path__txt"><b>עמותות</b><small>ערבי גאלה והתרמה</small></span><span class="path__go" aria-hidden="true"></span></a>
+      <a class="path" href="#holidays"><span class="path__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="3.5"/><path d="M12 2.5v2M12 15.5v2M4.5 10h2M17.5 10h2M6.7 4.7l1.4 1.4M15.9 13.9l1.4 1.4M6.7 15.3l1.4-1.4M15.9 6.1l1.4-1.4M3 21c3-2 6-2 9 0s6 2 9 0"/></svg></span><span class="path__txt"><b>נופשים וטיולים</b><small>חגים במלון וטיולים קבוצתיים</small></span><span class="path__go" aria-hidden="true"></span></a>
+      <a class="path" href="#wedding"><span class="path__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/></svg></span><span class="path__txt"><b>AllSet Invitations</b><small>הזמנות, אישורי הגעה וסידור שולחנות</small></span><span class="path__go" aria-hidden="true"></span></a>
+    </nav>
   </div>
 
   <div class="horizon" aria-hidden="true">
@@ -83,7 +85,7 @@
   </div>
 
   <ul class="hero__facts">
-    <li><strong>15</strong> שנות ניסיון</li>
+    <li><strong dir="ltr">15+</strong> שנות ניסיון</li>
     <li>כשרות מהדרין</li>
     <li>צוות דובר עברית וצרפתית</li>
   </ul>
@@ -93,46 +95,51 @@
 <section class="services" id="services" aria-labelledby="services-title">
   <div class="wrap">
     <h2 class="h2" id="services-title">מה אתם מחפשים?</h2>
-    <p class="lead">בחרו, ותראו בדיוק מה מקבלים אצלנו ולמה כדאי.</p>
+    <p class="lead">בחרו, ותראו בדיוק מה מקבלים אצלנו.</p>
 
     <div class="doors">
       <article class="door door--hero">
-        <img src="media/holiday-card.jpg" alt="" loading="lazy">
+        <img src="media/events-hall.jpg" alt="" loading="lazy">
         <div class="door__body">
-          <h3><a class="door__link" href="#holidays">נופשים</a></h3>
-          <p>נופש מאורגן בחגים בבית מלון: פנסיון מלא בכשרות מהדרין, רבנים, ספא, תוכנית לילדים וערבים בלתי נשכחים.</p>
-          <ul class="door__subs">
-            <li><b>סוכות</b> במלון נוף כנרת <span class="badge">ההרשמה פתוחה</span></li>
-            <li><b>פסח</b> <span class="badge badge--soft">בקרוב</span></li>
-          </ul>
-          <span class="door__more">לכל הנופשים</span>
-        </div>
-      </article>
-
-      <article class="door door--gala">
-        <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h16l-2 14a6 6 0 0 1-12 0zM24 26v12M16 42h16"/><path d="M36 10l4-3M38 16h5M12 10 8 7M10 16H5"/></svg>
-        <div class="door__body">
-          <h3><a class="door__link" href="#gala">מערכת גאלה משוכללת</a></h3>
-          <p>המערכת הדיגיטלית שלנו לערבי התרמה: התרמה חיה על המסך, הגרלות, מכירת כרטיסים, שגרירים ומוקד טלפוני. אפשר גם בלי הפקה.</p>
-          <span class="door__more">לראות את המערכת</span>
+          <h3><a class="door__link" href="#events">האירוע שלכם</a></h3>
+          <p class="door__tag">האירוע שאתם מדמיינים, בהפקה שלנו.</p>
+          <p>חתונה, בר או בת מצווה, ברית מילה, יום הולדת ועוד. אתם מספרים לנו על האירוע, ואנחנו דואגים לכל, מהרעיון הראשון ועד הרגע האחרון.</p>
+          <span class="door__more">בקשו הצעה לאירוע</span>
         </div>
       </article>
 
       <article class="door door--events">
-        <img class="door__brand" src="media/logo-events.png" alt="" width="600" height="528" loading="lazy">
+        <img class="door__thumb door__thumb--m" src="media/control-room-he.jpg" alt="" loading="lazy">
+        <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M16 6h16l-2 14a6 6 0 0 1-12 0zM24 26v12M16 42h16"/><path d="M36 10l4-3M38 16h5M12 10 8 7M10 16H5"/></svg>
         <div class="door__body">
-          <h3><a class="door__link" href="#events">הפקת אירועים</a></h3>
-          <p>חתונות, בר ובת מצווה וערבי גאלה. מהאולם והספקים ועד הריקוד האחרון, ואתם רק נהנים.</p>
-          <span class="door__more">איך עובדת הפקה</span>
+          <h3><a class="door__link" href="#gala">אתם עמותה?</a></h3>
+          <p class="door__tag">המטרה שלכם ראויה לאירוע ברמה שלה.</p>
+          <p>ערב גאלה, ארוחת דינר שנתית, גיוס תרומות, כרטוס, תקשורת וארגון. אנחנו מטפלים בהכול, ואתם מתפנים לאורחים ולמטרה.</p>
+          <span class="door__more">בקשו הצעה לגאלה</span>
+        </div>
+      </article>
+
+      <article class="door door--gala">
+        <img class="door__thumb" src="media/holiday-stage.jpg" alt="" loading="lazy">
+        <div class="door__body">
+          <h3><a class="door__link" href="#holidays">נופשים וטיולים</a></h3>
+          <p class="door__tag">אתם בוחרים את החוויה, אנחנו דואגים לפרטים.</p>
+          <p>רוצים להצטרף לאחד הנופשים שלנו, או לארגן טיול קבוצתי משלכם? לינה, אוכל, פעילויות, תוכנית ותיאום: הכול מסודר.</p>
+          <ul class="door__subs">
+            <li><b>פסח</b> <span class="badge badge--soft">בקרוב</span></li>
+            <li><b>סוכות</b> במלון נוף כנרת <span class="badge badge--soft">הסתיים</span></li>
+          </ul>
+          <span class="door__more">גלו את הנופשים שלנו</span>
         </div>
       </article>
 
       <article class="door door--wide">
+        <img class="door__thumb door__thumb--m" src="media/real-simha-models-he.jpg" alt="" loading="lazy">
         <svg class="door__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="13" y="4" width="22" height="40" rx="4"/><circle cx="20" cy="18" r="3"/><circle cx="28" cy="18" r="3"/><circle cx="24" cy="27" r="3"/><path d="M21 38h6"/></svg>
         <div class="door__body">
-          <h3><a class="door__link" href="#wedding">אפליקציה לחתונה</a></h3>
-          <p>הזמנות מעוצבות, אישורי הגעה, תזכורות וסידור שולחנות, בלי אקסלים ובלי טלפונים.</p>
-          <span class="door__more">איך זה עובד</span>
+          <h3><a class="door__link" href="#wedding">AllSet Invitations</a></h3>
+          <p>הזמנה דיגיטלית, אישורי הגעה בוואטסאפ ותוכנית ישיבה לשולחנות, ואפשר להשתמש בה גם בנפרד.</p>
+          <span class="door__more">ראו איך זה עובד</span>
         </div>
       </article>
     </div>
@@ -145,14 +152,27 @@
   </div>
 </section>
 
+<!-- ============ TRY IT (live demos) ============ -->
+<section class="tryit" id="try" aria-labelledby="try-title">
+  <div class="wrap">
+    <h2 class="h2" id="try-title">נסו בעצמכם</h2>
+    <p class="lead">שלוש הדגמות חיות, עם נתונים לדוגמה.</p>
+    <div class="tryit__row">
+      <a class="tryit__card" href="#gala-demo"><img src="media/event-gala.jpg" alt="" loading="lazy"><span class="tryit__txt"><b>מסך התרמה חי</b><small>ככה נראית ההתרמה על המסך הגדול באולם</small></span><span class="tryit__go">לנסות</span></a>
+      <a class="tryit__card" href="#control-room"><img src="media/control-room-he.jpg" alt="" loading="lazy"><span class="tryit__txt"><b>לוח הבקרה של הגאלה</b><small>כרטיסים, תרומות והגעה בזמן אמת</small></span><span class="tryit__go">לנסות</span></a>
+      <a class="tryit__card" href="#hall"><img src="media/events-hall.jpg" alt="" loading="lazy"><span class="tryit__txt"><b>סידור שולחנות לחתונה</b><small>לחיצה אחת, וכל משפחה בשולחן שלה</small></span><span class="tryit__go">לנסות</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- ============ ABOUT ============ -->
 <section class="about" id="about" aria-labelledby="about-title">
   <div class="wrap">
     <div class="about__intro">
       <h2 class="h2" id="about-title">מי אנחנו</h2>
-      <p class="tagline">הופכים חלום למציאות</p>
-      <p class="lead">La Belle Vie היא עסק משפחתי. כבר 15 שנה אנחנו מארגנים חגים ומפיקים אירועים לציבור שומר מסורת, בעברית ובצרפתית.</p>
-      <a class="more-link" href="#about-us">לקרוא עוד עלינו <span aria-hidden="true">←</span></a>
+      <p class="tagline">אצלנו, הכול באווירה משפחתית.</p>
+      <p class="lead">La Belle Vie היא עסק משפחתי. כבר למעלה מ־15 שנה אנחנו מארגנים נופשים בחגים ומפיקים אירועים לציבור שומר מסורת, בעברית ובצרפתית. בנופש, בחתונה ובערב הדינר, כל אורח מקבל יחס אישי ושירות מכל הלב, ומרגיש בבית.</p>
+      <a class="more-link" href="#about-us">הכירו אותנו <span aria-hidden="true">←</span></a>
       <ul class="about__values">
         <li><b>אנחנו בשטח</b>במלון כל החג ובאולם כל הערב, מהבוקר הראשון ועד הריקוד האחרון.</li>
         <li><b>גשמיות ורוחניות</b>פינוק אמיתי לצד תורה, תפילה ושמחה.</li>
@@ -171,7 +191,7 @@
       </figure>
       <div class="letter__body">
         <h3 class="h3">דבר המנכ״ל</h3>
-        <p>לאורחים ולחברים שלנו, שלום רב.</p>
+        <p>לאורחים ולחברים היקרים שלנו,</p>
         <p>כשאנחנו מתחילים להכין חג, אנחנו לא חושבים על חדרים ועל תפריטים. אנחנו חושבים על הרגע שבו משפחה יושבת יחד בסוכה, הילדים שמחים, וההורים סוף סוף נחים.</p>
         <p>אחרי כל ההשקעה וכל ההכנות, לראות את כולם יוצאים עם חיוך, זה מה שמחמם לנו את הלב. ואם זה מצליח, זה בזכות כל אחד ואחת מכם, ובזכות האווירה שאתם מביאים איתכם.</p>
         <p>אנחנו כאן כדי שתיהנו ותחלמו, בגשמיות וברוחניות. מחכים לכם בפסח, בסוכות, ובכל אירוע שנפיק יחד.</p>
@@ -212,8 +232,8 @@
 <section class="about-us sheet" data-hero="hero.jpg" id="about-us" data-title="מי אנחנו">
   <div class="wrap au">
     <div class="au__text">
-      <p class="tagline">הופכים חלום למציאות</p>
-      <p class="lead">La Belle Vie היא עסק משפחתי. כבר 15 שנה אנחנו מארגנים חגים ומפיקים אירועים לציבור שומר מסורת, בעברית ובצרפתית.</p>
+      <p class="tagline">אצלנו, הכול באווירה משפחתית.</p>
+      <p class="lead">La Belle Vie היא עסק משפחתי. כבר למעלה מ־15 שנה אנחנו מארגנים נופשים בחגים ומפיקים אירועים לציבור שומר מסורת, בעברית ובצרפתית. בנופש, בחתונה ובערב הדינר, כל אורח מקבל יחס אישי ושירות מכל הלב, ומרגיש בבית.</p>
       <ul class="about__values">
         <li><b>אנחנו בשטח</b>במלון כל החג ובאולם כל הערב, מהבוקר הראשון ועד הריקוד האחרון.</li>
         <li><b>גשמיות ורוחניות</b>פינוק אמיתי לצד תורה, תפילה ושמחה.</li>
@@ -253,7 +273,7 @@
     </ul>
     </div>
     <h3 class="h3">בקצרה</h3>
-    <ul class="au__facts"><li><b>15</b><span>שנות ניסיון בחגים ובאירועים</span></li><li><b>2</b><span>שפות: עברית וצרפתית</span></li><li><b>4</b><span>שירותים תחת קורת גג אחת: נופש בחגים, הפקת אירועים, מערכת גאלה ואפליקציה לחתונה</span></li></ul>
+    <ul class="au__facts"><li><b dir="ltr">15+</b><span>שנות ניסיון בחגים ובאירועים</span></li><li><b>2</b><span>שפות: עברית וצרפתית</span></li><li><b>4</b><span>שירותים תחת קורת גג אחת: נופש בחגים, הפקת אירועים, מערכת גאלה ואפליקציה לחתונה</span></li></ul>
     <h3 class="h3">מה אנחנו עושים</h3>
     <ul class="au__what"><li><a href="#holidays"><b>נופש בחגים</b><span>סוכות ופסח במלון, בכשרות מהדרין</span><i aria-hidden="true">←</i></a></li><li><a href="#events"><b>הפקת אירועים</b><span>חתונות, בר מצווה וערבי גאלה</span><i aria-hidden="true">←</i></a></li><li><a href="#gala"><b>מערכת גאלה</b><span>כרטיסים, הגרלות, התרמות ומוקד טלפוני</span><i aria-hidden="true">←</i></a></li><li><a href="#wedding"><b>אפליקציה לחתונה</b><span>הזמנות, אישורי הגעה וסידור שולחנות</span><i aria-hidden="true">←</i></a></li></ul>
     <ul class="au__what au__what--why"><li><a href="#why"><b>למה דווקא La Belle Vie?</b><span>מה מייחד אותנו, ולמי אנחנו מתאימים</span><i aria-hidden="true">←</i></a></li><li><a href="#faq"><b>שאלות נפוצות</b><span>מה כלול, סוכה לכל משפחה, כמה זמן מראש</span><i aria-hidden="true">←</i></a></li></ul>
@@ -265,22 +285,22 @@
 <section class="holidays sheet" data-hero="hero.mp4" id="holidays" data-title="נופשים" aria-labelledby="holidays-title">
   <div class="wrap trips-head">
     <h2 class="h2" id="holidays-title" data-hero-title>נופשים</h2>
-    <p class="lead">חגים בבית מלון, בקבוצה מאורגנת. בחרו נופש:</p>
+    <p class="lead">חוגגים את החגים בבית מלון, בקבוצה מאורגנת. בחרו נופש:</p>
     <ul class="trips">
-      <li>
-        <a href="#sukkot" class="trips__card">
-          <img src="media/hero.jpg" alt="" loading="lazy">
-          <span class="badge">ההרשמה פתוחה</span>
-          <b>סוכות</b>
-          <small>מלון נוף כנרת, טבריה</small>
-        </a>
-      </li>
       <li>
         <a href="#pesach" class="trips__card trips__card--soon">
           <svg viewBox="0 0 220 140" aria-hidden="true"><ellipse cx="110" cy="112" rx="96" ry="18"/><path d="M40 100c0-14 32-22 70-22s70 8 70 22"/><circle cx="110" cy="92" r="20"/><circle cx="110" cy="92" r="12"/><path d="M58 76v-26h10v26M150 74V42h14v32M150 52h14"/></svg>
           <span class="badge badge--soft">בקרוב</span>
           <b>פסח</b>
           <small>השאירו פרטים ותשמעו ראשונים</small>
+        </a>
+      </li>
+      <li>
+        <a href="#sukkot" class="trips__card">
+          <img src="media/hero.jpg" alt="" loading="lazy">
+          <span class="badge badge--soft">הסתיים</span>
+          <b>סוכות</b>
+          <small>מלון נוף כנרת, טבריה</small>
         </a>
       </li>
     </ul>
@@ -295,15 +315,15 @@
       <p class="lead">מגיעים עם המזוודות, ומשם אנחנו לוקחים. חג סוכות במלון נוף כנרת בטבריה, מול נופי הכנרת.</p>
       <ul class="ticks">
         <li><b>פנסיון מלא בכשרות מהדרין</b> ארוחות עשירות ומגוונות בהשגחת הבד״צים למיניהם, בשר בית יוסף.</li>
-        <li><b>סוכה צמודה לחדר</b> אפשרות לינה בסוכה פרטית בחדרי המרפסת והגן.</li>
+        <li><b>סוכה צמודה לחדר</b> אפשר ללון בסוכה פרטית בחדרי המרפסת והגן.</li>
         <li><b>בריכה וספא</b> בריכה חצי אולימפית, ג׳קוזי, סאונה, חמאם וחדר כושר, בשעות נפרדות לגברים ולנשים.</li>
         <li><b>רבנים שמלווים את החג</b> תפילות, שיעורי תורה והרצאות עם הרבנים לאורך החג.</li>
         <li><b>תוכנית לילדים כל יום</b> מתנפחים, יצירה, משחקים ומקהלת ילדים עם הזמר יואל דיין.</li>
         <li><b>ערבים של שמחה</b> מופעים, זמרים, ערבי מוזיקה ותחרות שירה בסגנון ״כוכב נולד״.</li>
       </ul>
       <div class="actions">
-        <a class="btn btn--lake" href="https://booking.lbv-event.com/he/reservation" target="_blank" rel="noopener">בדיקת זמינות והזמנת חדר</a>
-        <a class="btn btn--line" href="https://booking.lbv-event.com/he/rooms" target="_blank" rel="noopener">לראות את החדרים</a>
+        <a class="btn btn--lake" href="#watch">סוכות 2026 בתמונות</a>
+        <button class="btn btn--line" type="button" data-signup="sukkot" data-signup-name="סוכות">לעדכון על הנופש הבא</button>
       </div>
     </div>
 
@@ -339,7 +359,7 @@
     </div>
     <div class="rail" id="rail" tabindex="0" aria-label="סרטונים מהנופש">
       <button class="vthumb" data-video="guests-full" data-title="האורחים מספרים"><img src="media/guests-full.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">האורחים מספרים</span></button>
-      <button class="vthumb" data-video="day" data-title="יום אחד – אין סוף חוויות"><img src="media/day.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">יום אחד – אין סוף חוויות</span></button>
+      <button class="vthumb" data-video="day" data-title="יום אחד, אינסוף חוויות"><img src="media/day.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">יום אחד, אינסוף חוויות</span></button>
       <button class="vthumb" data-video="kids" data-title="גן עדן לילדים"><img src="media/kids.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">גן עדן לילדים</span></button>
       <button class="vthumb" data-video="pizza" data-title="מהמטבח באהבה"><img src="media/pizza.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">מהמטבח באהבה</span></button>
       <button class="vthumb" data-video="vibe" data-title="האווירה אצלנו"><img src="media/vibe.jpg" alt="" loading="lazy"><span class="vthumb__play" aria-hidden="true"></span><span class="vthumb__label">האווירה אצלנו</span></button>
@@ -350,7 +370,7 @@
   </div>
 
     <div class="gallery wrap" id="gallery">
-    <h3 class="h3">רגעים מהנופש</h3>
+    <h3 class="h3">הרגעים שנשארים איתנו</h3>
     <ul class="gallery__grid">
       <li><button type="button" class="gallery__item" data-full="media/gallery/01-kinneret.jpg"><img src="media/gallery/01-kinneret.jpg" alt="נוף הכנרת" loading="lazy" width="1080" height="1350"><span>נוף הכנרת</span></button></li>
       <li><button type="button" class="gallery__item" data-full="media/gallery/02-room.jpg"><img src="media/gallery/02-room.jpg" alt="החדר" loading="lazy" width="1080" height="1350"><span>החדר</span></button></li>
@@ -371,7 +391,7 @@
 
   <blockquote class="quote wrap">
     <p>כולם רצים, כולם דואגים, כולם מביאים, כמו אבא ואמא שדואגים לילדים.</p>
-    <cite>אורח בנופש סוכות, מלון נוף כינרת</cite>
+    <cite>אורח בנופש סוכות, מלון נוף כנרת</cite>
   </blockquote>
 </section>
 
@@ -387,35 +407,18 @@
     </svg>
     <div class="pesach__text">
       <h2 class="h2" data-hero-title>פסח עם La Belle Vie</h2>
-      <p class="lead">אנחנו כבר עובדים על נופש הפסח הבא: אותה כשרות, אותה אווירה, אותה דאגה לכל פרט. המקומות מוגבלים, ומי שנרשם עכשיו שומע ראשון.</p>
-      <a class="btn btn--sun" href="#contact" data-service="pesach">לעדכון ראשון על פסח</a>
+      <p class="lead">אנחנו כבר מתכוננים לנופש הפסח הבא: אותה כשרות, אותה אווירה, אותה דאגה לכל פרט. מי שמשאיר פרטים עכשיו שומע ראשון.</p>
+      <button class="btn btn--sun" type="button" data-signup="pesach" data-signup-name="פסח">לעדכון ראשון על פסח</button>
     </div>
   </div>
 </section>
 
 <!-- ============ EVENTS ============ -->
-<section class="events sheet" data-hero="banner-tables.jpg" id="events" data-title="הפקת אירועים" aria-labelledby="events-title">
+<section class="events sheet" data-hero="events-hall.jpg" id="events" data-title="הפקת אירועים" aria-labelledby="events-title">
   <div class="wrap">
     <img class="brand-mark" src="media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
     <h2 class="h2" id="events-title" data-hero-title>הפקת אירועים</h2>
-    <p class="lead">חתונה, בר מצווה או ערב גאלה: אתם מגיעים עם רעיון ותאריך, ואנחנו מחזיקים את כל הקצוות, מהספקים ועד הלו״ז של הערב.</p>
-
-    <div class="event-film">
-      <button class="vthumb vthumb--big" data-video="event-gala" data-same-video data-title="מאחורי הקלעים של ערב גאלה">
-        <img src="media/event-gala.jpg" alt="" loading="lazy">
-        <span class="vthumb__play" aria-hidden="true"></span>
-        <span class="vthumb__label">מאחורי הקלעים של ערב גאלה<small>דקה וחצי</small></span>
-      </button>
-      <div class="event-film__text">
-        <h3 class="h3">ככה נבנה ערב</h3>
-        <p>מהכנת הכרטיסים וההזמנות ועד עריכת השולחנות, השטיח האדום בכניסה והלהקה על הבמה. אין בעיות, יש רק פתרונות.</p>
-        <a class="gala-cta" href="#gala">
-          <span class="gala-cta__ic">🎰</span>
-          <span><b>מערכת גאלה משוכללת</b><small>מסך חי, הגרלות, מכירת כרטיסים, תרומות ומוקד טלפוני</small></span>
-          <span class="gala-cta__go">לראות את המערכת</span>
-        </a>
-      </div>
-    </div>
+    <p class="lead">חתונה, בר מצווה או ערב גאלה: אתם מגיעים עם רעיון ותאריך, ואנחנו סוגרים את כל הקצוות, מהספקים ועד הלו״ז של הערב.</p>
 
     <div class="kinds">
       <article>
@@ -455,11 +458,28 @@
       </article>
     </div>
 
+    <div class="event-film">
+      <button class="vthumb vthumb--big" data-video="event-gala" data-same-video data-title="מאחורי הקלעים של ערב גאלה">
+        <img src="media/event-gala.jpg" alt="" loading="lazy">
+        <span class="vthumb__play" aria-hidden="true"></span>
+        <span class="vthumb__label">מאחורי הקלעים של ערב גאלה<small>דקה וחצי</small></span>
+      </button>
+      <div class="event-film__text">
+        <h3 class="h3">ככה נבנה ערב גאלה</h3>
+        <p>מהכרטיסים וההזמנות ועד סידור השולחנות, השטיח האדום בכניסה והלהקה על הבמה: אנחנו מטפלים בהכול.</p>
+        <a class="gala-cta" href="#gala">
+          <span class="gala-cta__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 6v12M15 6v12"/></svg></span>
+          <span><b>מערכת גאלה משוכללת</b><small>מסך חי, הגרלות, מכירת כרטיסים, תרומות ומוקד טלפוני</small></span>
+          <span class="gala-cta__go">נסו את המערכת</span>
+        </a>
+      </div>
+    </div>
+
     <h3 class="h3">איך עובדת הפקה איתנו</h3>
     <ol class="steps">
       <li>
         <h4>שיחת היכרות</h4>
-        <p>מבינים מה אתם רוצים, כמה אורחים, איזה תאריך ואיזה תקציב.</p>
+        <p>מבינים מה אתם רוצים, כמה אורחים ובאיזה תאריך.</p>
       </li>
       <li>
         <h4>הצעה מסודרת</h4>
@@ -474,6 +494,7 @@
         <p>אנחנו בשטח מהבוקר. אתם רק מגיעים, נהנים ופוגשים את האורחים.</p>
       </li>
     </ol>
+    <div class="actions sheet-cta"><a class="btn btn--sun" href="#contact">בקשת הצעת מחיר</a><a class="btn btn--wa" href="https://wa.me/972585182655" target="_blank" rel="noopener">כתבו לנו בוואטסאפ</a></div>
   </div>
 </section>
 
@@ -482,15 +503,15 @@
   <div class="wrap">
     <img class="brand-mark" src="media/logo-events.png" alt="La Belle Vie – Vos événements clé en main" width="600" height="528" loading="lazy">
     <h2 class="h2" id="gala-title">מערכת גאלה משוכללת</h2>
-    <p class="lead">המערכת שלנו רצה על המסך הגדול באולם ובטלפון של כל אורח. אפשר לקחת אותה עם הפקה מלאה, או לבד לערב שאתם מפיקים. נסו בעצמכם:</p>
+    <p class="lead">המערכת שלנו פועלת על המסך הגדול באולם ובטלפון של כל אורח. אפשר לקחת אותה עם הפקה מלאה, או רק אותה לערב שאתם מפיקים. נסו אותה כאן:</p>
 
     <ul class="modules" role="tablist" aria-label="חלקי הגאלה">
-      <li><button type="button" role="tab" aria-selected="false" data-mod="production"><span class="modules__ic">🎩</span><b>הפקת הערב</b><small>אולם, אוכל, תוכנית ובמה</small></button></li>
-      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-raffle"><span class="modules__ic">🎰</span><b>מערכת הגאלה</b><small>מסך חי באולם והגרלות</small></button></li>
-      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-tickets"><span class="modules__ic">🎟️</span><b>מכירת כרטיסים</b><small>מהטלפון, בכל דרכי התשלום</small></button></li>
-      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-donate"><span class="modules__ic">💝</span><b>מערכת תרומות</b><small>התרמה חיה והתחייבויות</small></button></li>
-      <li><button type="button" role="tab" aria-selected="false" data-mod="phoning"><span class="modules__ic">📞</span><b>מוקד טלפוני</b><small>מתנדבים מתקשרים לתורמים</small></button></li>
-      <li><button type="button" role="tab" aria-selected="false" data-mod="dream" class="modules__dream"><span class="modules__ic">✨</span><b>וכל מה שתחלמו</b><small>ספרו לנו, ואנחנו נבנה</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="production"><span class="modules__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v11H7zM3 15h18v3H3zM7 11h10"/></svg></span><b>הפקת הערב</b><small>אולם, אוכל, תוכנית ובמה</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-raffle"><span class="modules__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 6v12M15 6v12"/></svg></span><b>הגרלות</b><small>על המסך הגדול באולם</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-tickets"><span class="modules__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M15 7v10" stroke-dasharray="2 2"/></svg></span><b>מכירת כרטיסים</b><small>מהטלפון, בכל דרכי התשלום</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="system" data-tab="t-donate"><span class="modules__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></span><b>התרמה חיה</b><small>סכומים ושמות על המסך, והתחייבויות</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="phoning"><span class="modules__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h4l1.5 5-2.5 1.5a11 11 0 0 0 5.5 5.5l1.5-2.5 5 1.5v4a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2z"/></svg></span><b>מוקד טלפוני</b><small>מתנדבים מתקשרים לתורמים</small></button></li>
+      <li><button type="button" role="tab" aria-selected="false" data-mod="dream" class="modules__dream"><span class="modules__ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span><b>וכל מה שתחלמו</b><small>ספרו לנו, ואנחנו נבנה</small></button></li>
     </ul>
     <p class="modules__hint">בחרו חלק כדי לראות אותו</p>
 
@@ -503,7 +524,7 @@
     <div class="mod-panel mod-panel--text" data-mod="dream" hidden>
       <h3 class="h3">וכל מה שתחלמו</h3>
       <p class="lead">רוצים מסך שמציג את התורמים בדרך מיוחדת? הגרלה עם פרס ענק? כרטיס מעוצב במיוחד? ספרו לנו מה אתם רוצים, ואנחנו נבנה את זה בשבילכם.</p>
-      <a class="btn btn--sun" href="#contact" data-service="gala-system">לספר לנו על הרעיון</a>
+      <a class="btn btn--sun" href="#contact" data-service="gala-system">ספרו לנו על הרעיון</a>
     </div>
 
     <div class="mod-panel" data-mod="system" hidden>
@@ -602,7 +623,7 @@
                   <div class="sim__step" data-step="3">
                     <span class="buy__ok">התשלום התקבל!</span>
                     <div class="buy__ticket"><img src="media/gala-ticket.jpg" alt=""><svg class="buy__qr buy__qr--mini" viewBox="0 0 25 25" aria-hidden="true"></svg></div>
-                    <span class="buy__h">מספרי ההגרלה שלך</span>
+                    <span class="buy__h">מספרי ההגרלה שלכם</span>
                     <div class="buy__nums"><span>1042</span><span>1043</span><span>1044</span><span>1045</span><span>1046</span></div>
                     <span class="buy__note">הכרטיס נשלח גם בוואטסאפ ובמייל</span>
                   </div>
@@ -630,7 +651,7 @@
         <li><b>ייצוא נתונים</b> כל המכירות בקובץ אחד בסוף הערב.</li>
       </ul>
       <div class="actions">
-        <a class="btn btn--sun" href="#control-room">לראות את לוח הבקרה</a>
+        <a class="btn btn--sun" href="#control-room">נסו את לוח הבקרה</a>
       </div>
     </div>
     </div><!-- /system panel -->
@@ -697,26 +718,26 @@
 </section>
 
 <!-- ============ WEDDING APP ============ -->
-<section class="wedding sheet" data-hero="real-simha-styles.jpg" id="wedding" data-title="אפליקציה לחתונה" aria-labelledby="wedding-title">
+<section class="wedding sheet" data-hero="real-simha-models-he.jpg" id="wedding" data-title="AllSet Invitations" aria-labelledby="wedding-title">
   <div class="wrap split split--rev">
     <div class="split__text">
-      <h2 class="h2" id="wedding-title" data-hero-title>אפליקציה לחתונה</h2>
-      <p class="lead">במקום לרדוף אחרי אורחים בטלפון ולסדר שולחנות באקסל עד שתיים בלילה.</p>
+      <h2 class="h2" id="wedding-title" data-hero-title>AllSet Invitations</h2>
+      <p class="lead">הזמנה דיגיטלית, אישורי הגעה וסידור שולחנות לחתונה. בלי לרדוף אחרי אורחים בטלפון, ובלי אקסל עד שתיים בלילה.</p>
       <ul class="ticks">
-        <li><b>הזמנה דיגיטלית מעוצבת</b> שבעה סגנונות לבחירה: קלאסי, מודרני, אלגנטי, וינטג׳, שמח, טבע ויוקרה.</li>
-        <li><b>שליחה בוואטסאפ, SMS או מייל</b> כל אורח מקבל קישור אישי להזמנה.</li>
-        <li><b>אישורי הגעה בזמן אמת</b> מי מגיע, כמה אנשים, והעדפות האוכל של כל אחד.</li>
-        <li><b>כל האירועים במקום אחד</b> חינה, שבת חתן, חופה וקבלת פנים, עם אישור הגעה לכל אירוע.</li>
-        <li><b>תזכורות אוטומטיות</b> מי שלא ענה מקבל תזכורת, בלי שתצטרכו להתקשר.</li>
-        <li><b>סידור שולחנות</b> מסדרים את האורחים בשולחנות במפה פשוטה של האולם.</li>
+        <li><b>הזמנה דיגיטלית מעוצבת</b> ארבעה עיצובים בכמה גוני צבע, או בצבעים שאתם בוחרים. בעיצוב עם התמונה מוסיפים תמונה ולוגו של הזוג. בוחרים מה יופיע על ההזמנה: ספירה לאחור, ברכה והצגת ההורים, ואפשר להחליף בכל רגע.</li>
+        <li><b>שליחה בוואטסאפ, משפחה אחרי משפחה</b> מהטלפון שלכם: כל משפחה מקבלת קישור אישי, ושום דבר לא נשלח בלעדיכם.</li>
+        <li><b>אישורי הגעה בלחיצה</b> מגיעים או לא, וכמה אנשים. התשובה מגיעה מיד לאזור האישי שלכם, בלי שהאורחים יפתחו חשבון.</li>
+        <li><b>בעברית, בצרפתית או בשתיהן</b> כל אורח מקבל את ההזמנה בשפה שלו, והתאריך העברי מופיע לצד הלועזי.</li>
+        <li><b>תמונות, אקסל וקוד QR</b> האורחים משתפים תמונות ואתם בוחרים מה יוצג, הרשימה המלאה יוצאת לאקסל, וקוד QR להדפסה על הכרטיסים.</li>
+        <li><b>סידור שולחנות</b> גוררים כל משפחה לשולחן שלה על מפת האולם, אפשר עם מחיצה בין גברים לנשים, ובכל שולחן רואים כמה מקומות נשארו.</li>
       </ul>
       <div class="actions">
         <a class="btn btn--lake" href="https://simha.lbv-event.com" target="_blank" rel="noopener">לפתוח את מערכת ההזמנות</a>
         <a class="btn btn--line" href="#contact" data-service="wedding-app">לשאול אותנו</a>
       </div>
       <figure class="shot shot--light">
-        <img src="media/real-simha-styles.jpg" alt="עיצובי ההזמנות במערכת החתונות" loading="lazy" width="960" height="640">
-        <figcaption>חלק מעיצובי ההזמנות במערכת האמיתית</figcaption>
+        <img src="media/real-simha-models-he.jpg" alt="ארבעת עיצובי ההזמנה במערכת החתונות" loading="lazy" width="1232" height="516">
+        <figcaption>ארבעת העיצובים במערכת האמיתית. בעיצוב הראשון: תמונה לדוגמה</figcaption>
       </figure>
     </div>
 
@@ -734,8 +755,8 @@
             <div><output id="aWait">63</output><span>טרם ענו</span></div>
           </div>
           <div class="hall" id="hall" aria-label="מפת שולחנות"></div>
-          <button class="btn btn--sun btn--block" id="seatBtn">לסדר את השולחנות</button>
-          <p class="app-legend"><i class="g1"></i>משפחת החתן <i class="g2"></i>משפחת הכלה <i class="g3"></i>חברים</p>
+          <button class="btn btn--sun btn--block" id="seatBtn">להושיב את המשפחות</button>
+          <p class="app-legend"><i class="m"></i>גברים <i class="f"></i>נשים <i class="mz"></i>מחיצה</p>
         </div>
       </div>
     </div>
@@ -743,37 +764,38 @@
 </section>
 
 <!-- ============ WHY / HONEST ============ -->
-<section class="why sheet" data-hero="banner-tables.jpg" id="why" data-title="למה דווקא La Belle Vie?" aria-labelledby="why-title">
+<section class="why sheet" data-hero="events-hall.jpg" id="why" data-title="למה דווקא La Belle Vie?" aria-labelledby="why-title">
   <div class="wrap">
     <h2 class="h2" id="why-title" data-hero-title>למה דווקא La Belle Vie?</h2>
-    <p class="lead">כי חופשה בלתי נשכחת מתחילה באנשים שחושבים על כל פרט.</p>
+    <p class="lead">כי מאחורי כל חוויה טובה עומדים אנשים שאכפת להם.</p>
     <div class="ledger">
       <div class="ledger__col">
         <h3>מה מייחד אותנו?</h3>
         <ul>
           <li><b>יחס אישי מכל הלב</b> אנחנו מלווים אתכם מהרגע הראשון ועד לסיום החופשה, עם תשומת לב לכל פרט.</li>
-          <li><b>הכול במקום אחד</b> אירוח, קולינריה, תוכניות בידור ופעילויות – הכול מתוכנן בקפידה לחוויה מושלמת.</li>
-          <li><b>חוויה לכל המשפחה</b> נופשים המשלבים הנאה, מסורת, תוכן איכותי ורגעים בלתי נשכחים.</li>
-          <li><b>שירות שעושה את ההבדל</b> צוות מקצועי, קשוב וזמין, שדואג שתוכלו פשוט ליהנות.</li>
-          <li><b>15 שנות ניסיון</b> ניסיון עשיר בהפקת נופשים ואירועים, עם הקפדה על איכות ושירות.</li>
+          <li><b>הכול במקום אחד</b> אירוח, אוכל, תוכניות בידור ופעילויות. הכול מתוכנן מראש, ואתם רק נהנים.</li>
+          <li><b>חוויה לכל המשפחה</b> נופשים שמשלבים הנאה, מסורת ותוכן לכל הגילאים, ורגעים שנשארים בזיכרון.</li>
+          <li><b>צוות קשוב וזמין</b> אנחנו בשטח לאורך כל החג, קשובים וזמינים לכל בקשה.</li>
+          <li><b>למעלה מ־15 שנות ניסיון</b> בהפקת נופשים ואירועים, עם הקפדה על כל פרט.</li>
         </ul>
       </div>
       <div class="ledger__col ledger__col--honest">
         <h3>למי החוויה שלנו מתאימה?</h3>
         <ul>
-          <li><b>למי שמחפש יותר מסתם חופשה</b> ורוצה ליהנות מחוויה מוקפדת, עשירה ומלאת רגעים מיוחדים.</li>
-          <li><b>למי שמעריך איכות ושירות אישי</b> ולא מוכן להתפשר על הפרטים הקטנים.</li>
-          <li><b>למשפחות שרוצות ליהנות יחד</b> מחופשה המשלבת חוויות לילדים, תוכן למבוגרים ואווירה משפחתית חמה.</li>
+          <li><b>למי שרוצה יותר מסתם חופשה</b> ליהנות מנופש מסודר שיש בו אוכל, תורה, שמחה ורגעים טובים.</li>
+          <li><b>למי שמעריך יחס אישי</b> ותשומת לב לפרטים הקטנים.</li>
+          <li><b>למשפחות שרוצות ליהנות יחד</b> מחופשה שיש בה חוויות לילדים, תוכן למבוגרים ואווירה משפחתית חמה.</li>
         </ul>
       </div>
     </div>
+    <div class="actions sheet-cta"><a class="btn btn--sun" href="#contact">בקשת הצעת מחיר</a><a class="btn btn--wa" href="https://wa.me/972585182655" target="_blank" rel="noopener">כתבו לנו בוואטסאפ</a></div>
   </div>
 </section>
 
 <!-- ============ FAQ ============ -->
 <section class="faq sheet" data-hero="holiday-card.jpg" id="faq" data-title="שאלות נפוצות" aria-labelledby="faq-title">
   <div class="wrap narrow">
-    <h2 class="h2" id="faq-title" data-hero-title>שאלות שחוזרות</h2>
+    <h2 class="h2" id="faq-title" data-hero-title>שאלות נפוצות</h2>
     <details>
       <summary>מה כלול במחיר הנופש?</summary>
       <p>לינה במלון, כל הארוחות בכשרות מהדרין, שיעורים, ערבים בלתי נשכחים ומועדון ילדים. לפני ההרשמה מקבלים פירוט מלא של מה כלול ומה לא, כדי שלא יהיו הפתעות.</p>
@@ -802,6 +824,7 @@
       <summary>אתם עובדים גם עם משפחות דוברות צרפתית?</summary>
       <p>בהחלט. חלק גדול מהאורחים שלנו דוברי צרפתית, והצוות מדבר עברית וצרפתית.</p>
     </details>
+    <div class="actions sheet-cta"><a class="btn btn--sun" href="#contact">בקשת הצעת מחיר</a><a class="btn btn--wa" href="https://wa.me/972585182655" target="_blank" rel="noopener">כתבו לנו בוואטסאפ</a></div>
   </div>
 </section>
 
@@ -811,6 +834,7 @@
     <div class="split__text">
       <h2 class="h2" id="contact-title" data-hero-title>בקשת הצעת מחיר</h2>
       <p class="lead">ממלאים כמה פרטים, ההודעה נפתחת בוואטסאפ ונשלחת אלינו ישירות. חוזרים אליכם באותו יום.</p>
+      <p class="contact__call">מעדיפים לדבר בטלפון? <a href="tel:+972585182655" dir="ltr">058-518-2655</a></p>
     </div>
 
     <form class="form" id="quote" novalidate>
@@ -820,7 +844,7 @@
           <option value="holiday">נופש סוכות</option>
           <option value="pesach">נופש פסח</option>
           <option value="wedding">הפקת חתונה</option>
-          <option value="barmitzva">בר / בת מצווה</option>
+          <option value="barmitzva">בר או בת מצווה</option>
           <option value="gala">ערב גאלה</option>
           <option value="gala-system">רק מערכת הגרלות והתרמה</option>
           <option value="wedding-app">אפליקציה לחתונה</option>
@@ -837,7 +861,8 @@
       </div>
       <label>עוד משהו שכדאי שנדע<textarea name="notes" rows="3"></textarea></label>
       <p class="form__error" id="fErr" role="alert" hidden></p>
-      <button class="btn btn--sun btn--block" type="submit">שליחה בוואטסאפ</button>
+      <button class="btn btn--sun btn--block" type="submit">המשך לוואטסאפ</button>
+      <p class="form__hint">ההודעה תיפתח בוואטסאפ, ושם לוחצים על "שליחה".</p>
     </form>
   </div>
 </section>
@@ -845,7 +870,7 @@
 </main>
 
 <footer class="foot">
-  <img src="media/logo-white.png" alt="La Belle Vie – Séjours &amp; Voyages" width="150" height="144" loading="lazy">
+  <img src="media/logo-white.png" alt="La Belle Vie" width="150" height="144" loading="lazy">
   <ul class="reach reach--foot">
         <li><a class="reach__wa" href="https://wa.me/972585182655" target="_blank" rel="noopener" title="058-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 32 32"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm5.8 15.7c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.4z"/></svg></span><span class="reach__label">וואטסאפ</span></a></li>
         <li><a class="reach__tel" href="tel:+972585182655" title="058-518-2655"><span class="reach__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg></span><span class="reach__label">טלפון</span></a></li>
@@ -858,7 +883,6 @@
       </ul>
   <p>נופש בחגים, הפקת אירועים וערבי גאלה</p>
   <p class="foot__small">© La Belle Vie</p>
-  <div class="foot__company" translate="no"><span dir="ltr">LBV Event / La Belle Vie</span><span>שם העוסק: סעדיה ג'ואנה אלודי מז</span><span>עוסק מורשה מס' 328792098</span></div>
 </footer>
 
 <div class="float-stack">
@@ -870,14 +894,11 @@
 </div>
 
 <nav class="dock" aria-label="פעולות מהירות">
-  <a href="https://booking.lbv-event.com/he/reservation" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>הזמנה</a>
-  <a href="#contact">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/></svg>הצעת מחיר</a>
+  <a class="dock__tab" href="#events" data-tab="events"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h4l-.5 5a1.5 1.5 0 0 1-3 0zM9 9.5V19M6.5 19h5M13 3h4l-.5 5a1.5 1.5 0 0 1-3 0zM15 9.5V19M12.5 19h5"/></svg>אירועים</a>
+  <a class="dock__tab" href="#holidays" data-tab="holidays"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="3.5"/><path d="M12 2.5v2M12 15.5v2M4.5 10h2M17.5 10h2M6.7 4.7l1.4 1.4M15.9 13.9l1.4 1.4M6.7 15.3l1.4-1.4M15.9 6.1l1.4-1.4M3 21c3-2 6-2 9 0s6 2 9 0"/></svg>נופשים</a>
+  <a class="dock__tab" href="#wedding" data-tab="wedding"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6l8.5 7 8.5-7"/></svg>AllSet</a>
   <a class="dock__wa" href="https://wa.me/972585182655" target="_blank" rel="noopener">
     <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3z"/></svg>וואטסאפ</a>
-  <a href="tel:+972585182655"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>טלפון</a>
-  <a class="dock__ig" href="https://www.instagram.com/la_belle_vie_lbv/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg>אינסטגרם</a>
 </nav>
 
 <dialog class="player" id="player" aria-label="נגן וידאו">

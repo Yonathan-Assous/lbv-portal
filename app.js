@@ -20,8 +20,9 @@
       prizes: ['סוף שבוע זוגי במלון', 'נופש פסח למשפחה', 'ארוחה זוגית במסעדה', 'סט כלי כסף לשבת'],
       ticket: 'כרטיס מס׳ ',
       nextPrize: 'להגרלת הפרס הבא',
-      seat: 'לסדר את השולחנות',
-      seated: 'כל האורחים הושבו. לאפס',
+      seat: 'להושיב את המשפחות',
+      seated: 'כל המשפחות הושבו. להתחיל מחדש',
+      mechitza: 'מחיצה',
       fields: { service: 'שירות', name: 'שם', phone: 'טלפון' },
       missing: list => 'חסר: ' + list.join(', ') + '. מלאו ונסו שוב.',
       msg: ['שלום La Belle Vie, אשמח להצעת מחיר.', 'שירות: ', 'שם: ', 'טלפון: ', 'תאריך: ', 'מספר אנשים: ', 'הערות: '],
@@ -32,8 +33,9 @@
       prizes: ['Un week-end en couple à l’hôtel', 'Un séjour de Pessah en famille', 'Un dîner pour deux au restaurant', 'Un service en argent pour Chabbat'],
       ticket: 'Billet n° ',
       nextPrize: 'Tirer le lot suivant',
-      seat: 'Placer les invités',
-      seated: 'Tous les invités sont placés. Recommencer',
+      seat: 'Placer les familles',
+      seated: 'Toutes les familles sont placées. Recommencer',
+      mechitza: 'Mehitsa',
       fields: { service: 'service', name: 'nom', phone: 'téléphone' },
       missing: list => 'Il manque : ' + list.join(', ') + '. Complétez puis réessayez.',
       msg: ['Bonjour La Belle Vie, je souhaite recevoir un devis.', 'Service : ', 'Nom : ', 'Téléphone : ', 'Date : ', 'Nombre de personnes : ', 'Remarques : '],
@@ -44,8 +46,9 @@
       prizes: ['A weekend for two at a hotel', 'A family Pesach stay', 'Dinner for two', 'A silver Shabbat set'],
       ticket: 'Ticket no. ',
       nextPrize: 'Draw the next prize',
-      seat: 'Seat the guests',
-      seated: 'All guests seated. Reset',
+      seat: 'Seat the families',
+      seated: 'All families seated. Reset',
+      mechitza: 'Mechitza',
       fields: { service: 'service', name: 'name', phone: 'phone' },
       missing: list => 'Missing: ' + list.join(', ') + '. Please fill in and try again.',
       msg: ['Hello La Belle Vie, I would like a quote.', 'Service: ', 'Name: ', 'Phone: ', 'Date: ', 'Number of people: ', 'Notes: '],
@@ -96,9 +99,12 @@
     });
     const trips = (c.trips || []).filter(t => t.status !== 'hidden');
     const OPEN = { he: 'ההרשמה פתוחה', fr: 'Réservations ouvertes', en: 'Booking open' }, SOON = { he: 'בקרוב', fr: 'Bientôt', en: 'Coming soon' };
+    const ENDED = { he: 'הסתיים', fr: 'Terminé', en: 'Ended' };
     const badge = t => t.status === 'open'
       ? `<span class="badge">${OPEN[L]}</span>`
-      : `<span class="badge badge--soft">${SOON[L]}</span>`;
+      : `<span class="badge badge--soft">${(t.status === 'ended' ? ENDED : SOON)[L]}</span>`;
+    // A stay that has ended moves to the end of the list; the coming one leads.
+    trips.sort((a, b) => (a.status === 'ended') - (b.status === 'ended'));
     const subs = $('.door__subs');
     if (subs) subs.innerHTML = trips.map(t => `<li><b>${esc(tr(t).name)}</b> ${esc(tr(t).subline || '')} ${badge(t)}</li>`).join('');
     const cards = $('.trips');
@@ -339,10 +345,13 @@
     from.sheet.scrollTop = from.top;
   }
   let openSheetEl = null, pageY = 0;
+  // The bottom bar and the top menu switch between main windows: their Back always leads home, not to the window you came from.
+  let freshOpen = false;
+  document.addEventListener('click', e => { if (e.target.closest('.dock a[href^="#"], .bar__nav a[href^="#"]')) freshOpen = true; }, true);
   function openSheet(sheet, target) {
     if (openSheetEl !== sheet) {
-      if (!openSheetEl) {
-        pageY = scrollY;
+      if (!openSheetEl || freshOpen) {
+        if (!openSheetEl) pageY = scrollY;
         // A window that belongs to another (Sukkot → Holidays) goes back there even when opened straight from the page.
         const parent = sheet.dataset.parent && document.getElementById(sheet.dataset.parent);
         setBack(sheet, parent ? { sheet: parent, top: 0 } : null);
@@ -352,6 +361,7 @@
       sheet.classList.add('is-open');
       document.body.classList.add('has-sheet');
       openSheetEl = sheet;
+      freshOpen = false;
       sheet.scrollTop = 0;
       dispatchEvent(new CustomEvent('sheet:change', { detail: sheet.id }));
     }
@@ -361,6 +371,7 @@
       if (panel && panel.hidden && window.lbvShowModule) lbvShowModule(panel.dataset.mod);
       setTimeout(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }), 60);
     }
+    freshOpen = false;
     sheet.querySelector('.sheet__close').focus({ preventScroll: true });
   }
   function closeSheet(clearHash) {
@@ -369,8 +380,19 @@
     document.body.classList.remove('has-sheet');
     openSheetEl = null;
     dispatchEvent(new CustomEvent('sheet:change', { detail: null }));
-    if (clearHash) history.replaceState(null, '', location.pathname + location.search);
+    if (clearHash) {
+      // Opened from inside the site: step back through history, so the phone's Back button never hits a dead step.
+      if (depth > 0) { const n = depth; depth = 0; history.go(-n); }
+      else history.replaceState({ lbvDepth: 0 }, '', location.pathname + location.search);
+    }
     scrollTo({ top: pageY, behavior: 'instant' });
+  }
+  // How many in-site steps (opened windows) lie on top of the page itself in the browser history.
+  let depth = 0;
+  function trackDepth() {
+    const st = history.state;
+    if (st && typeof st.lbvDepth === 'number') depth = st.lbvDepth;
+    else { depth = location.hash ? depth + 1 : 0; try { history.replaceState({ ...(st || {}), lbvDepth: depth }, ''); } catch (e) {} }
   }
   function route() {
     const id = decodeURIComponent(location.hash.slice(1));
@@ -379,8 +401,19 @@
     if (sheet) openSheet(sheet, target);
     else if (openSheetEl) { closeSheet(false); if (target) target.scrollIntoView({ behavior: 'instant' }); }
   }
-  addEventListener('hashchange', route);
+  addEventListener('hashchange', () => { trackDepth(); route(); });
+  // Bottom bar on the phone: the tab of the window you are in shows in gold.
+  addEventListener('sheet:change', e => {
+    const sheet = e.detail && document.getElementById(e.detail);
+    const ids = sheet ? [sheet.id, sheet.dataset.parent] : [];
+    document.querySelectorAll('.dock__tab').forEach(t => {
+      const on = ids.includes(t.dataset.tab);
+      t.classList.toggle('is-on', on);
+      if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
+  });
   addEventListener('keydown', e => { if (e.key === 'Escape' && openSheetEl && !$('#player').open) goBack(); });
+  try { history.replaceState({ ...(history.state || {}), lbvDepth: 0 }, ''); } catch (e) {}
   route();
 
   /* ---------- Phone hero: vertical poster to match the vertical video ---------- */
@@ -731,8 +764,8 @@
 
   /* ---------- Wedding app: three screens (WhatsApp invite → guest confirms → seating) ---------- */
   const W = {
-    he: { tabs: ['ההזמנה בוואטסאפ', 'אישור הגעה', 'סידור שולחנות'], couple: 'נועה ואריאל', online: 'מקוון', cardTop: 'בשמחה ובהתרגשות', cardMid: 'מתכבדים להזמינכם לחתונתם', date: 'יום חמישי · 11.3.2027 · 19:00', venue: 'אולמי הגן, ירושלים', msg: 'שלום משפחת כהן! נשמח מאוד לראותכם איתנו. לאישור הגעה לחצו כאן:', open: 'לאישור הגעה', hello: 'שלום משפחת כהן', q: 'תגיעו לשמחה?', yes: 'כן, נגיע', no: 'לא נוכל', how: 'כמה תהיו?', food: 'העדפות אוכל', foods: ['רגיל', 'צמחוני', 'טבעוני', 'ללא גלוטן'], send: 'שליחת אישור', thanks: 'תודה! נתראה בשמחה', thanksNo: 'תודה שעדכנתם', got: 'האישור הגיע ישר לנועה ולאריאל', see: 'לראות את זה אצל הזוג', try: 'נסו בעצמכם' },
-    fr: { tabs: ['L’invitation WhatsApp', 'Confirmation', 'Plan de table'], couple: 'Noa et Ariel', online: 'en ligne', cardTop: 'Avec joie et émotion', cardMid: 'ont le plaisir de vous convier à leur mariage', date: 'Jeudi · 11.3.2027 · 19h00', venue: 'Salles HaGan, Jérusalem', msg: 'Bonjour famille Cohen ! Nous serions si heureux de vous avoir avec nous. Pour confirmer votre venue :', open: 'Confirmer ma venue', hello: 'Bonjour famille Cohen', q: 'Serez-vous des nôtres ?', yes: 'Oui, nous venons', no: 'Nous ne pourrons pas', how: 'Combien serez-vous ?', food: 'Préférences de repas', foods: ['Standard', 'Végétarien', 'Végan', 'Sans gluten'], send: 'Envoyer ma réponse', thanks: 'Merci ! À très bientôt', thanksNo: 'Merci de nous avoir prévenus', got: 'La réponse arrive directement chez Noa et Ariel', see: 'Voir côté mariés', try: 'Essayez vous-même' },
+    he: { tabs: ['ההזמנה בוואטסאפ', 'אישור הגעה', 'סידור שולחנות'], couple: 'נועה ואריאל', online: 'מקוון', cardTop: 'בשמחה ובהתרגשות', cardMid: 'מתכבדים להזמינכם לחתונתם', date: 'יום חמישי · 11.3.2027 · 19:00', venue: 'אולמי הגן, ירושלים', msg: 'שלום משפחת כהן! נשמח מאוד לראותכם איתנו. לאישור הגעה לחצו כאן:', open: 'לאישור הגעה', hello: 'שלום משפחת כהן', q: 'תגיעו לשמוח איתנו?', yes: 'נגיע בשמחה', no: 'לא נוכל להגיע', how: 'מספר אנשים', food: 'העדפות אוכל', foods: ['רגיל', 'צמחוני', 'טבעוני', 'ללא גלוטן'], send: 'שליחת התשובה', thanks: 'תודה! נתראה בשמחה', thanksNo: 'תודה שעדכנתם', got: 'האישור הגיע ישר לנועה ולאריאל', see: 'לראות את זה אצל הזוג', try: 'נסו בעצמכם' },
+    fr: { tabs: ['L’invitation WhatsApp', 'Confirmation', 'Plan de table'], couple: 'Noa et Ariel', online: 'en ligne', cardTop: 'Avec joie et émotion', cardMid: 'ont le plaisir de vous convier à leur mariage', date: 'Jeudi 11 mars 2027 · 19 h 00', venue: 'Salles HaGan, Jérusalem', msg: 'Bonjour famille Cohen ! Nous serions si heureux de vous compter parmi nous. Pour confirmer votre venue :', open: 'Confirmer ma venue', hello: 'Bonjour famille Cohen', q: 'Serez-vous des nôtres ?', yes: 'Nous serons là', no: 'Nous ne pourrons pas venir', how: 'Nombre de personnes', food: 'Préférences de repas', foods: ['Standard', 'Végétarien', 'Végan', 'Sans gluten'], send: 'Envoyer ma réponse', thanks: 'Merci ! À très bientôt', thanksNo: 'Merci de nous avoir prévenus', got: 'La réponse arrive directement chez Noa et Ariel', see: 'Voir le côté des mariés', try: 'Essayez-le vous-même' },
     en: { tabs: ['WhatsApp invite', 'Guest RSVP', 'Seating plan'], couple: 'Noa & Ariel', online: 'online', cardTop: 'With joy and love', cardMid: 'invite you to celebrate their wedding', date: 'Thursday · 11.3.2027 · 7 pm', venue: 'HaGan Halls, Jerusalem', msg: 'Hello Cohen family! We would love to have you with us. To confirm, tap here:', open: 'RSVP now', hello: 'Hello Cohen family', q: 'Will you join us?', yes: 'Yes, we’ll be there', no: 'We can’t make it', how: 'How many of you?', food: 'Meal preferences', foods: ['Regular', 'Vegetarian', 'Vegan', 'Gluten-free'], send: 'Send my answer', thanks: 'Thank you! See you there', thanksNo: 'Thanks for letting us know', got: 'The answer goes straight to Noa and Ariel', see: 'See it on the couple’s side', try: 'Try it yourself' },
   }[LANG];
   const screen = $('#wedding .phone__screen');
@@ -761,8 +794,6 @@
             <div class="gr__yn"><button type="button" class="is-on" data-yn="yes">${esc(W.yes)}</button><button type="button" data-yn="no">${esc(W.no)}</button></div></fieldset>
           <fieldset class="gr__q" data-only-yes><legend>${esc(W.how)}</legend>
             <div class="gr__step"><button type="button" data-step="-1" aria-label="-">−</button><output>2</output><button type="button" data-step="1" aria-label="+">+</button></div></fieldset>
-          <fieldset class="gr__q" data-only-yes><legend>${esc(W.food)}</legend>
-            <div class="gr__chips">${W.foods.map((f, i) => `<button type="button" class="${i ? '' : 'is-on'}">${esc(f)}</button>`).join('')}</div></fieldset>
           <button class="btn btn--sun btn--block" type="submit">${esc(W.send)}</button>
         </form>
         <div class="gr__done" hidden><span class="gr__check"></span><b></b><p>${esc(W.got)}</p><button class="btn btn--lake btn--block" type="button" data-go="tables">${esc(W.see)}</button></div>
@@ -806,40 +837,48 @@
     });
   }
 
-  /* ---------- Wedding seating demo ---------- */
+  /* ---------- Wedding seating demo: like the real plan in Simha, each family is dragged to its table,
+     men (blue) and women (pink) on either side of the mechitza; every table shows seated / places. ---------- */
   const hall = $('#hall');
-  const TABLES = 9, SEATS = 10;
-  for (let t = 0; t < TABLES; t++) {
+  const SEATS = 10;
+  // Six tables: men on one side of the mechitza, women on the other; families of 2 to 5 people.
+  const SIDES = [['m', [4, 3, 3], [5, 2, 3], [2, 4]], ['f', [3, 4, 3], [2, 5, 3], [4, 2]]];
+  const tables = [];
+  const mkTable = (n, g, fams) => {
     const el = document.createElement('div');
     el.className = 'table';
     let seats = '';
     for (let s = 0; s < SEATS; s++) seats += `<i class="seat" style="--a:${s * 360 / SEATS}deg"></i>`;
-    el.innerHTML = seats + `<span class="table__top">${t + 1}</span>`;
-    hall.appendChild(el);
-  }
-  // Table groups: groom's family, bride's family, friends.
-  const plan = ['g1', 'g1', 'g1', 'g2', 'g2', 'g2', 'g3', 'g3', 'g3'];
+    el.innerHTML = seats + `<span class="table__top"><b>${n}</b><small>0/${SEATS}</small></span>`;
+    tables.push({ el, g, fams });
+    return el;
+  };
+  const side = (g, list, from) => { const col = document.createElement('div'); col.className = 'hall__side'; list.forEach((f, i) => col.append(mkTable(from + i, g, f))); return col; };
+  const mz = document.createElement('div');
+  mz.className = 'hall__mz';
+  mz.innerHTML = `<span>${esc(T.mechitza)}</span>`;
+  hall.append(side('m', SIDES[0].slice(1), 1), mz, side('f', SIDES[1].slice(1), 4));
   const seatBtn = $('#seatBtn');
   let seated = false, seating = false;
+  const count = t => { const k = $$('.seat.m, .seat.f', t.el).length; $('small', t.el).textContent = `${k}/${SEATS}`; t.el.classList.toggle('is-full', k >= SEATS); };
   seatBtn.addEventListener('click', () => {
     if (seating) return;
-    const all = $$('.table', hall);
     if (seated) {
       $$('.seat', hall).forEach(s => s.className = 'seat');
+      tables.forEach(count);
       seated = false; seatBtn.textContent = T.seat;
       return;
     }
     seating = true;
+    // One family at a time lands on its table, all its people together.
+    const moves = [];
+    tables.forEach(t => { let at = 0; t.fams.forEach(size => { moves.push([t, at, size]); at += size; }); });
     let i = 0;
-    const order = [];
-    all.forEach((t, ti) => $$('.seat', t).forEach((s, si) => { if (!(ti === 8 && si > 5)) order.push([s, plan[ti]]); }));
     const step = () => {
-      for (let k = 0; k < 3 && i < order.length; k++, i++) {
-        const [s, g] = order[i];
-        s.classList.add(g, 'is-in');
-        setTimeout(() => s.classList.remove('is-in'), 300);
-      }
-      if (i < order.length) setTimeout(step, reduced ? 0 : 28);
+      const [t, at, size] = moves[i++];
+      $$('.seat', t.el).slice(at, at + size).forEach(s => { s.classList.add(t.g, 'is-in'); setTimeout(() => s.classList.remove('is-in'), 300); });
+      count(t);
+      if (i < moves.length) setTimeout(step, reduced ? 0 : 170);
       else { seating = false; seated = true; seatBtn.textContent = T.seated; }
     };
     step();
@@ -847,8 +886,8 @@
 
   /* ---------- Sign-up for updates (Pesach first, or all news) → saved for the admin ---------- */
   const SU = {
-    he: { title: 'רוצים לשמוע ראשונים?', lead: 'השאירו פרטים, ונעדכן אתכם על נופשים חדשים, פסח, ואירועים מיוחדים.', name: 'שם מלא', phone: 'טלפון', email: 'מייל', interest: 'מה מעניין אתכם?', opts: { pesach: 'נופש פסח', sukkot: 'נופש סוכות', all: 'כל הנופשים והאירועים' }, consent: 'אני מאשר/ת לקבל עדכונים ופרסומים מ-La Belle Vie. אפשר להסיר בכל רגע.', send: 'הרשמה לעדכונים', thanks: 'תודה! נרשמתם, ונעדכן אתכם ראשונים.', err: 'משהו לא נשלח. בדקו שם, טלפון או מייל, ואישור לקבלת עדכונים.', strip: 'רוצים לשמוע ראשונים על נופשים ואירועים חדשים?', stripBtn: 'להרשמה לעדכונים', close: 'סגירה' },
-    fr: { title: 'Être informé en premier', lead: 'Laissez vos coordonnées, nous vous informerons des nouveaux séjours, de Pessah et des événements spéciaux.', name: 'Nom complet', phone: 'Téléphone', email: 'E-mail', interest: 'Ce qui vous intéresse', opts: { pesach: 'Séjour de Pessah', sukkot: 'Séjour de Souccot', all: 'Tous les séjours et événements' }, consent: 'J’accepte de recevoir des nouvelles et des offres de La Belle Vie. Désinscription à tout moment.', send: 'M’inscrire', thanks: 'Merci ! Vous êtes inscrit, vous serez informé en premier.', err: 'L’envoi a échoué. Vérifiez le nom, le téléphone ou l’e-mail, et l’accord.', strip: 'Envie d’être informé en premier des nouveaux séjours et événements ?', stripBtn: 'Recevoir les nouvelles', close: 'Fermer' },
+    he: { title: 'רוצים לשמוע ראשונים?', lead: 'השאירו פרטים, ונעדכן אתכם על נופשים חדשים, על פסח ועל אירועים מיוחדים.', name: 'שם מלא', phone: 'טלפון', email: 'מייל', interest: 'מה מעניין אתכם?', opts: { pesach: 'נופש פסח', sukkot: 'נופש סוכות', all: 'כל הנופשים והאירועים' }, consent: 'מאשרים קבלת עדכונים ופרסומים מ-La Belle Vie. אפשר להסיר בכל רגע.', send: 'הרשמה לעדכונים', thanks: 'תודה! נרשמתם, ונעדכן אתכם ראשונים.', err: 'משהו לא נשלח. בדקו שם, טלפון או מייל, ואישור לקבלת עדכונים.', strip: 'רוצים לשמוע ראשונים על נופשים ואירועים חדשים?', stripBtn: 'להרשמה לעדכונים', close: 'סגירה' },
+    fr: { title: 'Être informé en premier', lead: 'Laissez vos coordonnées, nous vous informerons des nouveaux séjours, de Pessah et des événements spéciaux.', name: 'Nom complet', phone: 'Téléphone', email: 'E-mail', interest: 'Ce qui vous intéresse', opts: { pesach: 'Séjour de Pessah', sukkot: 'Séjour de Souccot', all: 'Tous les séjours et événements' }, consent: 'J’accepte de recevoir des nouvelles et des offres de La Belle Vie. Désinscription à tout moment.', send: 'M’inscrire', thanks: 'Merci ! Vous êtes inscrit, vous serez informé en premier.', err: 'L’envoi a échoué. Vérifiez le nom, le téléphone ou l’e-mail, et cochez la case de consentement.', strip: 'Envie d’être informé en premier des nouveaux séjours et événements ?', stripBtn: 'Recevoir les nouvelles', close: 'Fermer' },
     en: { title: 'Be the first to know', lead: 'Leave your details and we will tell you about new holidays, Pesach and special events.', name: 'Full name', phone: 'Phone', email: 'Email', interest: 'What interests you?', opts: { pesach: 'Pesach stay', sukkot: 'Sukkot stay', all: 'All holidays and events' }, consent: 'I agree to receive news and offers from La Belle Vie. Unsubscribe any time.', send: 'Sign me up', thanks: 'Thank you! You are signed up and will hear first.', err: 'That didn’t go through. Check your name, phone or email, and the consent box.', strip: 'Want to hear first about new holidays and events?', stripBtn: 'Get updates', close: 'Close' },
   }[LANG];
   const su = document.createElement('dialog');
@@ -956,4 +995,34 @@
     }).catch(() => {});
     window.open(`https://wa.me/${WA}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
   });
+
+  /* ---------- Visit and click counts (anonymous: a random id on this browser, no cookies, no names) ---------- */
+  if (!PREVIEW) {
+    let vid = '';
+    try { vid = localStorage.getItem('lbv-vid') || ''; if (!vid) { vid = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('lbv-vid', vid); } }
+    catch (e) { vid = Math.random().toString(36).slice(2); }
+    const send = o => {
+      try {
+        const body = JSON.stringify({ v: vid, ...o });
+        if (!(navigator.sendBeacon && navigator.sendBeacon('/api/track', body))) fetch('/api/track', { method: 'POST', body, keepalive: true }).catch(() => {});
+      } catch (e) {}
+    };
+    let ref = '';
+    try { const r = new URL(document.referrer); if (r.host !== location.host) ref = r.hostname; } catch (e) {}
+    send({ t: 'view', lang: LANG, dev: matchMedia('(max-width: 760px)').matches ? 'mobile' : 'desktop', ref });
+    addEventListener('sheet:change', e => { if (e.detail) send({ t: 'win', id: e.detail }); });
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a, button');
+      if (!a) return;
+      const h = a.getAttribute('href') || '';
+      const k = /wa.me|whatsapp/i.test(h) ? 'whatsapp' : h.startsWith('tel:') ? 'phone' : h.startsWith('mailto:') ? 'email'
+        : /instagram.com/.test(h) ? 'instagram' : /tiktok.com/.test(h) ? 'tiktok' : /facebook.com/.test(h) ? 'facebook' : /youtube.com|youtu.be/.test(h) ? 'youtube'
+        : a.matches('.vthumb') ? 'video' : /#contact$/.test(h) ? 'quote_open' : /gala./.test(h) ? 'gala_demo' : '';
+      if (k) send({ t: 'click', k });
+    }, true);
+    document.addEventListener('submit', e => {
+      if (e.target.id === 'quote') send({ t: 'click', k: 'quote_send' });
+      else if (e.target === suForm) send({ t: 'click', k: 'signup_send' });
+    }, true);
+  }
 })();

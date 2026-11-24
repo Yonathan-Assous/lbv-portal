@@ -2,3 +2,8 @@
 CLAUDE.md
 ADMIN-SETUP.md
 tools/
+
+# never publish local data or secrets
+data/
+.env*
+*.local.json

@@ -52,14 +52,14 @@
       help: 'Aide et signaler un problème',
       sections: [
         ['terms', 'Conditions d’utilisation', [
-          'Ce site présente les services de La Belle Vie : séjours de fêtes, production d’événements, système pour soirées de gala et application de mariage. Son utilisation implique l’acceptation de ces conditions.',
+          'Ce site présente les services de La Belle Vie : séjours de fêtes, organisation d’événements, système pour soirées de gala et application de mariage. Son utilisation implique l’acceptation de ces conditions.',
           'Les informations, photos, vidéos et démonstrations sont données à titre indicatif. Seuls un devis, une réservation ou un contrat signé engagent sur les prix, les dates et les conditions.',
           'Les démonstrations (dons, tombola, tableau de bord…) affichent uniquement des noms et des montants d’exemple.',
           'Toute reproduction des contenus, photos ou vidéos est interdite sans accord écrit.',
         ]],
         ['cancel', 'Annulations et remboursements', [
           'Séjours de fêtes : les conditions d’annulation et de remboursement de chaque séjour sont affichées sur le site de réservation avant le paiement et font partie de la réservation que vous validez.',
-          'Production d’événements et système de gala : les conditions d’annulation sont fixées dans le contrat signé pour chaque événement.',
+          'Organisation d’événements et système de gala : les conditions d’annulation sont fixées dans le contrat signé pour chaque événement.',
           'Pour toute demande d’annulation ou de remboursement, écrivez-nous sur WhatsApp ou par e-mail.',
         ]],
         ['privacy', 'Politique de confidentialité', [
@@ -79,7 +79,7 @@
           'Une partie du site vous pose problème ? Dites-le-nous sur WhatsApp ou par e-mail, nous la corrigerons.',
         ]],
         ['help', 'Aide et signaler un problème', [
-          'Quelque chose ne fonctionne pas ? Envoyez-nous sur WhatsApp ou par e-mail ce que vous essayiez de faire, sur quel appareil, et si possible une capture d’écran.',
+          'Quelque chose ne fonctionne pas ? Écrivez-nous sur WhatsApp ou par e-mail ce que vous essayiez de faire, sur quel appareil, et si possible une capture d’écran.',
         ]],
       ],
       wa: 'WhatsApp', mail: 'E-mail',

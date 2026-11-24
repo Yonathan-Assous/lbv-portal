@@ -101,7 +101,7 @@
   "trips": [
     {
       "id": "sukkot",
-      "status": "open",
+      "status": "ended",
       "image": "media/hero.jpg",
       "link": "#sukkot",
       "bookingUrl": {
